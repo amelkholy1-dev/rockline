@@ -1,0 +1,51 @@
+<%- include('nav') %>
+<% var c = site.contact || {}; var b = function(o, l){ return o ? (o[l] || '') : ''; }; %>
+<div class="pthead"><div><h1 class="pt">بيانات الشركة والتواصل</h1><p class="sub">الأرقام والإيميل والعنوان واللينكات اللي بتظهر في كل صفحات الموقع.</p></div></div>
+<form class="form" method="post" action="/admin/contact" enctype="multipart/form-data">
+  <div class="card">
+    <h2 class="h3"><%- icon('phone') %> أرقام التواصل</h2>
+    <div class="grid2">
+      <label>أرقام المكتب في مصر<textarea name="phonesEG" dir="ltr" rows="2"><%= (c.phonesEG||[]).join('\n') %></textarea><small>كل رقم في سطر، ومعاه كود الدولة (+20).</small></label>
+      <label>أرقام التواصل في السعودية<textarea name="phonesSA" dir="ltr" rows="2"><%= (c.phonesSA||[]).join('\n') %></textarea><small>سيبها فاضية لو مش عايزها تظهر.</small></label>
+      <label>رقم الواتساب الأساسي<input name="whatsapp" dir="ltr" value="<%= c.whatsapp || '' %>" placeholder="+201069804443"><small>ده اللي بيستقبل رسايل العمال والاستفسارات، وزرار الواتساب العائم.</small></label>
+      <label>رقم واتساب الشركات (اختياري)<input name="whatsappCompanies" dir="ltr" value="<%= c.whatsappCompanies || '' %>" placeholder="+966..."><small>لو حطيته، طلبات العمالة من الشركات هتروح عليه. لو فاضي هتروح على الرقم الأساسي.</small></label>
+      <label class="span2">الإيميل اللي بيظهر على الموقع<input name="email" dir="ltr" value="<%= c.email || '' %>"></label>
+    </div>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('map') %> العنوان ومواعيد العمل</h2>
+    <div class="grid2">
+      <label>العنوان (عربي)<input name="address_ar" value="<%= b(c.address,'ar') %>"></label>
+      <label>العنوان (إنجليزي)<input name="address_en" dir="ltr" value="<%= b(c.address,'en') %>"></label>
+      <label>مواعيد العمل (عربي)<input name="hours_ar" value="<%= b(c.hours,'ar') %>"></label>
+      <label>مواعيد العمل (إنجليزي)<input name="hours_en" dir="ltr" value="<%= b(c.hours,'en') %>"></label>
+      <label class="span2">لينك المكان على خرائط جوجل (اختياري)<input name="mapLink" dir="ltr" value="<%= c.mapLink || '' %>" placeholder="https://maps.app.goo.gl/..."><small>افتح جوجل ماب على مكان المكتب، دوس مشاركة، وانسخ اللينك هنا. لو فاضي هيدوّر على العنوان.</small></label>
+    </div>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('globe') %> السوشيال ميديا</h2>
+    <div class="grid2">
+      <% [['facebook','فيسبوك'],['instagram','إنستجرام'],['tiktok','تيك توك'],['linkedin','لينكدإن'],['youtube','يوتيوب']].forEach(function(s){ %>
+        <label><span class="lbl-ic"><%- brand(s[0]) %> <%= s[1] %></span><input name="<%= s[0] %>" dir="ltr" value="<%= c[s[0]] || '' %>" placeholder="https://"></label>
+      <% }); %>
+      <label>الموقع الإلكتروني<input name="website" dir="ltr" value="<%= c.website || '' %>"></label>
+    </div>
+    <small class="muted">أي لينك فاضي مش هيظهر على الموقع.</small>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('shield') %> بيانات الشركة</h2>
+    <div class="grid2">
+      <label>رقم الترخيص<input name="license" value="<%= site.brand.license || '' %>"></label>
+      <label>سنة التأسيس (اختياري)<input name="founded" value="<%= site.brand.founded || '' %>"></label>
+      <label>الشعار تحت الموقع (عربي)<input name="slogan_ar" value="<%= b(c.slogan,'ar') %>"></label>
+      <label>الشعار (إنجليزي)<input name="slogan_en" dir="ltr" value="<%= b(c.slogan,'en') %>"></label>
+      <div class="span2">
+        <span class="lbl">الملف التعريفي (PDF)</span>
+        <p class="muted">الحالي: <a href="<%= site.profilePdf %>" target="_blank"><%= site.profilePdf %></a>. الزوار بيحمّلوه من زرار "حمّل الملف التعريفي".</p>
+        <label class="drop"><%- icon('filedown') %><span>ارفع ملف PDF جديد لو عايز تغيّره</span><input type="file" name="profile" accept="application/pdf"></label>
+      </div>
+    </div>
+  </div>
+  <div class="form-foot sticky"><button class="btn navy" type="submit"><%- icon('check') %> حفظ كل البيانات</button></div>
+</form>
+<%- include('foot') %>

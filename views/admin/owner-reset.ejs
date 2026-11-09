@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>إعادة ضبط المدير | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <div class="login">
+    <img src="<%= img('logo') %>" alt="">
+    <h1>استرجاع دخول المدير الأساسي</h1>
+    <% if (ok) { %>
+      <div class="flash">تم تغيير كلمة المرور. ادخل بالكلمة الجديدة.</div>
+      <a class="btn navy wide" href="/admin/login">تسجيل الدخول</a>
+    <% } else { %>
+      <% if (otpEnabled) { %>
+      <div class="rtabs" style="display:flex;gap:6px;margin-bottom:12px">
+        <a class="btn sm <%= mode === 'otp' ? 'navy' : 'ghost' %>" href="/admin/owner-reset#otp" onclick="showTab('otp');return false">بكود التطبيق</a>
+        <a class="btn sm <%= mode === 'code' ? 'navy' : 'ghost' %>" href="/admin/owner-reset#code" onclick="showTab('code');return false">بكود الاسترجاع</a>
+      </div>
+      <% } %>
+      <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+
+      <form method="post" action="/admin/owner-forgot" autocomplete="off" id="tab-otp" style="<%= (otpEnabled && mode === 'otp') ? '' : 'display:none' %>">
+        <p>اكتب <b>الكود من تطبيق المصادقة</b> (أو واحد من أكواد الطوارئ)، وكلمة مرور جديدة. التحقق الثنائي بيفضل زي ما هو.</p>
+        <label>اسم المستخدم بتاعك<input name="user" autocomplete="username" required></label>
+        <label>الكود (6 أرقام من التطبيق، أو كود طوارئ)<input name="code" dir="ltr" inputmode="numeric" autocomplete="one-time-code" required></label>
+        <label>كلمة المرور الجديدة<input type="password" name="pass" minlength="6" autocomplete="new-password" required><small><%= hint %></small></label>
+        <label>اكتبها تاني<input type="password" name="pass2" minlength="6" autocomplete="new-password" required></label>
+        <button class="btn navy wide" type="submit">تعيين كلمة المرور</button>
+      </form>
+
+      <form method="post" action="/admin/owner-reset" autocomplete="off" id="tab-code" style="<%= (!otpEnabled || mode === 'code') ? '' : 'display:none' %>">
+        <% if (!enabled) { %>
+          <div class="flash warn">إعادة الضبط بكود الاسترجاع مش مفعّلة. ضيف <code dir="ltr">OWNER_RESET_CODE</code> (12 حرف على الأقل) في إعدادات الاستضافة واعمل إعادة نشر.</div>
+        <% } else { %>
+          <p>اكتب <b>كود الاسترجاع</b> المحفوظ في إعدادات الاستضافة وكلمة مرور جديدة. (ملاحظة: الطريقة دي بتمسح التحقق الثنائي.)</p>
+          <label>كود الاسترجاع<input type="password" name="code" dir="ltr" autocomplete="off" required></label>
+          <label>كلمة المرور الجديدة<input type="password" name="pass" minlength="6" autocomplete="new-password" required><small><%= hint %></small></label>
+          <label>اكتبها تاني<input type="password" name="pass2" minlength="6" autocomplete="new-password" required></label>
+          <button class="btn navy wide" type="submit">إعادة الضبط</button>
+        <% } %>
+      </form>
+      <a href="/admin/login">الرجوع</a>
+      <% if (otpEnabled) { %><script>function showTab(m){document.getElementById('tab-otp').style.display=m==='otp'?'':'none';document.getElementById('tab-code').style.display=m==='code'?'':'none';document.querySelectorAll('.rtabs a').forEach(function(a){a.classList.toggle('navy',a.getAttribute('href')=='/admin/owner-reset#'+m);a.classList.toggle('ghost',a.getAttribute('href')!='/admin/owner-reset#'+m)});}if(location.hash==='#code')showTab('code');</script><% } %>
+    <% } %>
+  </div>
+</body>
+</html>

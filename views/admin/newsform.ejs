@@ -1,0 +1,24 @@
+<%- include('nav') %>
+<% var n = item || {}; var imgs = n.images || (n.image ? [n.image] : []); %>
+<div class="pthead"><div><h1 class="pt"><%= item ? 'تعديل خبر' : 'خبر جديد' %></h1></div><a class="btn ghost" href="/admin/news"><%- icon('arrowr') %> رجوع</a></div>
+<form class="card form" method="post" action="/admin/news/save" enctype="multipart/form-data">
+  <input type="hidden" name="id" value="<%= n.id || '' %>">
+  <div class="grid2">
+    <label>العنوان (عربي) <em>*</em><input name="title_ar" value="<%= n.title ? n.title.ar : '' %>" required></label>
+    <label>العنوان (إنجليزي)<input name="title_en" dir="ltr" value="<%= n.title ? n.title.en : '' %>"></label>
+    <label class="span2">النص (عربي)<textarea name="text_ar" rows="7"><%= n.text ? n.text.ar : '' %></textarea></label>
+    <label class="span2">النص (إنجليزي)<textarea name="text_en" dir="ltr" rows="5"><%= n.text ? n.text.en : '' %></textarea></label>
+    <label>التاريخ<input type="date" name="date" value="<%= n.date || new Date().toISOString().slice(0,10) %>"></label>
+    <label>لينك فيديو (يوتيوب أو فيسبوك) - اختياري<input name="video" dir="ltr" value="<%= n.video || '' %>" placeholder="https://"></label>
+    <div class="span2">
+      <span class="lbl">الصور</span>
+      <% if (imgs.length) { %>
+        <div class="thumbs"><% imgs.forEach(function(src, i){ %><label class="thumb"><img src="<%= src %>" alt=""><span><input type="checkbox" name="remove" value="<%= src %>"> حذف</span><% if (i === 0) { %><i>الغلاف</i><% } %></label><% }); %></div>
+      <% } %>
+      <label class="drop"><%- icon('image') %><span>اختار صورة أو أكتر (أول صورة هتبقى الغلاف)</span><input type="file" name="images" accept="image/*" multiple data-preview></label>
+      <div class="preview"></div>
+    </div>
+  </div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ ونشر</button><a class="btn ghost" href="/admin/news">إلغاء</a></div>
+</form>
+<%- include('foot') %>

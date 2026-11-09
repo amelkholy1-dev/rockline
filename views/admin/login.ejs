@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>تسجيل الدخول | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <form class="login" method="post" action="/admin/login">
+    <img src="<%= img('logo') %>" alt="">
+    <h1>لوحة التحكم</h1>
+    <p>نسر الخليج لإلحاق العمالة المصرية بالخارج</p>
+    <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+    <% if (info) { %><div class="flash"><%= info %></div><% } %>
+    <input type="hidden" name="next" value="<%= next %>">
+    <label>اسم المستخدم أو الإيميل<input name="user" autocomplete="username" required autofocus></label>
+    <label>كلمة المرور<input type="password" name="pass" autocomplete="current-password" required></label>
+    <button class="btn navy wide" type="submit">دخول</button>
+    <a href="/admin/forgot">نسيت كلمة المرور؟</a>
+    <a href="/admin/owner-reset" class="muted" style="font-size:.85rem">المدير الأساسي: استرجاع بكود التطبيق أو الاسترجاع</a>
+    <a href="/ar">الرجوع للموقع</a>
+  </form>
+</body>
+</html>

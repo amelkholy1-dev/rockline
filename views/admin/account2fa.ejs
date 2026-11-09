@@ -1,0 +1,36 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">التحقق الثنائي</h1><p class="sub">كود إضافي من موبايلك بعد كلمة المرور. بيحمي حسابك حتى لو كلمة المرور اتسربت.</p></div></div>
+<% if (codes) { %>
+<div class="card narrow">
+  <h2 class="h3"><%- icon('key') %> أكواد الطوارئ</h2>
+  <div class="flash warn"><%- icon('info') %> احفظها دلوقتي في مكان آمن — مش هتظهر تاني. كل كود بيتستخدم مرة واحدة لو ضاع موبايلك.</div>
+  <pre dir="ltr" style="background:#f1f4f9;padding:14px;border-radius:10px;text-align:center;line-height:1.9;margin:0"><%= codes.join('\n') %></pre>
+  <a class="btn navy" href="/admin/account">تمام، حفظتها</a>
+</div>
+<% } else if (!on) { %>
+<div class="card narrow">
+  <% if (required) { %><div class="flash warn"><%- icon('info') %> التحقق الثنائي إجباري على حسابك. فعّله عشان تكمل شغلك في اللوحة.</div><% } %>
+  <ol style="margin:0;padding-inline-start:20px;line-height:1.9"><li>ثبّت تطبيق مصادقة (Google Authenticator / Microsoft Authenticator / Authy).</li><li>ضيف حساب جديد بالمفتاح ده (مرتبط بالوقت):</li></ol>
+  <code dir="ltr" style="word-break:break-all;display:block;padding:10px;font-size:1.05rem;letter-spacing:1px"><%= secret %></code>
+  <a href="<%= uri %>">لو على الموبايل نفسه: افتحه في التطبيق</a>
+  <form class="form" method="post" action="/admin/account/2fa/on" autocomplete="off">
+    <label>اكتب الكود اللي ظهر في التطبيق<input name="code" dir="ltr" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label>
+    <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> تفعيل</button></div>
+  </form>
+</div>
+<% } else { %>
+<div class="card narrow">
+  <div class="flash"><%- icon('checkcircle') %> التحقق الثنائي متفعّل. أكواد الطوارئ المتبقية: <b><%= left %></b></div>
+  <form class="form" method="post" action="/admin/account/2fa/codes" data-confirm="هنطلّع أكواد طوارئ جديدة والقديمة هتتلغي. تكمل؟">
+    <label>كلمة المرور الحالية<input type="password" name="current" autocomplete="current-password" required></label>
+    <div class="form-foot"><button class="btn ghost" type="submit">أكواد طوارئ جديدة</button></div>
+  </form>
+  <% if (!required) { %>
+  <form class="form" method="post" action="/admin/account/2fa/off" data-confirm="تقفل التحقق الثنائي؟">
+    <label>كلمة المرور الحالية<input type="password" name="current" autocomplete="current-password" required></label>
+    <div class="form-foot"><button class="btn danger" type="submit">قفل التحقق الثنائي</button></div>
+  </form>
+  <% } else { %><small class="muted">إجباري على حسابك فمينفعش يتقفل.</small><% } %>
+</div>
+<% } %>
+<%- include('foot') %>

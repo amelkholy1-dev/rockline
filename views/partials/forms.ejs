@@ -1,0 +1,99 @@
+<%
+/* الفورمات الثلاثة: طلب عمالة، تسجيل عامل، استفسار.
+   كل فورم يتبعت بطريقتين: واتساب (رسالة جاهزة) أو إيميل (من السيرفر). */
+var tabsOn = typeof only === 'undefined' || !only;
+var active = (typeof tab !== 'undefined' && tab) || (typeof only !== 'undefined' && only) || 'company';
+var jobRef = (typeof job !== 'undefined' && job) ? (job.code ? job.code + ' - ' : '') + tr(job.title) + (tr(job.country) ? ' - ' + tr(job.country) : '') : '';
+var waMain = String(site.contact.whatsapp || '').replace(/[^0-9]/g, '');
+var waComp = String(site.contact.whatsappCompanies || site.contact.whatsapp || '').replace(/[^0-9]/g, '');
+function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function fld(o) {
+  var req = o.req ? ' required' : '';
+  var star = o.req ? ' <em aria-hidden="true">*</em>' : '';
+  var cls = 'fld' + (o.wide ? ' wide' : '');
+  var lab = '<span class="fl">' + o.label + star + '</span>';
+  var attrs = ' name="' + o.name + '" data-label="' + o.label + '"' + req + (o.value ? ' value="' + esc(o.value) + '"' : '') + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.list ? ' list="' + o.list + '"' : '') + (o.auto ? ' autocomplete="' + o.auto + '"' : '');
+  if (o.type === 'textarea') return '<label class="' + cls + '">' + lab + '<textarea rows="' + (o.rows || 3) + '"' + attrs + '></textarea></label>';
+  if (o.type === 'select') {
+    return '<label class="' + cls + '">' + lab + '<select' + attrs + '><option value="">' + t.f_choose + '</option>' + o.options.map(function(x){ return '<option>' + esc(x) + '</option>'; }).join('') + '<option>' + t.f_other + '</option></select></label>';
+  }
+  return '<label class="' + cls + '">' + lab + '<input type="' + (o.type || 'text') + '"' + attrs + (o.type === 'tel' ? ' dir="ltr" inputmode="tel"' : '') + (o.type === 'email' ? ' dir="ltr"' : '') + (o.type === 'number' ? ' min="1" inputmode="numeric"' : '') + '></label>';
+}
+function actions() {
+  // القنوات بتتحكم فيها من لوحة التحكم (ربط مسار): واتساب / إيميل. لو الاتنين مقفولين بيظهر زرار "إرسال" عادي.
+  var showWa = chans.whatsapp;
+  var emailBtn = chans.email && mailReady;
+  var plainBtn = !showWa && !emailBtn;
+  return '<label class="consent"><input type="checkbox" name="consent" required> <span>' + t.consent_pre + ' <a href="' + L('/privacy') + '" target="_blank" rel="noopener">' + t.privacy + '</a> ' + t.consent_post + '</span></label>' +
+    '<div class="factions">' +
+    (showWa ? '<button type="button" class="btn wa" data-ch="whatsapp">' + brand('whatsapp') + ' ' + t.send_wa + '</button>' : '') +
+    (showWa && emailBtn ? '<span class="or">' + t.or + '</span>' : '') +
+    (emailBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('mail') + ' ' + t.send_email + '</button>' : '') +
+    (plainBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('send') + ' ' + t.send_form + '</button>' : '') +
+    '</div><p class="fstatus" role="status" aria-live="polite"></p>';
+}
+function hidden(kind) {
+  return '<input type="hidden" name="kind" value="' + kind + '"><input type="hidden" name="channel" value="email">' +
+    '<label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>';
+}
+%>
+<div class="forms<%= tabsOn ? '' : ' single' %>" data-forms>
+  <% if (tabsOn) { %>
+  <div class="ftabs" role="tablist">
+    <button type="button" role="tab" data-tab="company" aria-selected="<%= active === 'company' %>"><%- icon('building') %> <%= t.f_company_tab %></button>
+    <button type="button" role="tab" data-tab="worker" aria-selected="<%= active === 'worker' %>"><%- icon('hardhat') %> <%= t.f_worker_tab %></button>
+    <button type="button" role="tab" data-tab="contact" aria-selected="<%= active === 'contact' %>"><%- icon('mail') %> <%= t.f_contact_tab %></button>
+  </div>
+  <% } %>
+
+  <% if (tabsOn || only === 'company') { %>
+  <form class="nform" data-kind="company" data-wa="<%= waComp %>" data-title="<%= t.wa_company %>" action="<%= L('/send') %>" method="post" enctype="multipart/form-data"<% if (active !== 'company') { %> hidden<% } %>>
+    <%- hidden('company') %>
+    <div class="fgrid">
+      <%- fld({ name: 'company', label: t.f_company, req: 1, auto: 'organization' }) %>
+      <%- fld({ name: 'country', label: t.f_country, list: 'dl-countries', auto: 'country-name' }) %>
+      <%- fld({ name: 'person', label: t.f_person, auto: 'name' }) %>
+      <%- fld({ name: 'phone', label: t.f_phone, req: 1, type: 'tel', ph: '+966 5x xxx xxxx', auto: 'tel' }) %>
+      <%- fld({ name: 'email', label: t.f_email, type: 'email', auto: 'email' }) %>
+      <%- fld({ name: 'count', label: t.f_count, type: 'number' }) %>
+      <%- fld({ name: 'trades', label: t.f_trades, req: 1, wide: 1, type: 'textarea', rows: 2, ph: lang === 'ar' ? 'مثال: 20 نجار مسلح، 10 حداد، 5 سواق نقل ثقيل' : 'e.g. 20 formwork carpenters, 10 steel fixers, 5 heavy drivers' }) %>
+      <%- fld({ name: 'notes', label: t.f_notes, wide: 1, type: 'textarea', rows: 2 }) %>
+    </div>
+    <%- actions() %>
+  </form>
+  <% } %>
+
+  <% if (tabsOn || only === 'worker') { %>
+  <form class="nform" data-kind="worker" data-wa="<%= waMain %>" data-title="<%= t.wa_worker %>" action="<%= L('/send') %>" method="post" enctype="multipart/form-data"<% if (active !== 'worker') { %> hidden<% } %>>
+    <%- hidden('worker') %>
+    <div class="fgrid">
+      <%- fld({ name: 'name', label: t.f_name, req: 1, auto: 'name' }) %>
+      <%- fld({ name: 'phone', label: t.f_phone, req: 1, type: 'tel', ph: '01xxxxxxxxx', auto: 'tel' }) %>
+      <%- fld({ name: 'profession', label: t.f_profession, req: 1, list: 'dl-professions' }) %>
+      <%- fld({ name: 'years', label: t.f_years, type: 'number' }) %>
+      <%- fld({ name: 'country', label: t.f_pref, type: 'select', options: countries }) %>
+      <%- fld({ name: 'job', label: t.f_job, value: jobRef }) %>
+      <%- fld({ name: 'notes', label: t.f_notes, wide: 1, type: 'textarea', rows: 2 }) %>
+      <label class="fld wide file"><span class="fl"><%= t.f_cv %></span>
+        <input type="file" name="cv" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp">
+        <small><%= t.f_cv_hint %></small></label>
+    </div>
+    <%- actions() %>
+  </form>
+  <% } %>
+
+  <% if (tabsOn || only === 'contact') { %>
+  <form class="nform" data-kind="contact" data-wa="<%= waMain %>" data-title="<%= t.wa_contact %>" action="<%= L('/send') %>" method="post" enctype="multipart/form-data"<% if (active !== 'contact') { %> hidden<% } %>>
+    <%- hidden('contact') %>
+    <div class="fgrid">
+      <%- fld({ name: 'name', label: t.f_name, req: 1, auto: 'name' }) %>
+      <%- fld({ name: 'phone', label: t.f_phone, req: 1, type: 'tel', auto: 'tel' }) %>
+      <%- fld({ name: 'email', label: t.f_email, type: 'email', wide: 1, auto: 'email' }) %>
+      <%- fld({ name: 'message', label: t.f_message, req: 1, wide: 1, type: 'textarea', rows: 4 }) %>
+    </div>
+    <%- actions() %>
+  </form>
+  <% } %>
+  <datalist id="dl-professions"><% professions.forEach(function(p){ %><option value="<%= p %>"><% }); %></datalist>
+  <datalist id="dl-countries"><% countries.forEach(function(p){ %><option value="<%= p %>"><% }); %></datalist>
+</div>

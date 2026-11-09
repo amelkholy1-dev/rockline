@@ -1,0 +1,17 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.contact_title, sub: t.contact_sub }) %>
+<section class="sec">
+  <div class="wrap contact-grid">
+    <%- include('partials/contactcards') %>
+    <div class="form-card reveal"><%- include('partials/forms', { tab: tab }) %></div>
+  </div>
+  <div class="wrap">
+    <a class="map-card reveal" href="<%= mapUrl %>" target="_blank" rel="noopener">
+      <span class="mc-ic"><%- icon('mapped') %></span>
+      <span><b><%= tr(site.contact.address) %></b><small><%= t.map %></small></span>
+      <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %>
+    </a>
+  </div>
+</section>
+<%- include('partials/footer') %>

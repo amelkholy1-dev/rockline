@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>نسيت كلمة المرور | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <form class="login" method="post" action="/admin/forgot">
+    <img src="<%= img('logo') %>" alt="">
+    <h1>نسيت كلمة المرور</h1>
+    <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+    <% if (sent) { %>
+      <div class="flash">لو الإيميل ده مسجل لموظف في لوحة التحكم، هيوصله لينك تغيير كلمة المرور خلال دقايق. بص في الـ Spam كمان. اللينك شغال ساعة واحدة.</div>
+    <% } else if (!mailReady) { %>
+      <div class="flash warn">كلّم مدير النظام يعمللك كلمة مرور جديدة من <b>الإعدادات ← المستخدمين ← إعادة تعيين كلمة المرور</b>، ويديهالك وتغيّرها أول ما تدخل.</div>
+    <% } else { %>
+      <p>اكتب الإيميل المسجل بيه في لوحة التحكم، وهنبعتلك لينك تختار منه كلمة مرور جديدة.</p>
+      <label>الإيميل<input type="email" name="email" dir="ltr" autocomplete="email" required autofocus></label>
+      <button class="btn navy wide" type="submit">ابعت اللينك</button>
+    <% } %>
+    <a href="/admin/owner-reset">أنا المدير الأساسي — استرجاع حسابي</a>
+    <a href="/admin/login">الرجوع لتسجيل الدخول</a>
+  </form>
+</body>
+</html>

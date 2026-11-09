@@ -1,0 +1,235 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">صفحات الروابط (الباركود)</h1><p class="sub">تقدر تعمل أكتر من صفحة، كل واحدة بلينك ثابت خاص بيها تعمل منه باركود. عدّل من الشمال وشوف المعاينة على اليمين.</p></div></div>
+
+<div class="card pages-bar">
+  <div class="pages-tabs">
+    <% pages.forEach(function(p){ %>
+      <a class="ptab <%= p.slug===slug ? 'on' : '' %>" href="<%= p.slug==='social' ? '/admin/social' : '/admin/social/page/'+p.slug %>">
+        <b>/<%= p.slug %></b><span><%= p.title || (p.slug==='social' ? 'الصفحة الأساسية' : '—') %> · <%= p.count %> رابط</span><% if (p.locked) { %><i class="lk" title="الأساسية — متتمسحش"><%- icon('shield') %></i><% } %>
+      </a>
+    <% }); %>
+  </div>
+  <form class="addpage" method="post" action="/admin/social/new">
+    <span class="pfx" dir="ltr"><%= (publicUrl||'').replace(/\/[^\/]*$/,'') %>/</span>
+    <input name="slug" maxlength="40" dir="ltr" placeholder="jobs" pattern="[a-z0-9-]+" title="إنجليزي صغير وأرقام وشرطة بس" required>
+    <button class="btn navy" type="submit"><%- icon('plus') %> صفحة جديدة</button>
+  </form>
+  <p class="muted" style="margin:6px 0 0">الكلمة إنجليزي صغير/أرقام/شرطة بس (زي <b dir="ltr">jobs</b>). اللينك بيبقى ثابت عشان الباركود المطبوع يفضل شغال.</p>
+</div>
+
+<div class="social-admin">
+ <div class="editor">
+  <div class="card" id="link-card">
+    <h2 class="h3"><%- icon('link') %> لينك الصفحة <b dir="ltr" style="color:var(--navy)">/<%= slug %></b></h2>
+    <p>ده اللينك اللي تعمل منه الباركود — افتح أي موقع باركود مجاني والصق اللينك:</p>
+    <div class="linkrow">
+      <input id="pub-url" class="urlbox" dir="ltr" readonly value="<%= publicUrl %>">
+      <button class="btn navy" type="button" id="copy-url"><%- icon('copy') %> انسخ</button>
+      <a class="btn ghost" href="/<%= slug %>" target="_blank"><%- icon('eye') %> افتح</a>
+    </div>
+    <% if (slug !== 'social') { %>
+      <div class="del-page"><%- icon('info') %>
+        <span>الصفحة دي لينكها ثابت. <b>لو مسحتها، أي باركود مطبوع عليها هيفتح صفحة مش موجودة (خطأ 404).</b></span>
+        <form method="post" action="/admin/social/page/<%= slug %>/delete" onsubmit="return (function(f){ var n=Math.floor(1000+Math.random()*9000); var a=prompt('مسح صفحة /<%= slug %> نهائي — أي باركود مطبوع على اللينك ده هيبطّل يشتغل ويفتح صفحة مش موجودة. مفيش رجوع.\n\nعشان تتأكد، اكتب الرقم ده: '+n); return a!==null && a.trim()===String(n); })(this)">
+          <button class="btn ghost danger" type="submit"><%- icon('trash') %> امسح الصفحة دي</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <form class="card" method="post" action="/admin/social/save" enctype="multipart/form-data" id="social-form">
+    <h2 class="h3"><%- icon('edit') %> شكل الصفحة</h2>
+    <div class="grid2">
+      <label>العنوان (فوق)<input name="title" id="f-title" maxlength="80" value="<%= cfg.title || '' %>" placeholder="اسم الشركة"></label>
+      <label>السطر التحتي<input name="tagline" id="f-tag" maxlength="160" value="<%= cfg.tagline || '' %>" placeholder="حج • عمرة • تأشيرات • وظائف بالخارج"></label>
+    </div>
+    <label>الثيم (اللون)</label>
+    <div class="themes">
+      <% THEME_LIST.forEach(function(th){ %>
+        <label class="theme-opt th-<%= th %>"><input type="radio" name="theme" value="<%= th %>" <%= (cfg.theme||'green')===th ? 'checked' : '' %>><span><%= THEMES[th] ? THEMES[th].name : th %></span></label>
+      <% }); %>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div><label>شكل الأزرار</label><div class="segs">
+        <% Object.keys(BTN_STYLES).forEach(function(k){ %><label class="seg"><input type="radio" name="btn" value="<%= k %>" <%= (cfg.btn||'card')===k?'checked':'' %>><span><%= BTN_STYLES[k] %></span></label><% }); %>
+      </div></div>
+      <div><label>أيقونات السوشيال</label><div class="segs">
+        <% Object.keys(ICON_STYLES).forEach(function(k){ %><label class="seg"><input type="radio" name="icons" value="<%= k %>" <%= (cfg.icons||'brand')===k?'checked':'' %>><span><%= ICON_STYLES[k] %></span></label><% }); %>
+      </div></div>
+    </div>
+    <label style="margin-top:12px">الصورة/اللوجو فوق (اختياري — الافتراضي لوجو الموقع)</label>
+    <div class="avarow">
+      <% if (cfg.avatar) { %><img class="avaprev" src="<%= cfg.avatar %>" alt=""><label class="chk"><input type="checkbox" name="avatar_remove" value="1"> شيل الصورة</label><% } %>
+      <input type="file" name="avatar" accept="image/*">
+    </div>
+
+    <h2 class="h3" style="margin-top:22px"><%- icon('link') %> الأزرار والروابط</h2>
+    <p class="muted">اضغط «زر جديد»، اختار النوع، واكتب الرقم أو اللينك.</p>
+    <div id="rows"></div>
+    <button type="button" class="btn ghost" id="add-row"><%- icon('plus') %> زر جديد</button>
+    <input type="hidden" name="items" id="items-json"><input type="hidden" name="page" value="<%= slug %>">
+    <div class="form-foot" style="margin-top:16px"><button class="btn navy" type="submit"><%- icon('check') %> حفظ الصفحة</button></div>
+  </form>
+
+  <div class="card">
+    <h2 class="h3"><%- icon('users') %> المسؤولين (للتواصل المباشر)</h2>
+    <p class="muted">كل شخص بصورته واسمه ووظيفته (مثلاً: أحمد — مدير قسم الجوازات)، وأزرار اتصال وواتساب.</p>
+    <% people.forEach(function(p, i){ %>
+      <div class="person-row" data-photo="<%= p.photo || '' %>">
+        <div class="pr-head">
+          <% if (p.photo) { %><img class="pr-pic" src="<%= p.photo %>" alt=""><% } else { %><span class="pr-pic ph"><%= (p.name||'؟').charAt(0) %></span><% } %>
+          <div class="pr-info"><b><%= p.name %></b><small><%= p.role || '' %><%= p.phone ? ' • ' + p.phone : '' %></small></div>
+          <div class="pr-ord">
+            <form method="post" action="/admin/social/person/<%= p.id %>/move" style="display:inline"><input type="hidden" name="dir" value="up"><input type="hidden" name="page" value="<%= slug %>"><button class="btn ghost sm" <%= i===0?'disabled':'' %> title="فوق"><%- icon('up') %></button></form>
+            <form method="post" action="/admin/social/person/<%= p.id %>/move" style="display:inline"><input type="hidden" name="dir" value="down"><input type="hidden" name="page" value="<%= slug %>"><button class="btn ghost sm" <%= i===people.length-1?'disabled':'' %> title="تحت"><%- icon('chevdown') %></button></form>
+            <button class="btn ghost sm" type="button" onclick="document.getElementById('pf-<%= p.id %>').hidden=!document.getElementById('pf-<%= p.id %>').hidden"><%- icon('edit') %> تعديل</button>
+          </div>
+        </div>
+        <form id="pf-<%= p.id %>" class="pr-form" method="post" action="/admin/social/person/save" enctype="multipart/form-data" hidden>
+          <input type="hidden" name="id" value="<%= p.id %>"><input type="hidden" name="page" value="<%= slug %>">
+          <div class="grid2">
+            <label>الاسم<input name="name" class="p-name" maxlength="80" value="<%= p.name %>" required></label>
+            <label>الوظيفة<input name="role" class="p-role" maxlength="80" value="<%= p.role || '' %>" placeholder="مدير قسم الجوازات"></label>
+            <label>رقم الاتصال<input name="phone" class="p-phone" dir="ltr" maxlength="40" value="<%= p.phone || '' %>"></label>
+            <label>واتساب<input name="whatsapp" class="p-wa" dir="ltr" maxlength="40" value="<%= p.whatsapp || '' %>"></label>
+          </div>
+          <label>الصورة الشخصية<input type="file" name="photo" accept="image/*"></label>
+          <% if (p.photo) { %><label class="chk"><input type="checkbox" name="photo_remove" value="1"> شيل الصورة</label><% } %>
+          <label class="chk"><input type="checkbox" name="enabled" class="p-on" <%= p.enabled!==false?'checked':'' %>> ظاهر في الصفحة</label>
+          <div class="form-foot">
+            <button class="btn navy" type="submit"><%- icon('check') %> حفظ</button>
+            <button class="btn ghost danger" type="submit" formaction="/admin/social/person/<%= p.id %>/delete" onclick="return confirm('تمسح <%= (p.name||'').replace(/'/g,'') %>؟')"><%- icon('trash') %> حذف</button>
+          </div>
+        </form>
+      </div>
+    <% }); %>
+    <details class="addp"><summary class="btn ghost"><%- icon('plus') %> أضف مسؤول</summary>
+      <form class="pr-form" method="post" action="/admin/social/person/save" enctype="multipart/form-data" style="margin-top:12px">
+        <div class="grid2">
+          <label>الاسم<input name="name" maxlength="80" required></label>
+          <label>الوظيفة<input name="role" maxlength="80" placeholder="مدير قسم التأشيرات"></label>
+          <label>رقم الاتصال<input name="phone" dir="ltr" maxlength="40"></label>
+          <label>واتساب<input name="whatsapp" dir="ltr" maxlength="40"></label>
+        </div>
+        <label>الصورة الشخصية<input type="file" name="photo" accept="image/*"></label>
+        <input type="hidden" name="enabled" value="on"><input type="hidden" name="page" value="<%= slug %>">
+        <div class="form-foot"><button class="btn navy" type="submit"><%- icon('plus') %> إضافة</button></div>
+      </form>
+    </details>
+  </div>
+ </div>
+
+ <div class="preview">
+  <div class="phone"><div class="notch"></div><iframe id="pv" src="/<%= slug %>" title="معاينة"></iframe></div>
+  <p class="muted" style="text-align:center;font-size:12.5px">معاينة لحظية. الصور الجديدة بتبان بعد «حفظ».</p>
+ </div>
+</div>
+
+<style>
+.social-admin{display:flex;gap:22px;align-items:flex-start}
+.editor{flex:1;min-width:0}
+.preview{width:340px;flex:none;position:sticky;top:16px}
+.phone{width:320px;height:650px;margin:0 auto;border-radius:38px;background:#0a1830;padding:12px;box-shadow:0 24px 60px -24px rgba(20,40,28,.5);border:1px solid #e2e8e4;position:relative}
+.phone .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:22px;background:#0a0a0d;border-radius:0 0 14px 14px;z-index:2}
+.phone iframe{width:100%;height:100%;border:0;border-radius:28px;background:#0a1830;display:block}
+.linkrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.urlbox{flex:1;min-width:180px;border:1px solid var(--line-2,#dbe7e0);border-radius:10px;padding:10px 12px;background:#f7faf8;font-weight:700}
+.themes{display:flex;gap:9px;flex-wrap:wrap;margin:6px 0 4px}
+.theme-opt{display:flex;align-items:center;gap:7px;border:2px solid #e2e8e4;border-radius:12px;padding:8px 13px;cursor:pointer}
+.theme-opt input{accent-color:#0a6b47}
+.theme-opt.th-green{background:linear-gradient(135deg,#0a6b47,#073)}.theme-opt.th-dark{background:linear-gradient(135deg,#232329,#0a0a0d)}
+.theme-opt.th-gold{background:linear-gradient(135deg,#2c2109,#120c02)}.theme-opt.th-sky{background:linear-gradient(135deg,#3a7fe6,#143a7a)}
+.theme-opt.th-midnight{background:linear-gradient(135deg,#1b386b,#0a1830)}.theme-opt.th-purple{background:linear-gradient(135deg,#6d33a0,#2b1448)}
+.theme-opt.th-royal{background:linear-gradient(135deg,#1e40af,#0f1f52)}.theme-opt.th-emerald{background:linear-gradient(135deg,#065f46,#02231a)}
+.theme-opt.th-sunset{background:linear-gradient(135deg,#ef6a44,#7e2459)}.theme-opt.th-ocean{background:linear-gradient(135deg,#0c6176,#06303a)}
+.theme-opt.th-rose{background:linear-gradient(135deg,#e8437f,#7a1e52)}.theme-opt.th-light{background:linear-gradient(135deg,#f2f6f4,#dce8e2)}
+.theme-opt.th-light span{color:#13241d}
+.theme-opt span{color:#fff;font-weight:700;font-size:13px}
+.segs{display:flex;gap:8px;margin-top:6px}
+.seg{display:flex;align-items:center;gap:6px;border:2px solid #e2e8e4;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:14px}
+.seg input{accent-color:#0a6b47}
+.avarow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.avaprev{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.chk{display:flex!important;flex-direction:row!important;align-items:center;gap:7px;font-weight:600}
+#rows{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.srow{display:grid;grid-template-columns:140px 1fr 1fr auto;gap:8px;align-items:center;background:#f7faf8;border:1px solid #e2e8e4;border-radius:12px;padding:10px}
+.srow select,.srow input[type=text]{height:42px;border:1px solid #dbe7e0;border-radius:9px;padding:0 10px;background:#fff;width:100%}
+.srow .rh{display:flex;gap:4px;align-items:center}
+.srow .rh button{width:34px;height:34px;border-radius:8px;border:1px solid #dbe7e0;background:#fff;cursor:pointer;display:grid;place-items:center}
+.srow .rh .del{color:#b42318;border-color:#f3c9c4}
+.srow .on{display:flex;align-items:center;gap:5px;font-size:13px;white-space:nowrap}
+.rimg{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:#64756b;border-top:1px dashed #e2e8e4;padding-top:9px;margin-top:2px}
+.rimg .r-thumb{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid #dbe7e0}
+.rimg .ico-def{color:#8a97a5}.rimg .pick{cursor:pointer;margin:0}
+.rimg .rmimg{display:flex;align-items:center;gap:5px;color:#b42318}
+.person-row{border:1px solid #e2e8e4;border-radius:14px;padding:12px;margin-bottom:10px}
+.pr-head{display:flex;align-items:center;gap:12px}
+.pr-pic{width:46px;height:46px;border-radius:50%;object-fit:cover;flex:none;background:#e3f3ea;display:grid;place-items:center;font-weight:800;color:#0a6b47}
+.pr-info{flex:1;min-width:0}.pr-info b{display:block}.pr-info small{color:#64756b}
+.pr-ord{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.pr-form{margin-top:12px;border-top:1px dashed #e2e8e4;padding-top:12px}
+@media(max-width:1040px){.social-admin{flex-direction:column}.preview{width:100%;position:static;order:-1}.phone{margin-bottom:8px}}
+@media(max-width:640px){.srow{grid-template-columns:1fr 1fr}.srow select{grid-column:1/-1}.srow .rh{grid-column:1/-1;justify-content:flex-end}}
+.pages-bar{margin-bottom:16px}
+.pages-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ptab{display:flex;flex-direction:column;gap:1px;border:2px solid #e2e8e4;border-radius:12px;padding:8px 14px;text-decoration:none;color:var(--navy,#0c2146);min-width:120px;position:relative}
+.ptab.on{border-color:var(--navy,#0c2146);background:#f2f7ff}
+.ptab b{font-size:15px;direction:ltr;text-align:right}.ptab span{font-size:12px;color:#64756b}
+.ptab .lk{position:absolute;top:6px;left:8px;color:#9aa6b2;width:15px;height:15px}.ptab .lk svg{width:15px;height:15px}
+.addpage{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.addpage .pfx{color:#8a97a5;font-size:13px;direction:ltr}
+.addpage input{height:40px;border:1px solid #dbe7e0;border-radius:9px;padding:0 12px;direction:ltr;width:160px}
+.del-page{margin-top:12px;border-top:1px dashed #f0cfca;padding-top:12px;display:flex;flex-direction:column;gap:8px;color:#9a3a2e;font-size:13.5px}
+.del-page .danger{align-self:flex-start}
+</style>
+<script>
+(function(){
+  var TYPES = <%- JSON.stringify(Object.fromEntries(TYPE_LIST.map(function(k){ return [k, TYPES[k].label]; }))) %>;
+  var HINT = { whatsapp:'رقم الموبايل (01…)', wagroup:'لينك دعوة الجروب (chat.whatsapp.com/…)', wachannel:'لينك القناة (whatsapp.com/channel/…)', phone:'رقم الموبايل (01…)', email:'الإيميل', site:'سيب فاضي = الرئيسية', apply:'سيب فاضي = صفحة التقديم', map:'لينك الموقع على جوجل مابس', facebook:'لينك الصفحة (facebook.com/…)', messenger:'لينك ماسنجر (m.me/…)', instagram:'لينك الحساب (instagram.com/…)', tiktok:'لينك الحساب (tiktok.com/@…)', youtube:'لينك القناة (youtube.com/@…)', telegram:'لينك القناة أو الحساب (t.me/…)', twitter:'لينك الحساب (x.com/…)', linkedin:'لينك الصفحة (linkedin.com/…)' };
+  var initial = <%- JSON.stringify((cfg.items||[]).map(function(it){ return { id: it.id||'', type: it.type, label: it.label||'', value: it.value||'', enabled: it.enabled!==false, img: it.img||'' }; })) %>;
+  var AVATAR = <%- JSON.stringify(cfg.avatar||'') %>;
+  var rows = document.getElementById('rows'), pv = document.getElementById('pv'), ready=false;
+  function mkRow(d){ d = d || { type:'whatsapp', label:'', value:'', enabled:true, img:'' };
+    var div = document.createElement('div'); div.className='srow';
+    var opts = Object.keys(TYPES).map(function(k){ return '<option value="'+k+'"'+(k===d.type?' selected':'')+'>'+TYPES[k]+'</option>'; }).join('');
+    div.innerHTML = '<select class="r-type">'+opts+'</select><input type="text" class="r-value"><input type="text" class="r-label" maxlength="80" placeholder="اسم الزر (اختياري)">'
+      + '<div class="rh"><label class="on"><input type="checkbox" class="r-on"'+(d.enabled!==false?' checked':'')+'> ظاهر</label>'
+      + '<button type="button" class="up" title="فوق">▲</button><button type="button" class="down" title="تحت">▼</button><button type="button" class="del" title="حذف">✕</button></div>'
+      + '<div class="rimg"><img class="r-thumb"'+(d.img?'':' hidden')+' src="'+(d.img||'')+'" alt=""><span class="ico-def">أيقونة تلقائية</span>'
+      + '<label class="btn ghost sm pick"><input type="file" class="r-img" accept="image/*" hidden> صورة مخصصة للأيقونة</label>'
+      + '<label class="rmimg on"'+(d.img?'':' hidden')+'><input type="checkbox" class="r-imgrm"> شيل الصورة</label></div>';
+    rows.appendChild(div);
+    div.querySelector('.r-value').value = d.value || ''; div.querySelector('.r-label').value = d.label || ''; div.dataset.id = d.id || ''; div.dataset.img = d.img || '';
+    function hint(){ var t=div.querySelector('.r-type').value; div.querySelector('.r-value').placeholder = HINT[t] || 'اللينك كامل (https://…)'; }
+    hint(); div.querySelector('.r-type').addEventListener('change', function(){ hint(); update(); });
+    div.querySelector('.del').onclick=function(){ div.remove(); update(); };
+    div.querySelector('.up').onclick=function(){ if(div.previousElementSibling) rows.insertBefore(div, div.previousElementSibling); update(); };
+    div.querySelector('.down').onclick=function(){ if(div.nextElementSibling) rows.insertBefore(div.nextElementSibling, div); update(); };
+    var fi=div.querySelector('.r-img'), th=div.querySelector('.r-thumb'), rm=div.querySelector('.rmimg');
+    fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ div._imgdata=r.result; th.src=r.result; th.hidden=false; rm.hidden=false; div.querySelector('.r-imgrm').checked=false; update(); }; r.readAsDataURL(f); });
+    div.querySelector('.r-imgrm').addEventListener('change', function(e){ if(e.target.checked){ div._imgdata=''; div.dataset.img=''; th.hidden=true; fi.value=''; } update(); });
+  }
+  (initial.length ? initial : []).forEach(mkRow);
+  if(!initial.length) mkRow();
+  document.getElementById('add-row').onclick=function(){ mkRow(); update(); };
+
+  function collectItems(preview){ var out=[]; rows.querySelectorAll('.srow').forEach(function(div){
+    var rm=div.querySelector('.r-imgrm').checked;
+    var img = preview ? (rm?'':(div._imgdata||div.dataset.img||'')) : (rm?'':(div.dataset.img||''));
+    out.push({ id:div.dataset.id||'', type:div.querySelector('.r-type').value, value:div.querySelector('.r-value').value.trim(), label:div.querySelector('.r-label').value.trim(), enabled:div.querySelector('.r-on').checked, img:img, imgrm:rm }); }); return out; }
+  function collectPeople(){ var out=[]; document.querySelectorAll('.person-row').forEach(function(r){ var f=r.querySelector('.pr-form');
+    out.push({ name:(f.querySelector('.p-name')||{}).value||'', role:(f.querySelector('.p-role')||{}).value||'', phone:(f.querySelector('.p-phone')||{}).value||'', whatsapp:(f.querySelector('.p-wa')||{}).value||'', photo:r.dataset.photo||'', enabled:(f.querySelector('.p-on')||{checked:true}).checked }); }); return out; }
+  function draft(){ return { title:document.getElementById('f-title').value, tagline:document.getElementById('f-tag').value,
+    theme:(document.querySelector('input[name=theme]:checked')||{}).value||'midnight', btn:(document.querySelector('input[name=btn]:checked')||{}).value||'card',
+    icons:(document.querySelector('input[name=icons]:checked')||{}).value||'brand', avatar:AVATAR, items:collectItems(true), people:collectPeople() }; }
+  var tmr; function update(){ if(!ready) return; clearTimeout(tmr); tmr=setTimeout(function(){ try{ pv.contentWindow.postMessage({ social: draft() }, location.origin); }catch(e){} }, 120); }
+  pv.addEventListener('load', function(){ ready=true; update(); });
+  document.querySelector('.social-admin').addEventListener('input', update);
+  document.querySelector('.social-admin').addEventListener('change', update);
+
+  document.getElementById('social-form').addEventListener('submit', function(){
+    rows.querySelectorAll('.srow').forEach(function(div,i){ var fi=div.querySelector('.r-img'); if(fi.files&&fi.files[0]) fi.name='itemimg_'+i; else fi.removeAttribute('name'); });
+    document.getElementById('items-json').value = JSON.stringify(collectItems(false)); });
+  var cp=document.getElementById('copy-url'); if(cp) cp.onclick=function(){ var i=document.getElementById('pub-url'); i.select(); try{ navigator.clipboard.writeText(i.value); }catch(e){ document.execCommand('copy'); } cp.textContent='اتنسخ ✓'; setTimeout(function(){ cp.innerHTML='انسخ'; },1500); };
+})();
+</script>
+<%- include('foot') %>

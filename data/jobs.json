@@ -1,0 +1,61 @@
+[
+ {
+  "id": "mukb885p94jia",
+  "code": "NK-002",
+  "title": {
+   "ar": "مهندس مدني",
+   "en": ""
+  },
+  "country": {
+   "ar": "",
+   "en": ""
+  },
+  "sector": {
+   "ar": "المقاولات والإنشاءات",
+   "en": ""
+  },
+  "count": "5",
+  "salary": {
+   "ar": "2000",
+   "en": ""
+  },
+  "details": {
+   "ar": "",
+   "en": ""
+  },
+  "approval": "",
+  "image": "/uploads/mukb885f-4rfd.jpeg",
+  "active": true,
+  "at": "2026-09-27T21:07:43.309Z",
+  "updated": "2026-09-27T21:07:43.309Z"
+ },
+ {
+  "id": "muk94pqbb2xe8",
+  "code": "NK-001",
+  "title": {
+   "ar": "اختبارات سائقين",
+   "en": "ؤر"
+  },
+  "country": {
+   "ar": "",
+   "en": ""
+  },
+  "sector": {
+   "ar": "القطاع الهندسي والفني",
+   "en": ""
+  },
+  "count": "",
+  "salary": {
+   "ar": "2000",
+   "en": ""
+  },
+  "details": {
+   "ar": "",
+   "en": ""
+  },
+  "approval": "",
+  "active": true,
+  "at": "2026-09-27T20:09:00.227Z",
+  "updated": "2026-09-27T20:09:00.227Z"
+ }
+]

@@ -1,0 +1,18 @@
+<article class="jcard reveal<%= j.image ? ' has-img' : '' %>">
+  <% if (j.image) { %><a class="jc-img" href="<%= L('/jobs/' + j.id) %>" tabindex="-1" aria-hidden="true"><img src="<%= j.image %>" alt="" loading="lazy"></a><% } %>
+  <div class="jc-top">
+    <span class="jc-ic"><%- icon('briefcase') %></span>
+    <% if (j.code) { %><span class="jc-code" dir="ltr"><%= j.code %></span><% } %>
+  </div>
+  <h3><a href="<%= L('/jobs/' + j.id) %>"><%= tr(j.title) %></a></h3>
+  <ul class="jc-meta">
+    <% if (tr(j.country)) { %><li><%- icon('map') %><%= tr(j.country) %></li><% } %>
+    <% if (tr(j.sector)) { %><li><%- icon('layers') %><%= tr(j.sector) %></li><% } %>
+    <% if (j.count) { %><li><%- icon('users') %><%= t.count %>: <%= j.count %></li><% } %>
+    <% if (tr(j.salary)) { %><li><%- icon('chart') %><%= tr(j.salary) %></li><% } %>
+  </ul>
+  <div class="jc-act">
+    <a class="btn navy sm" href="<%= L('/apply?job=' + j.id) %>"><%= t.apply %></a>
+    <a class="btn wa sm ghostwa" href="<%= wa((lang === 'ar' ? 'عايز أقدّم على وظيفة ' : 'I would like to apply for ') + (j.code ? j.code + ' - ' : '') + tr(j.title) + (tr(j.country) ? ' - ' + tr(j.country) : '')) %>" target="_blank" rel="noopener" aria-label="<%= t.apply_wa %>"><%- brand('whatsapp') %></a>
+  </div>
+</article>

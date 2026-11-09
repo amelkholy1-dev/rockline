@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.privacy, sub: updated ? t.updated_on + ': ' + updated : '' }) %>
+<section class="sec">
+  <div class="wrap narrow prose-page">
+    <% blocks.forEach(function(b){ %>
+      <% if (b.h) { %><h2><%= b.h %></h2>
+      <% } else if (b.ul) { %><ul><% b.ul.forEach(function(li){ %><li><%= li %></li><% }); %></ul>
+      <% } else { %><p><%= b.p %></p><% } %>
+    <% }); %>
+  </div>
+</section>
+<%- include('partials/footer') %>

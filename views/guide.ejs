@@ -1,0 +1,42 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.guide, sub: t.guide_sub }) %>
+
+<section class="sec">
+  <div class="wrap guide-grid">
+    <article class="bcard reveal"><header><span class="b-ic"><%- icon('folder') %></span><h2><%= t.docs %></h2></header>
+      <ul class="checks"><% (site.docs || []).forEach(function(d){ %><li><%- icon('checkcircle') %><%= tr(d.text) %></li><% }); %></ul></article>
+    <article class="bcard reveal"><header><span class="b-ic"><%- icon('lightbulb') %></span><h2><%= t.tips %></h2></header>
+      <ul class="checks tips"><% (site.tips || []).forEach(function(d){ %><li><%- icon('info') %><%= tr(d.text) %></li><% }); %></ul></article>
+  </div>
+</section>
+
+<% if ((site.faq || []).length) { %>
+<section class="sec sky">
+  <div class="wrap narrow">
+    <div class="shead reveal"><h2><%= t.faq %></h2><span class="rule"></span></div>
+    <div class="faq">
+      <% site.faq.forEach(function(f, i){ %><details class="reveal"<%= i === 0 ? ' open' : '' %>><summary><%= tr(f.q) %><%- icon('chevdown') %></summary><p><%= tr(f.a) %></p></details><% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if ((site.links || []).length) { %>
+<section class="sec">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.links %></h2><span class="rule"></span></div>
+    <div class="links-grid">
+      <% site.links.forEach(function(l){ %><a class="lnk reveal" href="<%= safeUrl(l.url) %>" target="_blank" rel="noopener"><span><%- icon('link') %></span><b><%= tr(l.title) %></b><small dir="ltr"><%= String(l.url).replace(/^https?:\/\//, '').replace(/\/$/, '') %></small></a><% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="sec sky">
+  <div class="wrap duo-grid one">
+    <div class="duo-card wk reveal"><span class="duo-ic"><%- icon('hardhat') %></span><h2><%= t.apply_title %></h2><p><%= t.apply_sub %></p>
+      <div class="duo-act"><a class="btn navy" href="<%= L('/apply') %>"><%= t.cta_register %></a><a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.nav_jobs %></a></div></div>
+  </div>
+</section>
+<%- include('partials/footer') %>

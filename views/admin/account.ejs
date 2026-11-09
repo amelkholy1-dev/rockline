@@ -1,0 +1,21 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">حسابي</h1><p class="sub">بياناتك في لوحة التحكم. الإيميل مهم عشان لو نسيت كلمة المرور يوصلك لينك ترجعها بيه.</p></div></div>
+<form class="card form narrow" method="post" action="/admin/account">
+  <label>الاسم<input name="name" value="<%= me.name || '' %>"></label>
+  <label>اسم المستخدم<input name="user" dir="ltr" value="<%= me.user %>" autocomplete="username" required></label>
+  <label>الإيميل<input type="email" name="email" dir="ltr" value="<%= me.email || '' %>" autocomplete="email" placeholder="name@nisrelkhaleeg.com"><small>تقدر تدخل بيه بدل اسم المستخدم، وعليه بيوصل لينك استرجاع كلمة المرور.</small></label>
+  <% if (can('inbox')) { %><label class="check"><input type="checkbox" name="notify"<%= me.notify ? ' checked' : '' %>> يوصلني إيميل بكل رسالة جديدة من الموقع</label><% } %>
+  <hr>
+  <label>كلمة مرور جديدة (سيبها فاضية لو مش عايز تغيّرها)<input type="password" name="pass" autocomplete="new-password" minlength="6"><small>6 خانات على الأقل: حرف إنجليزي كبير وصغير ورقم ورمز. تغييرها بيفصل أي جهاز تاني.</small></label>
+  <label>اكتبها تاني<input type="password" name="pass2" autocomplete="new-password" minlength="6"></label>
+  <hr>
+  <label>كلمة المرور الحالية (مطلوبة عشان تحفظ أي تعديل)<input type="password" name="current" autocomplete="current-password" required></label>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button></div>
+</form>
+<div class="card narrow" style="margin-top:18px">
+  <h2 class="h3"><%- icon('key') %> الأمان</h2>
+  <p class="muted">التحقق الثنائي: <b><%= me.totp && me.totp.on ? 'متفعّل' : 'مش متفعّل' %></b></p>
+  <div class="form-foot"><a class="btn navy" href="/admin/account/2fa">التحقق الثنائي وأكواد الطوارئ</a>
+  <form method="post" action="/admin/account/logout-all" data-confirm="نفصل كل الأجهزة التانية المسجل دخول منها؟"><button class="btn ghost" type="submit">اخرج من كل الأجهزة التانية</button></form></div>
+</div>
+<%- include('foot') %>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="<%= lang %>" dir="<%= dir %>">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<% var fullTitle = (title ? title + ' | ' : '') + tr(site.brand.name); var metaDesc = desc || tr(site.hero && site.hero.sub) || tr(site.about.p1); %>
+<title><%= fullTitle %></title>
+<meta name="description" content="<%= metaDesc.slice(0,160) %>">
+<meta name="theme-color" content="#0c2146">
+<link rel="canonical" href="<%= baseUrl %>/<%= lang %><%= pathNoLang %>">
+<link rel="alternate" hreflang="ar" href="<%= baseUrl %>/ar<%= pathNoLang %>">
+<link rel="alternate" hreflang="en" href="<%= baseUrl %>/en<%= pathNoLang %>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="<%= tr(site.brand.short) %>">
+<meta property="og:title" content="<%= fullTitle %>">
+<meta property="og:description" content="<%= metaDesc.slice(0,160) %>">
+<meta property="og:image" content="<%= baseUrl %><%= typeof ogImage !== 'undefined' && ogImage ? ogImage : img('og') %>">
+<meta property="og:locale" content="<%= lang === 'ar' ? 'ar_EG' : 'en_US' %>">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="/css/style.css?v=8">
+<style>:root{--banner:url("<%= img('banner') %>")}</style>
+<script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'EmploymentAgency',
+  name: tr(site.brand.name), url: baseUrl, logo: baseUrl + img('logo'),
+  telephone: (site.contact.phonesEG || [])[0] || '', email: site.contact.email || '',
+  address: { '@type': 'PostalAddress', streetAddress: tr(site.contact.address), addressCountry: 'EG' },
+  sameAs: socials.map(function(s){ return s.url; })
+}).replace(/</g,'\\u003c') %></script>
+</head>
+<body class="p-<%= page || 'x' %>">
+<a class="skip" href="#main"><%= lang === 'ar' ? 'تخطي للمحتوى' : 'Skip to content' %></a>

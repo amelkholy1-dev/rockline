@@ -1,0 +1,30 @@
+<%- include('nav') %>
+<% var u = item || {}; var perms = u.perms || []; %>
+<div class="pthead"><div><h1 class="pt"><%= item ? 'تعديل مستخدم' : 'مستخدم جديد' %></h1></div><a class="btn ghost" href="/admin/users"><%- icon('arrowr') %> رجوع</a></div>
+<form class="card form" method="post" action="/admin/users/save">
+  <input type="hidden" name="id" value="<%= u.id || '' %>">
+  <div class="grid2">
+    <label>الاسم<input name="name" value="<%= u.name || '' %>" placeholder="مثال: محمود المعراج"></label>
+    <label>الإيميل <em>*</em><input type="email" name="email" dir="ltr" value="<%= u.email || '' %>" required placeholder="name@nisrelkhaleeg.com"></label>
+    <label>اسم المستخدم <em>*</em><input name="user" dir="ltr" value="<%= u.user || '' %>" required placeholder="mahmoud"></label>
+    <label>كلمة المرور<input type="password" name="pass" dir="ltr" autocomplete="new-password" minlength="6" placeholder="<%= item ? 'سيبها فاضية لو مش عايز تغيّرها' : 'اختياري' %>">
+      <small><%= item ? '8 حروف على الأقل.' : (mailReady ? 'لو سبتها فاضية، هيوصله إيميل يختار منه كلمة المرور بنفسه.' : 'الإيميل مش متظبط، فاكتب كلمة مرور وقولهاله.') %></small></label>
+  </div>
+  <% if (u.owner) { %>
+    <p class="flash warn" style="margin-top:16px">ده حساب المدير الأساسي، وليه كل الصلاحيات دايماً.</p>
+  <% } else { %>
+  <h2 class="h3" style="margin-top:22px"><%- icon('shield') %> يقدر يفتح إيه</h2>
+  <div class="perm-grid">
+    <% PERMS.forEach(function(p){ if (p[0] === 'users' && !me.owner) return; %>
+      <label class="check perm"><input type="checkbox" name="perms" value="<%= p[0] %>"<%= perms.includes(p[0]) ? ' checked' : '' %>> <%= p[1] %></label>
+    <% }); %>
+  </div>
+  <p class="muted" style="margin:8px 0 0"><button type="button" class="btn xs ghost" data-check-all>اختار الكل</button> <button type="button" class="btn xs ghost" data-check-none>شيل الكل</button></p>
+  <% } %>
+  <div class="grid2" style="margin-top:18px">
+    <label class="check"><input type="checkbox" name="notify"<%= u.notify ? ' checked' : '' %>> يوصله إيميل بكل رسالة جديدة من الموقع</label>
+    <% if (!u.owner) { %><label class="check"><input type="checkbox" name="active"<%= !item || u.active !== false ? ' checked' : '' %>> الحساب نشط (يقدر يدخل)</label><% } else { %><input type="hidden" name="active" value="on"><% } %>
+  </div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button><a class="btn ghost" href="/admin/users">إلغاء</a></div>
+</form>
+<%- include('foot') %>

@@ -1,0 +1,54 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">الأمان والأجهزة</h1><p class="sub">إعدادات الحماية، موافقة الأجهزة الجديدة، والحسابات المقفولة.</p></div></div>
+<form class="card form narrow" method="post" action="/admin/security/settings">
+  <h2 class="h3"><%- icon('shield') %> إعدادات الحماية</h2>
+  <label class="check"><input type="checkbox" name="require2fa"<%= st.require2fa ? ' checked' : '' %><%= me.owner ? '' : ' disabled' %>> التحقق الثنائي إجباري على المدير وكل من معاه صلاحية (المستخدمين / الإيميل / مسار / فيسبوك)</label>
+  <label class="check"><input type="checkbox" name="deviceApproval"<%= st.deviceApproval ? ' checked' : '' %><%= me.owner ? '' : ' disabled' %>> أي جهاز جديد لموظف لازم المدير يوافق عليه قبل ما يدخل</label>
+  <% if (me.owner) { %><div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button></div><% } else { %><small class="muted">التعديل للمدير الأساسي بس.</small><% } %>
+</form>
+
+<div class="card">
+  <h2 class="h3"><%- icon('lock') %> الأجهزة</h2>
+  <% if (!devices.length) { %><p class="muted">مفيش أجهزة متسجلة لسه.</p><% } else { %>
+  <div class="table-wrap"><table class="tbl">
+    <thead><tr><th>المستخدم</th><th>الجهاز</th><th class="hide-sm">آخر ظهور</th><th>الحالة</th><th></th></tr></thead>
+    <tbody>
+    <% devices.forEach(function(d){ %>
+      <tr>
+        <td><b><%= uname(d.userId) %></b></td>
+        <td><%= d.label %><br><small class="muted" dir="ltr"><%= d.ip %></small></td>
+        <td class="hide-sm"><small><%= fmtTime(d.last || d.at) %></small></td>
+        <td><span class="pill <%= d.status === 'approved' ? 'on' : 'off' %>"><%= d.status === 'approved' ? 'موافَق عليه' : d.status === 'pending' ? 'مستني موافقتك' : 'محظور' %></span></td>
+        <td class="acts">
+          <% if (d.status !== 'approved') { %><form method="post" action="/admin/security/device/<%= d.id %>/approve"><button class="btn sm navy">موافقة</button></form><% } %>
+          <% if (d.status !== 'blocked') { %><form method="post" action="/admin/security/device/<%= d.id %>/block"><button class="btn sm danger">حظر</button></form><% } %>
+          <form method="post" action="/admin/security/device/<%= d.id %>/delete" data-confirm="تشيل الجهاز ده من القايمة؟ (هيطلب موافقة تاني)"><button class="icon-btn danger" title="شيل"><%- icon('trash') %></button></form>
+        </td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table></div>
+  <% } %>
+</div>
+
+<div class="card">
+  <h2 class="h3"><%- icon('users') %> الحسابات</h2>
+  <div class="table-wrap"><table class="tbl">
+    <thead><tr><th>المستخدم</th><th>التحقق الثنائي</th><th>الحالة</th><th></th></tr></thead>
+    <tbody>
+    <% list.forEach(function(u){ var locked = u.lockUntil && u.lockUntil > Date.now(); %>
+      <tr>
+        <td><b><%= u.name || u.user %></b><br><small class="muted" dir="ltr"><%= u.user %></small></td>
+        <td><%= u.totp && u.totp.on ? 'متفعّل' : 'لا' %></td>
+        <td><% if (locked) { %><span class="pill off">مقفول مؤقتاً</span><% } else { %><span class="pill on">عادي</span><% } %></td>
+        <td class="acts">
+          <% if (locked) { %><form method="post" action="/admin/security/user/<%= u.id %>/unlock"><button class="btn sm navy">افتح</button></form><% } %>
+          <% if (u.totp && u.totp.on && (!u.owner || me.owner)) { %><form method="post" action="/admin/security/user/<%= u.id %>/reset2fa" data-confirm="نمسح التحقق الثنائي بتاع <%= u.name || u.user %>؟ (لو ضاع موبايله)"><button class="btn sm ghost">مسح التحقق الثنائي</button></form><% } %>
+          <% if (!u.owner || me.owner) { %><form method="post" action="/admin/security/user/<%= u.id %>/logout" data-confirm="نفصله من كل أجهزته؟"><button class="btn sm ghost">فصل من الأجهزة</button></form><% } %>
+        </td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table></div>
+</div>
+<%- include('foot') %>

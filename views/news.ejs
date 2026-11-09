@@ -1,0 +1,21 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.news, sub: t.news_sub }) %>
+<section class="sec">
+  <div class="wrap">
+    <% if (news.length) { %>
+    <div class="news-grid">
+      <% news.forEach(function(n){ %>
+        <article class="ncard reveal">
+          <a class="nc-img" href="<%= L('/news/' + n.id) %>"><% if (n.image) { %><img src="<%= n.image %>" alt="" loading="lazy"><% } else { %><img src="<%= img('logo') %>" alt="" class="ph" loading="lazy"><% } %></a>
+          <div class="nc-body"><time><%- icon('calendar') %> <%= fmtDate(n.date) %></time><h3><a href="<%= L('/news/' + n.id) %>"><%= tr(n.title) %></a></h3><p><%= tr(n.text).slice(0, 160) %><%= tr(n.text).length > 160 ? '…' : '' %></p>
+          <a class="more" href="<%= L('/news/' + n.id) %>"><%= t.read_more %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a></div>
+        </article>
+      <% }); %>
+    </div>
+    <% } else { %>
+      <div class="empty"><%- icon('newspaper') %><p><%= t.no_news %></p></div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

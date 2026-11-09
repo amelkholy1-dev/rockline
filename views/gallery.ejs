@@ -1,0 +1,28 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<% if (album) { %>
+<%- include('partials/pagehead', { heading: tr(album.title), parent: ['/gallery', t.gallery] }) %>
+<section class="sec">
+  <div class="wrap">
+    <div class="pgrid big" data-lightbox>
+      <% items.forEach(function(p){ %><a class="ph-it reveal" href="<%= p.file %>" data-cap="<%= tr(p.caption) %>"><img src="<%= p.file %>" alt="<%= tr(p.caption) %>" loading="lazy"><% if (tr(p.caption)) { %><span class="cap"><%= tr(p.caption) %></span><% } %></a><% }); %>
+    </div>
+  </div>
+</section>
+<% } else { %>
+<%- include('partials/pagehead', { heading: t.gallery, sub: t.gallery_sub }) %>
+<section class="sec">
+  <div class="wrap">
+    <% if (albums.length) { %>
+    <div class="albums">
+      <% albums.forEach(function(a){ %>
+        <a class="album reveal" href="<%= L('/gallery/' + a.id) %>"><img src="<%= a.coverFile %>" alt="" loading="lazy"><span><b><%= tr(a.title) %></b><small><%- icon('images') %> <%= a.count %> <%= t.photos %></small></span></a>
+      <% }); %>
+    </div>
+    <% } else { %>
+      <div class="empty"><%- icon('images') %><p><%= t.no_gallery %></p></div>
+    <% } %>
+  </div>
+</section>
+<% } %>
+<%- include('partials/footer') %>

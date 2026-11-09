@@ -1,0 +1,29 @@
+# مكتبات بتتنزل بـ npm install
+node_modules
+
+# أسرار وإعدادات الجهاز - متترفعش أبداً
+.env
+
+# بيانات حساسة: كلمات مرور، رسايل العملاء، السير الذاتية، توكن فيسبوك
+data/mail.json
+data/facebook.json
+data/masar.json
+data/security.json
+data/audit.json
+data/.auth-key
+data/admin.json
+data/inbox.json
+data/stats.json
+data/cv/*
+
+# الصور والملفات المرفوعة من لوحة التحكم (موجودة على السيرفر)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# ملفات مش من المشروع
+Claude outputs/
+*.zip
+*.log
+
+# ملف الرفع الجاهز لهوستنجر (من غير أسرار)
+!release/nesr-site.zip

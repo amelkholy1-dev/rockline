@@ -1,0 +1,8 @@
+<section class="phead">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="breadcrumb"><a href="<%= L('') %>"><%= t.nav_home %></a><span>/</span><% if (typeof parent !== 'undefined' && parent) { %><a href="<%= L(parent[0]) %>"><%= parent[1] %></a><span>/</span><% } %><b><%= heading %></b></nav>
+    <h1><%= heading %></h1>
+    <% if (typeof sub !== 'undefined' && sub) { %><p><%= sub %></p><% } %>
+    <span class="rule"></span>
+  </div>
+</section>

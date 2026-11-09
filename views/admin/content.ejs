@@ -1,0 +1,19 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">محتوى الموقع</h1><p class="sub">اختار القسم اللي عايز تعدّله. تقدر تزوّد عناصر أو تمسحها أو تغيّر ترتيبها، وبعدين دوس حفظ.</p></div></div>
+<div class="ceditor">
+  <nav class="ctabs">
+    <% sections.forEach(function(s){ %><a href="/admin/content/<%= s.key %>" class="<%= s.key === sec.key ? 'on' : '' %>"><%= s.label %></a><% }); %>
+  </nav>
+  <form class="card form" method="post" action="/admin/content/<%= sec.key %>" id="cform">
+    <h2 class="h3"><%= sec.label %></h2>
+    <% if (sec.hint) { %><p class="muted"><%= sec.hint %></p><% } %>
+    <div id="editor"></div>
+    <input type="hidden" name="json" id="cjson">
+    <div class="form-foot sticky"><button class="btn navy" type="submit"><%- icon('check') %> حفظ "<%= sec.label %>"</button></div>
+  </form>
+</div>
+<script>
+window.CONTENT = <%- JSON.stringify({ sec: sec, value: value, icons: iconNames }).replace(/</g, '\\u003c') %>;
+window.ICON_SVG = <%- JSON.stringify(iconNames.reduce(function(o, n){ o[n] = icon(n); return o; }, {})).replace(/</g, '\\u003c') %>;
+</script>
+<%- include('foot') %>

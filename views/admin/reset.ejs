@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>كلمة مرور جديدة | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <form class="login" method="post" action="/admin/reset/<%= token %>">
+    <img src="<%= img('logo') %>" alt="">
+    <h1>كلمة مرور جديدة</h1>
+    <% if (!ok) { %>
+      <div class="flash err">اللينك ده خلص أو اتستخدم قبل كده. اطلب لينك جديد.</div>
+      <a class="btn navy wide" href="/admin/forgot">اطلب لينك جديد</a>
+    <% } else { %>
+      <p>أهلاً <%= name %>. اسم المستخدم بتاعك: <b dir="ltr"><%= user %></b></p>
+      <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+      <input type="hidden" name="username" value="<%= user %>" autocomplete="username">
+      <label>كلمة المرور الجديدة<input type="password" name="pass" minlength="6" autocomplete="new-password" required autofocus><small><%= hint %></small></label>
+      <label>اكتبها تاني<input type="password" name="pass2" minlength="6" autocomplete="new-password" required></label>
+      <button class="btn navy wide" type="submit">حفظ</button>
+    <% } %>
+    <a href="/admin/login">الرجوع لتسجيل الدخول</a>
+  </form>
+</body>
+</html>

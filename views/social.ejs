@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title><%= ttl %> — تواصل معنا</title>
+<meta name="description" content="كل وسائل التواصل مع <%= ttl %> في مكان واحد: الموقع، واتساب، السوشيال ميديا، وأرقام المسؤولين.">
+<meta name="theme-color" content="#0a1830">
+<meta property="og:title" content="<%= ttl %> — تواصل معنا">
+<meta property="og:image" content="<%= baseUrl %><%= img('og') %>">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="/css/social.css?v=<%= v %>">
+<style>html,body{height:100%}body{margin:0;background:<%= cfg.theme==='light'?'#eef3f1':'#0a1830' %>}</style>
+</head>
+<body>
+<div id="app" class="sbody" data-theme="<%= cfg.theme || 'green' %>">
+  <noscript><div class="wrap"><div class="head"><div class="ava ph"><img src="<%= img('logo') %>" alt=""></div><h1 class="name"><%= ttl %></h1></div>
+    <div class="links">
+      <% items.forEach(function(it){ if(it.valid){ %><a class="lnk" href="<%= it.href %>"><b class="t"><%= it.label %></b></a><% } }); %>
+    </div></div></noscript>
+</div>
+<script>
+window.__ICONS__ = <%- icons_json %>;
+window.__SOCIAL__ = { cfg: <%- cfg_json %>, base: "<%= baseUrl %>", ttl: "<%= ttl.replace(/"/g,'\\"') %>", logo: "<%= img('logo') %>" };
+</script>
+<script src="/js/social-render.js?v=<%= v %>"></script>
+</body>
+</html>

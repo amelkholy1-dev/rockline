@@ -1,0 +1,66 @@
+<%- include('nav') %>
+<h1 class="pt">أهلاً <%= me.name || me.user %></h1>
+<p class="sub">من هنا تتحكم في كل حاجة على الموقع. أي تعديل بيظهر على الموقع أول ما تدوس حفظ.</p>
+
+<% if (pendingDev) { %><div class="flash warn"><%- icon('shield') %> فيه <b><%= pendingDev %></b> جهاز مستني موافقتك. <a href="/admin/security">راجعهم</a></div><% } %>
+<% if (defaultPass) { %><div class="flash err"><%- icon('lock') %> لسه بتستخدم كلمة المرور الافتراضية. <a href="/admin/account">غيّرها دلوقتي</a> قبل ما ترفع الموقع.</div><% } %>
+<% if (noEmail) { %><div class="flash warn"><%- icon('mail') %> حسابك ملوش إيميل، فلو نسيت كلمة المرور مش هتعرف ترجعها. <a href="/admin/account">ضيف إيميلك</a></div><% } %>
+<% if (!mailReady && can('mail')) { %><div class="flash warn"><%- icon('mail') %> الإرسال بالإيميل لسه مش متظبط، فالزوار هيقدروا يبعتوا على واتساب بس. <a href="/admin/mail">اظبط الإيميل</a></div><% } %>
+<% if (me.owner && typeof underCon !== 'undefined') { %>
+<div class="flash <%= underCon ? 'warn' : 'ok' %>" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <%- icon(underCon ? 'shield' : 'checkcircle') %>
+  <span style="flex:1;min-width:200px"><b>الموقع للزوار:</b>
+    <%= underCon ? '🔧 تحت التطوير — الزوار يشوفوا صفحة مؤقتة، وإنت تدخل عادي.' : '✅ ظاهر للعامة.' %></span>
+  <form method="post" action="/admin/under-construction" style="margin:0">
+    <input type="hidden" name="on" value="<%= underCon ? '0' : '1' %>">
+    <button class="btn <%= underCon ? 'navy' : 'line-navy' %> sm" type="submit"><%= underCon ? 'اعرض الموقع للعامة' : 'حطّه تحت التطوير' %></button>
+  </form>
+</div>
+<% } %>
+
+<div class="kpis">
+  <% if (can('inbox')) { %><a class="kpi" href="/admin/inbox"><%- icon('inbox') %><b><%= counts.messages %></b><span>رسالة (<%= counts.week %> الأسبوع ده)</span></a><% } %>
+  <% if (can('jobs')) { %><a class="kpi" href="/admin/jobs"><%- icon('briefcase') %><b><%= counts.jobs %></b><span>وظيفة ظاهرة</span></a><% } %>
+  <% if (can('news')) { %><a class="kpi" href="/admin/news"><%- icon('newspaper') %><b><%= counts.news %></b><span>خبر ومنشور</span></a><% } %>
+  <% if (can('gallery')) { %><a class="kpi" href="/admin/gallery"><%- icon('images') %><b><%= counts.photos %></b><span>صورة في المعرض</span></a><% } %>
+</div>
+
+<% if (can('content') && (missingStats.length || !quotesCount)) { %>
+<div class="card nudge">
+  <h2 class="h3"><%- icon('star') %> حاجات بتزوّد ثقة الشركات في الموقع</h2>
+  <ul>
+    <% missingStats.forEach(function(s){ %><li>رقم "<%= s %>" لسه فاضي ومش ظاهر. <a href="/admin/content/stats">اكتب الرقم الحقيقي</a></li><% }); %>
+    <% if (!quotesCount) { %><li>مفيش آراء عملاء لسه. رأي حقيقي من شركة اشتغلت معاكم، ولو بفيديو، بيفرق جداً. <a href="/admin/content/quotes">ضيف رأي</a></li><% } %>
+  </ul>
+</div>
+<% } %>
+
+<h2 class="h2">إضافة سريعة</h2>
+<div class="quick">
+  <% if (can('jobs')) { %><a href="/admin/jobs/new"><%- icon('plus') %> وظيفة جديدة</a><% } %>
+  <% if (can('news')) { %><a href="/admin/news/new"><%- icon('plus') %> خبر أو منشور</a><% } %>
+  <% if (can('gallery')) { %><a href="/admin/gallery"><%- icon('plus') %> صور للمعرض</a><% } %>
+  <% if (can('images')) { %><a href="/admin/images"><%- icon('image') %> تغيير صور الصفحة الرئيسية</a><% } %>
+  <% if (can('sections')) { %><a href="/admin/sections/new"><%- icon('plus') %> قسم جديد في الصفحة الرئيسية</a><% } %>
+  <% if (can('contact')) { %><a href="/admin/contact"><%- icon('phone') %> تعديل الأرقام والعنوان</a><% } %>
+  <% if (can('content')) { %><a href="/admin/content/stats"><%- icon('chart') %> تعديل الأرقام والإحصائيات</a><% } %>
+  <% if (can('users')) { %><a href="/admin/users/new"><%- icon('user') %> إضافة مستخدم</a><% } %>
+</div>
+
+<% if (can('inbox')) { %>
+<h2 class="h2">آخر الرسائل</h2>
+<% if (latest.length) { %>
+<div class="list">
+  <% latest.forEach(function(m){ var f = m.fields || {}; %>
+    <a class="row<%= m.read ? '' : ' unread' %>" href="/admin/inbox#m-<%= m.id %>">
+      <span class="tag k-<%= m.kind %>"><%= KIND_LABEL[m.kind] %></span>
+      <b><%= f.company || f.name || '-' %></b>
+      <span class="muted"><%= f.trades || f.profession || (f.message || '').slice(0, 60) %></span>
+      <span class="tag c-<%= m.channel %>"><%= CHANNEL_LABEL[m.channel] %></span>
+      <time><%= fmtTime(m.at) %></time>
+    </a>
+  <% }); %>
+</div>
+<% } else { %><div class="empty">لسه مفيش رسايل. أول ما حد يبعت من الموقع هتظهر هنا.</div><% } %>
+<% } %>
+<%- include('foot') %>

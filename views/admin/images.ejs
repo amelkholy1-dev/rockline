@@ -1,0 +1,22 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">صور الموقع</h1><p class="sub">غيّر الشعار وصور الصفحة الرئيسية وخلفيات الصفحات. أي صورة تقدر ترجّعها للأصلية بدوسة.</p></div></div>
+<div class="img-slots">
+  <% slots.forEach(function(sl){ var cur = img(sl.k); var custom = site.images && site.images[sl.k]; %>
+  <div class="card slot" id="<%= sl.k %>">
+    <div class="slot-img<%= sl.k === 'logo' ? ' contain' : '' %>"><img src="<%= cur %>" alt=""><% if (custom) { %><i>صورة جديدة</i><% } %></div>
+    <div class="slot-body">
+      <h2 class="h3"><%= sl.label %></h2>
+      <p class="muted"><%= sl.hint %></p>
+      <form method="post" action="/admin/images/<%= sl.k %>" enctype="multipart/form-data" class="slot-form">
+        <label class="drop sm"><%- icon('image') %><span>اختار صورة</span><input type="file" name="image" accept="image/*" required data-preview></label>
+        <div class="preview"></div>
+        <button class="btn navy sm" type="submit"><%- icon('check') %> حفظ الصورة</button>
+      </form>
+      <% if (custom) { %>
+      <form method="post" action="/admin/images/<%= sl.k %>" data-confirm="ترجع الصورة الأصلية؟"><input type="hidden" name="reset" value="1"><button class="btn xs ghost" type="submit">رجّع الصورة الأصلية</button></form>
+      <% } %>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<%- include('foot') %>

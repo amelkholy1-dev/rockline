@@ -1,0 +1,920 @@
+{
+ "brand": {
+  "name": {
+   "ar": "شركة نسر الخليج لإلحاق العمالة المصرية بالخارج",
+   "en": "Nasr Al-Khaleej for Egyptian Manpower Recruitment Abroad"
+  },
+  "short": {
+   "ar": "نسر الخليج",
+   "en": "Nasr Al-Khaleej"
+  },
+  "tagline": {
+   "ar": "كفاءات مصرية .. لفرص عالمية",
+   "en": "Egyptian Talents .. Global Opportunities"
+  },
+  "license": "863",
+  "founded": ""
+ },
+ "hero": {
+  "badge": {
+   "ar": "حلول الموارد البشرية والتوظيف الدولي",
+   "en": "HR solutions & international recruitment"
+  },
+  "title": {
+   "ar": "كفاءات مصرية .. لفرص عالمية",
+   "en": "Egyptian talent for global opportunities"
+  },
+  "sub": {
+   "ar": "نوفر الكفاءات المصرية المؤهلة للشركات والمؤسسات في دول الخليج والأسواق الدولية، من تحديد الاحتياج حتى وصول العامل إلى مقر العمل.",
+   "en": "We provide qualified Egyptian professionals and workers to companies across the Gulf and international markets, from defining the need to the worker's arrival on site."
+  }
+ },
+ "points": [
+  {
+   "icon": "handshake",
+   "text": {
+    "ar": "ثقة",
+    "en": "Trust"
+   }
+  },
+  {
+   "icon": "gear",
+   "text": {
+    "ar": "كفاءة",
+    "en": "Efficiency"
+   }
+  },
+  {
+   "icon": "users",
+   "text": {
+    "ar": "التزام",
+    "en": "Commitment"
+   }
+  },
+  {
+   "icon": "chart",
+   "text": {
+    "ar": "مستقبل أفضل",
+    "en": "A better future"
+   }
+  }
+ ],
+ "stats": [
+  {
+   "value": "10",
+   "label": {
+    "ar": "دول خليجية نعمل بها",
+    "en": "Gulf countries served"
+   }
+  },
+  {
+   "value": "9",
+   "label": {
+    "ar": "قطاعات نوفر لها العمالة",
+    "en": "Sectors we supply"
+   }
+  },
+  {
+   "value": "70+",
+   "label": {
+    "ar": "شركة شريكة",
+    "en": "Partner companies"
+   }
+  },
+  {
+   "value": "",
+   "label": {
+    "ar": "عامل سافر عن طريقنا",
+    "en": "Workers placed"
+   }
+  }
+ ],
+ "about": {
+  "p1": {
+   "ar": "شركة نسر الخليج شركة متخصصة في حلول الموارد البشرية والتوظيف الدولي، وتعمل على ربط الكفاءات المصرية المتميزة باحتياجات الشركات والمؤسسات داخل دول الخليج والأسواق الدولية.",
+   "en": "Nasr Al-Khaleej specialises in human resources solutions and international recruitment, connecting skilled Egyptian talent with the needs of companies across the Gulf and international markets."
+  },
+  "p2": {
+   "ar": "نعتمد على منظومة عمل احترافية تبدأ من استقطاب المرشحين، ثم الاختيار والتقييم، وإجراء المقابلات، وتجهيز الملفات، ومتابعة إجراءات التعاقد والسفر، بما يضمن توفير عناصر مؤهلة تلبي متطلبات العملاء بكفاءة وسرعة.",
+   "en": "We follow a professional workflow that starts with sourcing candidates, then screening and assessment, interviews, file preparation, and follow-up of contracting and travel, to deliver qualified staff that match client requirements quickly and reliably."
+  },
+  "vision": {
+   "ar": "أن نكون شريكاً موثوقاً ورائداً في تقديم خدمات التوظيف الدولي وحلول الموارد البشرية، وأن نبني شراكات طويلة المدى تقوم على الثقة والجودة والالتزام.",
+   "en": "To be a trusted, leading partner in international recruitment and HR solutions, building long-term partnerships based on trust, quality and commitment."
+  },
+  "mission": {
+   "ar": "تقديم خدمات توظيف احترافية تركز على الجودة وسرعة الإنجاز ودقة الاختيار، مع الحفاظ على حقوق جميع الأطراف وتحقيق قيمة حقيقية لعملائنا.",
+   "en": "Delivering professional recruitment services focused on quality, speed and accurate selection, protecting the rights of all parties and creating real value for our clients."
+  }
+ },
+ "values": [
+  {
+   "icon": "handshake",
+   "text": {
+    "ar": "الثقة",
+    "en": "Trust"
+   }
+  },
+  {
+   "icon": "award",
+   "text": {
+    "ar": "الجودة",
+    "en": "Quality"
+   }
+  },
+  {
+   "icon": "users",
+   "text": {
+    "ar": "الالتزام",
+    "en": "Commitment"
+   }
+  },
+  {
+   "icon": "timer",
+   "text": {
+    "ar": "السرعة",
+    "en": "Speed"
+   }
+  },
+  {
+   "icon": "shield",
+   "text": {
+    "ar": "المصداقية",
+    "en": "Credibility"
+   }
+  }
+ ],
+ "services": [
+  {
+   "icon": "filesearch",
+   "title": {
+    "ar": "تحليل احتياجات العميل",
+    "en": "Client needs analysis"
+   },
+   "desc": {
+    "ar": "دراسة متطلبات الوظائف والتخصصات المطلوبة بدقة.",
+    "en": "Precise study of the required roles and specialisations."
+   }
+  },
+  {
+   "icon": "usersearch",
+   "title": {
+    "ar": "استقطاب الكفاءات",
+    "en": "Sourcing talent"
+   },
+   "desc": {
+    "ar": "البحث عن أفضل المرشحين وفقاً للمهارات والخبرات المطلوبة.",
+    "en": "Finding the best candidates according to the required skills and experience."
+   }
+  },
+  {
+   "icon": "clipboard",
+   "title": {
+    "ar": "الاختيار والتقييم",
+    "en": "Screening and assessment"
+   },
+   "desc": {
+    "ar": "إجراء اختبارات وتقييمات مهنية لضمان جودة الترشيح.",
+    "en": "Trade tests and professional assessments to guarantee the quality of shortlists."
+   }
+  },
+  {
+   "icon": "interview",
+   "title": {
+    "ar": "المقابلات المهنية",
+    "en": "Professional interviews"
+   },
+   "desc": {
+    "ar": "تنظيم المقابلات حضورياً أو أونلاين بما يواكب احتياجات العميل.",
+    "en": "Organising interviews on site or online to suit the client."
+   }
+  },
+  {
+   "icon": "folder",
+   "title": {
+    "ar": "تجهيز الملفات",
+    "en": "File preparation"
+   },
+   "desc": {
+    "ar": "استكمال المستندات والوثائق المطلوبة بدقة واحترافية.",
+    "en": "Completing all required documents accurately and professionally."
+   }
+  },
+  {
+   "icon": "plane",
+   "title": {
+    "ar": "متابعة التعاقد والسفر",
+    "en": "Contracting and travel"
+   },
+   "desc": {
+    "ar": "متابعة الخطوات النهائية حتى الوصول إلى جهة التوظيف.",
+    "en": "Following the final steps until arrival at the employer's site."
+   }
+  }
+ ],
+ "process": [
+  {
+   "icon": "doc",
+   "title": {
+    "ar": "تحديد الاحتياج",
+    "en": "Defining the need"
+   },
+   "desc": {
+    "ar": "نتفق معك على المهن والعدد والمواصفات والرواتب.",
+    "en": "We agree on trades, headcount, specifications and salaries."
+   }
+  },
+  {
+   "icon": "usersearch",
+   "title": {
+    "ar": "الاستقطاب",
+    "en": "Sourcing"
+   },
+   "desc": {
+    "ar": "نرشّح من قاعدة بياناتنا ومن إعلاناتنا المعتمدة.",
+    "en": "We shortlist from our database and from approved advertisements."
+   }
+  },
+  {
+   "icon": "clipboard",
+   "title": {
+    "ar": "الاختيار",
+    "en": "Selection"
+   },
+   "desc": {
+    "ar": "اختبارات ومقابلات مهنية أمامك حضورياً أو أونلاين.",
+    "en": "Trade tests and interviews in your presence, on site or online."
+   }
+  },
+  {
+   "icon": "folder",
+   "title": {
+    "ar": "التجهيز",
+    "en": "Processing"
+   },
+   "desc": {
+    "ar": "الكشف الطبي والبصمة والتأشيرة واستكمال الملفات.",
+    "en": "Medical examination, fingerprints, visa and document completion."
+   }
+  },
+  {
+   "icon": "plane",
+   "title": {
+    "ar": "التعاقد والسفر",
+    "en": "Contract and travel"
+   },
+   "desc": {
+    "ar": "متابعة حتى استلام الكوادر في مقر العمل.",
+    "en": "Follow-up until the staff are received at the workplace."
+   }
+  }
+ ],
+ "sectors": [
+  {
+   "icon": "crane",
+   "name": {
+    "ar": "المقاولات والإنشاءات",
+    "en": "Construction & contracting"
+   }
+  },
+  {
+   "icon": "hardhat",
+   "name": {
+    "ar": "القطاع الهندسي والفني",
+    "en": "Engineering & technical"
+   }
+  },
+  {
+   "icon": "medical",
+   "name": {
+    "ar": "القطاع الطبي",
+    "en": "Medical"
+   }
+  },
+  {
+   "icon": "factory",
+   "name": {
+    "ar": "المصانع والإنتاج",
+    "en": "Factories & production"
+   }
+  },
+  {
+   "icon": "restaurant",
+   "name": {
+    "ar": "المطاعم والضيافة",
+    "en": "Restaurants & catering"
+   }
+  },
+  {
+   "icon": "hotel",
+   "name": {
+    "ar": "الفنادق والسياحة",
+    "en": "Hotels & tourism"
+   }
+  },
+  {
+   "icon": "truck",
+   "name": {
+    "ar": "النقل والخدمات اللوجستية",
+    "en": "Transport & logistics"
+   }
+  },
+  {
+   "icon": "briefcase",
+   "name": {
+    "ar": "الكوادر الإدارية والمهنية",
+    "en": "Administrative & professional"
+   }
+  }
+ ],
+ "why": [
+  {
+   "icon": "database",
+   "text": {
+    "ar": "قاعدة بيانات واسعة من الكفاءات في كل المهن",
+    "en": "A wide candidate database across every trade"
+   }
+  },
+  {
+   "icon": "checkcircle",
+   "text": {
+    "ar": "اختيار دقيق وفق متطلبات العميل",
+    "en": "Accurate selection against client requirements"
+   }
+  },
+  {
+   "icon": "timer",
+   "text": {
+    "ar": "سرعة في الترشيح والاستجابة",
+    "en": "Fast shortlisting and response"
+   }
+  },
+  {
+   "icon": "globe",
+   "text": {
+    "ar": "خبرة في أسواق الخليج والأسواق الدولية",
+    "en": "Experience in Gulf and international markets"
+   }
+  },
+  {
+   "icon": "handshake",
+   "text": {
+    "ar": "مصداقية والتزام في التنفيذ",
+    "en": "Credibility and commitment in execution"
+   }
+  },
+  {
+   "icon": "headset",
+   "text": {
+    "ar": "متابعة مستمرة حتى استلام الكوادر",
+    "en": "Continuous follow-up until staff are received"
+   }
+  }
+ ],
+ "countries": [
+  {
+   "name": {
+    "ar": "السعودية",
+    "en": "Saudi Arabia"
+   },
+   "note": {
+    "ar": "مقاولات، صناعة، ضيافة، نقل",
+    "en": "Construction, industry, hospitality, transport"
+   }
+  },
+  {
+   "name": {
+    "ar": "الإمارات",
+    "en": "UAE"
+   },
+   "note": {
+    "ar": "إنشاءات، خدمات، ضيافة",
+    "en": "Construction, services, hospitality"
+   }
+  },
+  {
+   "name": {
+    "ar": "الكويت",
+    "en": "Kuwait"
+   },
+   "note": {
+    "ar": "مقاولات، صيانة، خدمات",
+    "en": "Contracting, maintenance, services"
+   }
+  },
+  {
+   "name": {
+    "ar": "قطر",
+    "en": "Qatar"
+   },
+   "note": {
+    "ar": "إنشاءات، فنادق، صيانة",
+    "en": "Construction, hotels, maintenance"
+   }
+  },
+  {
+   "name": {
+    "ar": "البحرين",
+    "en": "Bahrain"
+   },
+   "note": {
+    "ar": "صناعة وخدمات",
+    "en": "Industry and services"
+   }
+  },
+  {
+   "name": {
+    "ar": "عُمان",
+    "en": "Oman"
+   },
+   "note": {
+    "ar": "مقاولات وخدمات",
+    "en": "Contracting and services"
+   }
+  }
+ ],
+ "professions": [
+  {
+   "text": {
+    "ar": "نجار مسلح",
+    "en": "Formwork carpenter"
+   }
+  },
+  {
+   "text": {
+    "ar": "حداد تسليح",
+    "en": "Steel fixer"
+   }
+  },
+  {
+   "text": {
+    "ar": "لحام أرجون",
+    "en": "Argon welder"
+   }
+  },
+  {
+   "text": {
+    "ar": "كهربائي إنشاءات",
+    "en": "Construction electrician"
+   }
+  },
+  {
+   "text": {
+    "ar": "سباك",
+    "en": "Plumber"
+   }
+  },
+  {
+   "text": {
+    "ar": "فني تكييف وتبريد",
+    "en": "HVAC technician"
+   }
+  },
+  {
+   "text": {
+    "ar": "فني مصاعد",
+    "en": "Lift technician"
+   }
+  },
+  {
+   "text": {
+    "ar": "مشغل معدات ثقيلة",
+    "en": "Heavy equipment operator"
+   }
+  },
+  {
+   "text": {
+    "ar": "سائق نقل ثقيل",
+    "en": "Heavy truck driver"
+   }
+  },
+  {
+   "text": {
+    "ar": "سائق خفيف",
+    "en": "Light vehicle driver"
+   }
+  },
+  {
+   "text": {
+    "ar": "بليط ومحارة",
+    "en": "Tiler & plasterer"
+   }
+  },
+  {
+   "text": {
+    "ar": "نقاش",
+    "en": "Painter"
+   }
+  },
+  {
+   "text": {
+    "ar": "عامل بناء",
+    "en": "Construction labourer"
+   }
+  },
+  {
+   "text": {
+    "ar": "مشرف عمال",
+    "en": "Site foreman"
+   }
+  },
+  {
+   "text": {
+    "ar": "مهندس مدني",
+    "en": "Civil engineer"
+   }
+  },
+  {
+   "text": {
+    "ar": "مهندس ميكانيكا",
+    "en": "Mechanical engineer"
+   }
+  },
+  {
+   "text": {
+    "ar": "فني ميكانيكا سيارات",
+    "en": "Auto mechanic"
+   }
+  },
+  {
+   "text": {
+    "ar": "خراط ومخرطة",
+    "en": "Lathe operator"
+   }
+  },
+  {
+   "text": {
+    "ar": "عامل مصنع",
+    "en": "Factory worker"
+   }
+  },
+  {
+   "text": {
+    "ar": "ممرض",
+    "en": "Nurse"
+   }
+  },
+  {
+   "text": {
+    "ar": "فني معمل",
+    "en": "Lab technician"
+   }
+  },
+  {
+   "text": {
+    "ar": "طباخ",
+    "en": "Chef"
+   }
+  },
+  {
+   "text": {
+    "ar": "مساعد طباخ",
+    "en": "Kitchen assistant"
+   }
+  },
+  {
+   "text": {
+    "ar": "عامل ضيافة",
+    "en": "Hospitality worker"
+   }
+  },
+  {
+   "text": {
+    "ar": "ويتر",
+    "en": "Waiter"
+   }
+  },
+  {
+   "text": {
+    "ar": "عامل نظافة",
+    "en": "Cleaner"
+   }
+  },
+  {
+   "text": {
+    "ar": "حارس أمن",
+    "en": "Security guard"
+   }
+  },
+  {
+   "text": {
+    "ar": "محاسب",
+    "en": "Accountant"
+   }
+  },
+  {
+   "text": {
+    "ar": "مندوب مبيعات",
+    "en": "Sales representative"
+   }
+  },
+  {
+   "text": {
+    "ar": "موظف إداري",
+    "en": "Administrative officer"
+   }
+  }
+ ],
+ "partners": [
+  {
+   "icon": "crane",
+   "group": {
+    "ar": "قطاع المقاولات والإنشاءات",
+    "en": "Construction & contracting"
+   },
+   "items": [
+    "شركة ركائز الوطن للمقاولات",
+    "مؤسسة فيصل زعار العتيبي للمقاولات",
+    "شركة مبلان السعودية",
+    "شركة الأبيض للمقاولات",
+    "مؤسسة أعمال التقوى للمقاولات",
+    "شركة محمد صالح القرني للمقاولات",
+    "المركز الذهبي الهندسي للمصاعد بمكة",
+    "مؤسسة تقنية الروافع للتجارة",
+    "مصنع عيد لصناعة صناديق البوليسترين",
+    "شركة لزازي للتجارة والمقاولات",
+    "شركة راك للمقاولات",
+    "مصنع سعد الشهراني للخرسانة الجاهزة",
+    "مؤسسة تامر لجي للمقاولات",
+    "مؤسسة قم الجزيرة للتجارة والمقاولات",
+    "مؤسسة وليد محمد المرجاني لنقل البضائع",
+    "شركة بن رافع للمقاولات بمكة المكرمة",
+    "مؤسسة الخبز العربي",
+    "مؤسسة ابن المملكة للمقاولات",
+    "مؤسسة الرواء للمقاولات",
+    "مؤسسة منارة الأبراج للمقاولات",
+    "مؤسسة فهد محمد فهد للمقاولات عامة",
+    "المكتب الهندسي لأنس بن عبد الله قهيدان بمكة",
+    "مؤسسة رسم الفخامة للمقاولات",
+    "مؤسسة خالد رويجلي للمقاولات",
+    "مؤسسة فواز سالم الحربي للمقاولات"
+   ]
+  },
+  {
+   "icon": "bus",
+   "group": {
+    "ar": "قطاع النقل وخدمات المعتمرين والسفر",
+    "en": "Transport, Umrah services & travel"
+   },
+   "items": [
+    "شركة حسين حجازي",
+    "شركة البركة الدولية المحدودة",
+    "الشركة الوطنية (نمكو)",
+    "شركة رواحل المشاعر المحدودة",
+    "شركة الأجور",
+    "شركة ركاب الأولى",
+    "شركة قرطاج الحديثة",
+    "شركة السراج العصري",
+    "شركة طواف",
+    "شركة الزهرة المتميزة",
+    "شركة الفرسان لخدمات المعتمرين",
+    "شركة زائر الحديثة",
+    "شركة بوابة السفر",
+    "شركة حملة الإحسان لحجاج الداخل",
+    "شركة عرفة",
+    "شركة القصواء",
+    "شركة يمامة",
+    "شركة المهنا المميز",
+    "شركة سمايا",
+    "شركة السفير"
+   ]
+  },
+  {
+   "icon": "hotel",
+   "group": {
+    "ar": "القطاع السياحي والضيافة",
+    "en": "Tourism & hospitality"
+   },
+   "items": [
+    "فندق المضحى للشقق الفندقية",
+    "وحدات تبوك رماذا للشقق الفندقية",
+    "أصيل للوحدات السكنية المفروشة",
+    "مؤسسة الضيافة الإسلامية لتنظيم الرحلات",
+    "مطعم قصر الزاد لتقديم الوجبات"
+   ]
+  }
+ ],
+ "quotes": [],
+ "docs": [
+  {
+   "text": {
+    "ar": "جواز سفر ساري لمدة كافية مع صور من الصفحة الأولى",
+    "en": "Valid passport with copies of the data page"
+   }
+  },
+  {
+   "text": {
+    "ar": "صور شخصية حديثة بخلفية بيضاء",
+    "en": "Recent photos with a white background"
+   }
+  },
+  {
+   "text": {
+    "ar": "بطاقة الرقم القومي سارية",
+    "en": "Valid national ID card"
+   }
+  },
+  {
+   "text": {
+    "ar": "المؤهل الدراسي وشهادات الخبرة",
+    "en": "Qualification certificate and experience letters"
+   }
+  },
+  {
+   "text": {
+    "ar": "الفحص الطبي من مركز معتمد",
+    "en": "Medical examination at an approved centre"
+   }
+  },
+  {
+   "text": {
+    "ar": "البصمة والتأشيرة حسب إجراءات الدولة",
+    "en": "Fingerprints and visa as per the destination country"
+   }
+  },
+  {
+   "text": {
+    "ar": "عقد العمل موقّع ومعتمد",
+    "en": "Signed and approved employment contract"
+   }
+  }
+ ],
+ "tips": [
+  {
+   "text": {
+    "ar": "اتعامل مع شركة مرخصة، واتأكد من رقم ترخيصها.",
+    "en": "Deal only with a licensed company and verify its license number."
+   }
+  },
+  {
+   "text": {
+    "ar": "اقرأ عقد العمل كويس قبل التوقيع، خصوصاً الراتب ومدة العقد وساعات العمل.",
+    "en": "Read the contract carefully before signing, especially salary, duration and working hours."
+   }
+  },
+  {
+   "text": {
+    "ar": "متدفعش أي مبلغ من غير إيصال رسمي باسم الشركة.",
+    "en": "Never pay any amount without an official receipt in the company's name."
+   }
+  },
+  {
+   "text": {
+    "ar": "احتفظ بنسخة من كل ورقة بتسلمها للشركة.",
+    "en": "Keep a copy of every document you hand over."
+   }
+  },
+  {
+   "text": {
+    "ar": "اتأكد إن بياناتك في جواز السفر مطابقة لبياناتك في العقد.",
+    "en": "Make sure your passport details match your contract details."
+   }
+  },
+  {
+   "text": {
+    "ar": "خلي وسيلة تواصل شغالة معاك طول فترة الإجراءات.",
+    "en": "Keep a working contact number throughout the process."
+   }
+  }
+ ],
+ "faq": [
+  {
+   "q": {
+    "ar": "إزاي أقدم على وظيفة معلنة عندكم؟",
+    "en": "How do I apply for one of your vacancies?"
+   },
+   "a": {
+    "ar": "افتح صفحة الوظيفة واضغط تقديم، املأ بياناتك وارفع سيرتك الذاتية، أو ابعتها على الواتساب.",
+    "en": "Open the vacancy page, click apply, fill in your details and upload your CV, or send it on WhatsApp."
+   }
+  },
+  {
+   "q": {
+    "ar": "هل في رسوم على العامل؟",
+    "en": "Are there any fees charged to the worker?"
+   },
+   "a": {
+    "ar": "أي مبالغ تكون في حدود ما يحدده القانون وبإيصال رسمي من مقر الشركة. متدفعش أي مبلغ لأي شخص خارج المقر.",
+    "en": "Any amounts are within the limits set by law and against an official receipt at the company premises. Never pay anyone outside the office."
+   }
+  },
+  {
+   "q": {
+    "ar": "الإجراءات بتاخد وقت قد إيه؟",
+    "en": "How long does the process take?"
+   },
+   "a": {
+    "ar": "المدة بتختلف حسب الدولة ونوع التأشيرة وسرعة استخراج الأوراق، وبنبلغك بالخطوة اللي انت فيها أول بأول.",
+    "en": "It varies by country, visa type and document processing speed. We keep you informed at every stage."
+   }
+  },
+  {
+   "q": {
+    "ar": "شركتنا في الخليج، إزاي نتعاقد معاكم؟",
+    "en": "We are a Gulf company, how do we start?"
+   },
+   "a": {
+    "ar": "املأ فورم طلب العمالة أو كلمنا على واتساب، ونتفق على المهن والعدد والمواصفات، وبعدها نبدأ الترشيح والمقابلات.",
+    "en": "Fill in the manpower request form or contact us on WhatsApp. We agree on trades, headcount and specifications, then start shortlisting and interviews."
+   }
+  },
+  {
+   "q": {
+    "ar": "بتوفروا مقابلات أونلاين؟",
+    "en": "Do you arrange online interviews?"
+   },
+   "a": {
+    "ar": "أيوة، بننظم مقابلات حضورية في مقر الشركة أو أونلاين مع ممثل جهة العمل.",
+    "en": "Yes, we arrange interviews at our premises or online with the employer's representative."
+   }
+  }
+ ],
+ "links": [
+  {
+   "title": {
+    "ar": "التحقق من إصدار التأشيرة - الخارجية السعودية",
+    "en": "Saudi visa issuance check"
+   },
+   "url": "https://visa.mofa.gov.sa"
+  },
+  {
+   "title": {
+    "ar": "نتيجة الفحص الطبي - وافد",
+    "en": "Medical examination result - Wafid"
+   },
+   "url": "https://wafid.com/medical-status-search"
+  },
+  {
+   "title": {
+    "ar": "صلاحية التأشيرة - مقيم",
+    "en": "Visa validity - Muqeem"
+   },
+   "url": "https://muqeem.sa"
+  },
+  {
+   "title": {
+    "ar": "مصادقة الشهادات",
+    "en": "Certificate attestation"
+   },
+   "url": "https://www.mosadaqa.sa"
+  },
+  {
+   "title": {
+    "ar": "التحقق المهني للمؤهل",
+    "en": "Professional verification"
+   },
+   "url": "https://qvp.pacc.sa"
+  },
+  {
+   "title": {
+    "ar": "بوابة مصر الرقمية",
+    "en": "Digital Egypt"
+   },
+   "url": "https://digital.gov.eg"
+  },
+  {
+   "title": {
+    "ar": "نتائج تحاليل معامل وزارة الصحة",
+    "en": "Ministry of Health lab results"
+   },
+   "url": "https://clabresults.mohp.gov.eg"
+  }
+ ],
+ "sections": [],
+ "contact": {
+  "phonesEG": [
+   "+20 1069804443",
+   "+20 1018968026"
+  ],
+  "phonesSA": [
+   "+966 548837852",
+   "+966 549872785"
+  ],
+  "whatsapp": "+201069804443",
+  "email": "info@nisrelkhaleeg.com",
+  "address": {
+   "ar": "113 شارع السودان - الدور الثاني - المهندسين - الجيزة",
+   "en": "113 Sudan St., 2nd Floor, Mohandessin, Giza, Egypt"
+  },
+  "hours": {
+   "ar": "من السبت إلى الخميس، 9 صباحاً حتى 5 مساءً",
+   "en": "Saturday to Thursday, 9:00 - 17:00"
+  },
+  "facebook": "https://www.facebook.com/profile.php?id=100095372133122",
+  "instagram": "",
+  "linkedin": "",
+  "tiktok": "",
+  "website": "nisrelkhaleeg.com",
+  "whatsappCompanies": "",
+  "youtube": "",
+  "mapLink": "https://www.google.com/maps?q=30.0470299,31.1929058&z=17&hl=ar",
+  "slogan": {
+   "ar": "ثقتكم هي أساس نجاحنا",
+   "en": "Your trust is the foundation of our success"
+  }
+ },
+ "profilePdf": "/files/profile.pdf",
+ "images": {
+  "hero": "/uploads/muka43gn-y6yr.png"
+ }
+}

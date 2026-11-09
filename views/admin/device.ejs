@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>جهاز جديد | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <div class="login">
+    <img src="<%= img('logo') %>" alt="">
+    <% if (state === 'pending') { %>
+      <h1>جهازك مستني الموافقة</h1>
+      <div class="flash warn">أهلاً <%= name %>. ده أول دخول من الجهاز ده. المدير لازم يوافق عليه من «الأمان والأجهزة» الأول. كلّمه وبعد الموافقة ادخل تاني.</div>
+    <% } else { %>
+      <h1>الجهاز ده محظور</h1>
+      <div class="flash err">المدير حظر الدخول من الجهاز ده. كلّمه لو ده غلط.</div>
+    <% } %>
+    <a class="btn navy wide" href="/admin/login">الرجوع</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="sec">
+  <div class="wrap narrow">
+    <div class="empty <%= ok ? 'ok' : 'bad' %>">
+      <%- icon(ok ? 'checkcircle' : 'info') %>
+      <p><%= msg %></p>
+      <div class="duo-act">
+        <a class="btn navy" href="<%= L('') %>"><%= t.back_home %></a>
+        <a class="btn wa" href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.cta_wa %></a>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

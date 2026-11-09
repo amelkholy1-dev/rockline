@@ -1,0 +1,96 @@
+<%- include('nav') %>
+<%
+var PAGE = { home: 'الرئيسية', about: 'من نحن', companies: 'للشركات', jobs: 'الوظائف', job: 'صفحة وظيفة', apply: 'سجّل كعامل', guide: 'دليل العامل', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', partners: 'شركاؤنا', other: 'أخرى' };
+var SRC = { direct: 'دخول مباشر أو لينك محفوظ', facebook: 'فيسبوك', google: 'جوجل', instagram: 'إنستجرام', whatsapp: 'واتساب', linkedin: 'لينكدإن', tiktok: 'تيك توك', bing: 'Bing', x: 'X (تويتر)' };
+var T = sum.tot, ev = T.ev;
+var forms = (ev.form_company_email||0) + (ev.form_company_whatsapp||0) + (ev.form_worker_email||0) + (ev.form_worker_whatsapp||0) + (ev.form_contact_email||0) + (ev.form_contact_whatsapp||0);
+var nf = function(x){ return Number(x || 0).toLocaleString('en-US'); };
+var pct = function(a, b){ return b ? Math.round(a * 100 / b) : 0; };
+var maxV = Math.max.apply(null, sum.days.map(function(d){ return d.v; }).concat([1]));
+var nice = function(m){ var p = Math.pow(10, Math.floor(Math.log10(m))); var f = m / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+var top = Math.max(4, nice(maxV));
+var W = 900, H = 240, padL = 8, padR = 40, padT = 12, padB = 26;
+var cw = (W - padL - padR) / sum.days.length, bw = Math.max(3, Math.min(26, cw - 2));
+var y = function(v){ return padT + (H - padT - padB) * (1 - v / top); };
+var fmtD = function(s){ var p = s.split('-'); return Number(p[2]) + '/' + Number(p[1]); };
+%>
+<div class="pthead">
+  <div><h1 class="pt">الإحصائيات</h1><p class="sub">عدد الزيارات ومنين الناس جايين، وكام واحد داس واتساب أو اتصل أو بعت فورم. مفيش كوكيز ولا بيانات شخصية، وزياراتك إنت وإنت داخل لوحة التحكم مش بتتحسب.</p></div>
+  <div class="filters seg">
+    <% [7, 30, 90].forEach(function(d){ %><a href="/admin/stats?days=<%= d %>" class="<%= n === d ? 'on' : '' %>">آخر <%= d %> يوم</a><% }); %>
+  </div>
+</div>
+
+<div class="kpis six">
+  <div class="kpi"><%- icon('eye') %><b><%= nf(T.v) %></b><span>زيارة للصفحات</span></div>
+  <div class="kpi"><%- icon('users') %><b><%= nf(T.u) %></b><span>زائر (تقريباً)</span></div>
+  <div class="kpi"><%- brand('whatsapp') %><b><%= nf(ev.wa_click) %></b><span>ضغطة على واتساب</span></div>
+  <div class="kpi"><%- icon('phone') %><b><%= nf(ev.call_click) %></b><span>ضغطة اتصال</span></div>
+  <div class="kpi"><%- icon('send') %><b><%= nf(forms) %></b><span>فورم اتبعت</span></div>
+  <div class="kpi"><%- icon('download') %><b><%= nf(ev.profile_download) %></b><span>تحميل الملف التعريفي</span></div>
+</div>
+
+<div class="card chart-card">
+  <h2 class="h3">الزيارات كل يوم</h2>
+  <% if (!T.v) { %><p class="muted">لسه مفيش زيارات في الفترة دي. الأرقام هتبدأ تظهر أول ما الموقع يتنشر والناس تدخل عليه.</p><% } %>
+  <div class="chart" data-chart>
+    <svg viewBox="0 0 <%= W %> <%= H %>" role="img" aria-label="الزيارات اليومية">
+      <% [0, 0.5, 1].forEach(function(f){ var v = Math.round(top * f); %>
+        <line x1="<%= padL %>" x2="<%= W - padR %>" y1="<%= y(v) %>" y2="<%= y(v) %>" class="grid"/>
+        <text x="<%= W - padR + 6 %>" y="<%= y(v) + 4 %>" class="ax" text-anchor="start"><%= v %></text>
+      <% }); %>
+      <% sum.days.forEach(function(d, i){ var x = padL + i * cw + (cw - bw) / 2; var y0 = y(0), y1 = y(d.v), h = y0 - y1, r = Math.min(4, bw / 2, h); %>
+        <g class="bar" data-tip="<%= fmtD(d.date) %>: <%= d.v %> زيارة، <%= d.u %> زائر">
+          <rect x="<%= padL + i * cw %>" y="<%= padT %>" width="<%= cw %>" height="<%= H - padT - padB %>" class="hit"/>
+          <% if (d.v) { %><path d="M<%= x %>,<%= y0 %> V<%= y1 + r %> Q<%= x %>,<%= y1 %> <%= x + r %>,<%= y1 %> H<%= x + bw - r %> Q<%= x + bw %>,<%= y1 %> <%= x + bw %>,<%= y1 + r %> V<%= y0 %> Z" class="mark"/><% } %>
+        </g>
+        <% var every = sum.days.length > 31 ? 14 : (sum.days.length > 7 ? 5 : 1); if (i % every === 0 || i === sum.days.length - 1) { %><text x="<%= padL + i * cw + cw / 2 %>" y="<%= H - 8 %>" class="ax" text-anchor="middle"><%= fmtD(d.date) %></text><% } %>
+      <% }); %>
+      <line x1="<%= padL %>" x2="<%= W - padR %>" y1="<%= y(0) %>" y2="<%= y(0) %>" class="base"/>
+    </svg>
+    <div class="tip" hidden></div>
+  </div>
+  <details class="adv"><summary>عرض الأرقام كجدول</summary>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>اليوم</th><th>زيارات</th><th>زوار</th></tr></thead><tbody>
+      <% sum.days.slice().reverse().forEach(function(d){ %><tr><td dir="ltr"><%= d.date %></td><td><%= d.v %></td><td><%= d.u %></td></tr><% }); %>
+    </tbody></table></div>
+  </details>
+</div>
+
+<div class="stat-cols">
+  <div class="card">
+    <h2 class="h3"><%- icon('globe') %> الناس جاية منين</h2>
+    <% var refs = sum.top(T.refs, 8), rs = Object.values(T.refs).reduce(function(a,b){return a+b;}, 0); %>
+    <% if (refs.length) { %><ul class="hbars"><% refs.forEach(function(r){ %><li><span class="hl"><%= SRC[r[0]] || r[0] %></span><span class="hb"><i style="width:<%= pct(r[1], refs[0][1]) %>%"></i></span><b><%= r[1] %></b><small><%= pct(r[1], rs) %>%</small></li><% }); %></ul>
+    <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
+    <p class="muted small">نصيحة: لما تنزّل لينك الموقع في إعلان فيسبوك، زوّد في آخره <code dir="ltr">?utm_source=fb-ad</code> عشان تعرف الإعلان جاب كام زيارة.</p>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('layers') %> أكتر الصفحات زيارة</h2>
+    <% var pages = sum.top(T.pages, 10); %>
+    <% if (pages.length) { %><ul class="hbars"><% pages.forEach(function(r){ %><li><span class="hl"><%= PAGE[r[0]] || r[0] %></span><span class="hb"><i style="width:<%= pct(r[1], pages[0][1]) %>%"></i></span><b><%= r[1] %></b></li><% }); %></ul>
+    <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('briefcase') %> أكتر الوظائف مشاهدة</h2>
+    <% var jb = sum.top(T.jobs, 8); %>
+    <% if (jb.length) { %><ul class="hbars"><% jb.forEach(function(r){ %><li><span class="hl"><%= jobName(r[0]) %></span><span class="hb"><i style="width:<%= pct(r[1], jb[0][1]) %>%"></i></span><b><%= r[1] %></b></li><% }); %></ul>
+    <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
+  </div>
+  <div class="card">
+    <h2 class="h3"><%- icon('send') %> الفورمات اللي اتبعتت</h2>
+    <table class="tbl compact"><thead><tr><th></th><th>واتساب</th><th>إيميل</th></tr></thead><tbody>
+      <tr><td>طلب عمالة (شركات)</td><td><%= ev.form_company_whatsapp || 0 %></td><td><%= ev.form_company_email || 0 %></td></tr>
+      <tr><td>تسجيل عامل</td><td><%= ev.form_worker_whatsapp || 0 %></td><td><%= ev.form_worker_email || 0 %></td></tr>
+      <tr><td>استفسار</td><td><%= ev.form_contact_whatsapp || 0 %></td><td><%= ev.form_contact_email || 0 %></td></tr>
+    </tbody></table>
+    <% var dv = T.dev, dt = (dv.mobile || 0) + (dv.desktop || 0), lg = T.lang, lt = (lg.ar || 0) + (lg.en || 0); %>
+    <div class="split">
+      <div><span>موبايل</span><b><%= pct(dv.mobile || 0, dt) %>%</b></div>
+      <div><span>كمبيوتر</span><b><%= pct(dv.desktop || 0, dt) %>%</b></div>
+      <div><span>عربي</span><b><%= pct(lg.ar || 0, lt) %>%</b></div>
+      <div><span>إنجليزي</span><b><%= pct(lg.en || 0, lt) %>%</b></div>
+    </div>
+  </div>
+</div>
+<%- include('foot') %>

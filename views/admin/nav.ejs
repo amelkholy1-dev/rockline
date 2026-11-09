@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>لوحة التحكم | <%= tr(site.brand.short) %></title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body>
+<div class="ad">
+  <aside class="side" id="side">
+    <a class="side-logo" href="/admin"><img src="<%= img('logo') %>" alt=""><span><b><%= tr(site.brand.short) %></b><small>لوحة التحكم</small></span></a>
+    <nav>
+      <% [
+        ['dash', '/admin', 'home', 'الرئيسية', ''],
+        ['inbox', '/admin/inbox', 'inbox', 'الرسائل', 'inbox'],
+        ['stats', '/admin/stats', 'chart', 'الإحصائيات', 'stats'],
+        ['jobs', '/admin/jobs', 'briefcase', 'الوظائف', 'jobs'],
+        ['news', '/admin/news', 'newspaper', 'الأخبار والمنشورات', 'news'],
+        ['gallery', '/admin/gallery', 'images', 'معرض الصور', 'gallery'],
+        ['content', '/admin/content', 'edit', 'محتوى الموقع', 'content'],
+        ['social', '/admin/social', 'link', 'صفحة روابط التواصل (باركود)', 'social'],
+        ['images', '/admin/images', 'image', 'صور الموقع', 'images'],
+        ['sections', '/admin/sections', 'layers', 'أقسام إضافية', 'sections'],
+        ['contact', '/admin/contact', 'phone', 'بيانات الشركة والتواصل', 'contact'],
+        ['mail', '/admin/mail', 'mail', 'إعدادات الإيميل', 'mail'],
+        ['masar', '/admin/masar', 'link', 'ربط مسار والتقديم', 'masar'],
+        ['facebook', '/admin/facebook', 'facebook', 'ربط فيسبوك', 'facebook'],
+        ['users', '/admin/users', 'users', 'المستخدمين والصلاحيات', 'users'],
+        ['security', '/admin/security', 'shield', 'الأمان والأجهزة', 'users'],
+        ['audit', '/admin/audit', 'clock', 'سجل العمليات', 'audit'],
+        ['hosting', '/admin/hosting', 'clock', 'الاستضافة والتجديد', 'owner'],
+        ['account', '/admin/account', 'key', 'حسابي', '']
+      ].filter(function(n){ return !n[4] || (n[4] === 'owner' ? (me && me.owner) : can(n[4])); }).forEach(function(n){ %>
+        <a href="<%= n[1] %>" class="<%= section === n[0] ? 'on' : '' %>"><%- n[2] === 'facebook' ? brand('facebook') : icon(n[2]) %><span><%= n[3] %></span><% if (n[0] === 'inbox' && unread) { %><i class="badge"><%= unread %></i><% } %><% if (n[0] === 'security' && pendingDev) { %><i class="badge"><%= pendingDev %></i><% } %><% if (n[0] === 'mail' && !mailReady) { %><i class="badge warn">!</i><% } %></a>
+      <% }); %>
+    </nav>
+    <div class="side-foot">
+      <span class="who"><%- icon('user') %> <%= me ? (me.name || me.user) : '' %></span>
+      <a href="/ar" target="_blank"><%- icon('link') %> عرض الموقع</a>
+      <a href="/admin/logout"><%- icon('logout') %> خروج</a>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topb">
+      <button class="menu-btn" id="menuBtn" aria-label="القائمة"><%- icon('menu') %></button>
+      <span class="topb-title"><%= tr(site.brand.name) %></span>
+      <a class="btn sm ghost" href="/ar" target="_blank"><%- icon('link') %> <span class="hide-sm">عرض الموقع</span></a>
+    </header>
+    <div class="content">
+      <% if (flash) { %><div class="flash <%= flash.type %>"><%- icon(flash.type === 'err' ? 'info' : 'checkcircle') %> <%= flash.msg %></div><% } %>
+      <% if (host && section !== 'hosting') { %><div class="flash <%= host.tone %>" id="host-ban"><%- icon('info') %> <span><b><%= host.left > 0 ? host.label + ' هتنتهي بعد ' + host.left + ' يوم' : host.label + ' انتهت!' %></b> (<%= host.until %>) — <% if (me && me.owner) { %><%= host.left > 0 ? 'جدّد أو انقل قبل الميعاد عشان الموقع والسيستم ميقفوش.' : 'الموقع ممكن يقف في أي لحظة — جدّد دلوقتي.' %> <a href="/admin/hosting">إيه المطلوب؟</a><% } else { %><%= host.left > 0 ? 'بلّغ المدير الأساسي عشان يجدد قبل الميعاد — غير كده الموقع والسيستم هيقفوا.' : 'الموقع ممكن يقف في أي لحظة — بلّغ المدير الأساسي يجدد دلوقتي.' %><% } %></span></div><% } %>

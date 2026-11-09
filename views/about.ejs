@@ -1,0 +1,53 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.about_title, sub: tr(site.brand.name) }) %>
+
+<section class="sec">
+  <div class="wrap about-grid">
+    <div class="about-img reveal">
+      <img src="<%= img('about') %>" alt="" width="330" height="400">
+      <div class="about-seal"><img src="<%= img('logo') %>" alt=""><span><%= t.license_short %> <b><%= site.brand.license %></b></span></div>
+    </div>
+    <div class="about-text reveal">
+      <h2><%= tr(site.brand.name) %></h2>
+      <span class="rule start"></span>
+      <p><%= tr(site.about.p1) %></p>
+      <p><%= tr(site.about.p2) %></p>
+      <p class="lic-line"><%- icon('shield') %> <%= t.license %> <b><%= site.brand.license %></b><% if (site.brand.founded) { %> · <%= lang === 'ar' ? 'تأسست' : 'Founded' %> <%= site.brand.founded %><% } %></p>
+      <% if (site.profilePdf) { %><a class="btn gold" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+    </div>
+  </div>
+</section>
+
+<section class="sec sky">
+  <div class="wrap vmv">
+    <article class="bcard reveal"><header><span class="b-ic"><%- icon('eye') %></span><h3><%= t.vision %></h3></header><p><%= tr(site.about.vision) %></p></article>
+    <article class="bcard reveal"><header><span class="b-ic"><%- icon('mission') %></span><h3><%= t.mission %></h3></header><p><%= tr(site.about.mission) %></p></article>
+    <article class="bcard reveal"><header><span class="b-ic"><%- icon('diamond') %></span><h3><%= t.values %></h3></header>
+      <ul class="vals"><% (site.values || []).forEach(function(v){ %><li><span><%- icon(v.icon) %></span><%= tr(v.text) %></li><% }); %></ul></article>
+  </div>
+</section>
+
+<section class="sec navy why">
+  <div class="wrap">
+    <div class="shead light reveal"><h2><%= t.why %></h2><span class="rule"></span></div>
+    <div class="why-grid"><% (site.why || []).forEach(function(w){ %><div class="why-it reveal"><span><%- icon(w.icon) %></span><p><%= tr(w.text) %></p></div><% }); %></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.services %></h2><span class="rule"></span><p><%= t.services_sub %></p></div>
+    <div class="svc-grid"><% (site.services || []).forEach(function(s){ %><article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></article><% }); %></div>
+  </div>
+</section>
+
+<section class="sec sky">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span></div>
+    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><div class="sector reveal"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></div><% }); %></div>
+    <div class="center"><a class="btn navy" href="<%= L('/partners') %>"><%= t.partners %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a></div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

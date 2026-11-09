@@ -1,0 +1,38 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">المستخدمين والصلاحيات</h1><p class="sub">ضيف موظفين يدخلوا لوحة التحكم بإيميلهم، وحدد كل واحد يقدر يفتح إيه بالظبط.</p></div>
+  <a class="btn navy" href="/admin/users/new"><%- icon('plus') %> مستخدم جديد</a>
+</div>
+<div class="table-wrap"><table class="tbl">
+  <thead><tr><th>الاسم</th><th>الإيميل</th><th class="hide-sm">الصلاحيات</th><th>الحالة</th><th></th></tr></thead>
+  <tbody>
+  <% list.forEach(function(u){ %>
+    <tr>
+      <td><b><%= u.name || u.user %></b><br><small class="muted" dir="ltr"><%= u.user %></small><% if (u.id === me.id) { %> <span class="tag">إنت</span><% } %></td>
+      <td dir="ltr"><%= u.email || '—' %></td>
+      <td class="hide-sm">
+        <% if (u.owner) { %><span class="tag k-company">المدير الأساسي: كل الصلاحيات</span>
+        <% } else if (!(u.perms || []).length) { %><span class="muted">مفيش</span>
+        <% } else { %><div class="chips-sm"><% PERMS.filter(function(p){ return (u.perms||[]).includes(p[0]); }).forEach(function(p){ %><span class="tag"><%= p[1] %></span><% }); %></div><% } %>
+        <% if (u.notify) { %><div><small class="muted"><%- icon('bell') %> بيوصله إيميل بالرسائل</small></div><% } %>
+      </td>
+      <td><span class="pill <%= u.active !== false ? 'on' : 'off' %>"><%= u.active !== false ? 'نشط' : 'موقوف' %></span><% if (!u.hash) { %><br><small class="warn-text">لسه ما اختارش كلمة مرور</small><% } %></td>
+      <td class="acts">
+        <% if (!u.owner || me.owner) { %><a class="icon-btn" href="/admin/users/<%= u.id %>/edit" title="تعديل"><%- icon('edit') %></a><% } %>
+        <% if (u.email && mailReady && u.id !== me.id) { %><form method="post" action="/admin/users/<%= u.id %>/invite" data-confirm="نبعت لـ <%= u.email %> لينك يختار منه كلمة مرور جديدة؟"><button class="icon-btn" title="ابعتله لينك كلمة مرور"><%- icon('send') %></button></form><% } %>
+        <% if (!u.owner && u.id !== me.id) { %><form method="post" action="/admin/users/<%= u.id %>/delete" data-confirm="حذف المستخدم ده؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form><% } %>
+      </td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table></div>
+<div class="card" style="margin-top:18px">
+  <h2 class="h3"><%- icon('info') %> إزاي بيشتغل</h2>
+  <ul class="muted">
+    <li>كل مستخدم بيدخل بإيميله أو اسم المستخدم، وبيشوف الأقسام اللي إنت اديتهاله بس.</li>
+    <li>لو ضفت مستخدم من غير كلمة مرور، بيوصله إيميل فيه لينك يختار منه كلمة المرور بنفسه (شغال 48 ساعة).</li>
+    <li>أي حد ينسى كلمة المرور يدوس "نسيت كلمة المرور" في صفحة الدخول، ويوصله لينك على إيميله.</li>
+    <li>"يوصله إيميل بالرسائل" معناها إن أي طلب عمالة أو تسجيل عامل بيتبعت بالإيميل هيوصله نسخة.</li>
+  </ul>
+</div>
+<%- include('foot') %>

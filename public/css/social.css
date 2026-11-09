@@ -1,0 +1,95 @@
+/* صفحة /social — تصميم «لينك واحد» احترافي (زي Linktree) — RTL. متغيرات الثيم في [data-theme]. */
+*{box-sizing:border-box}
+.sbody{margin:0;min-height:100vh;font-family:'Cairo',system-ui,sans-serif;color:var(--ink);
+  background:var(--bg);-webkit-font-smoothing:antialiased;display:flex;justify-content:center;
+  padding:38px 16px calc(38px + env(safe-area-inset-bottom));position:relative;overflow-x:hidden}
+.sbody::before{content:"";position:fixed;inset:0;pointer-events:none;background:var(--glow);opacity:.9}
+
+/* ===== الثيمات ===== */
+.sbody{--ink:#fff;--sub:rgba(255,255,255,.72);--card:rgba(255,255,255,.1);--card-h:rgba(255,255,255,.17);
+  --brd:rgba(255,255,255,.16);--chip:rgba(255,255,255,.16);--chip-ink:#fff;--accent:#38bdf8;--accent2:#2563eb;--cta-ink:#fff;
+  --shadow:0 18px 40px -18px rgba(0,0,0,.55)}
+.sbody[data-theme=midnight]{--bg:linear-gradient(170deg,#13306a,#0a1830 60%,#060f20);--glow:radial-gradient(70% 45% at 50% 0%,rgba(80,130,230,.35),transparent 70%);--accent:#5b8cff;--accent2:#1b3f8f}
+.sbody[data-theme=royal]{--bg:linear-gradient(170deg,#1e40af,#1e3a8a 55%,#0f1f52);--glow:radial-gradient(70% 45% at 50% 0%,rgba(96,165,250,.4),transparent 70%);--accent:#60a5fa;--accent2:#2545b4}
+.sbody[data-theme=green]{--bg:linear-gradient(170deg,#0f7a52,#0a5c3d 60%,#063a27);--glow:radial-gradient(70% 45% at 50% 0%,rgba(52,211,153,.35),transparent 70%);--accent:#34d399;--accent2:#0a7a4f}
+.sbody[data-theme=emerald]{--bg:linear-gradient(170deg,#065f46,#043d2e 60%,#02231a);--glow:radial-gradient(70% 45% at 50% 0%,rgba(16,185,129,.4),transparent 70%);--accent:#2dd4bf;--accent2:#0b6e57}
+.sbody[data-theme=dark]{--bg:linear-gradient(170deg,#26262c,#131317 60%,#09090b);--glow:radial-gradient(70% 45% at 50% 0%,rgba(255,255,255,.12),transparent 70%);--accent:#a1a1aa;--accent2:#3f3f46;--card:rgba(255,255,255,.07);--brd:rgba(255,255,255,.12)}
+.sbody[data-theme=purple]{--bg:linear-gradient(170deg,#7c3aed,#4c1d95 60%,#2a1157);--glow:radial-gradient(70% 45% at 50% 0%,rgba(192,132,252,.4),transparent 70%);--accent:#c084fc;--accent2:#6d28d9}
+.sbody[data-theme=sunset]{--bg:linear-gradient(170deg,#f97316,#be2a63 55%,#6d1b4e);--glow:radial-gradient(70% 45% at 50% 0%,rgba(253,186,116,.4),transparent 70%);--accent:#fdba74;--accent2:#d13d66;--cta-ink:#3a0d20}
+.sbody[data-theme=ocean]{--bg:linear-gradient(170deg,#0e7490,#0c4a6e 60%,#07293c);--glow:radial-gradient(70% 45% at 50% 0%,rgba(56,189,248,.4),transparent 70%);--accent:#38bdf8;--accent2:#0369a1}
+.sbody[data-theme=gold]{--bg:linear-gradient(170deg,#3a2c0c,#1f1704 60%,#0f0b02);--glow:radial-gradient(70% 45% at 50% 0%,rgba(234,179,8,.32),transparent 70%);--accent:#eab308;--accent2:#a16207;--cta-ink:#2a1f05}
+.sbody[data-theme=rose]{--bg:linear-gradient(170deg,#e11d8f,#9d174d 58%,#5c0d35);--glow:radial-gradient(70% 45% at 50% 0%,rgba(251,113,133,.42),transparent 70%);--accent:#fb7185;--accent2:#be185d}
+.sbody[data-theme=sky]{--bg:linear-gradient(170deg,#3b82f6,#1d4ed8 58%,#14307e);--glow:radial-gradient(70% 45% at 50% 0%,rgba(147,197,253,.45),transparent 70%);--accent:#93c5fd;--accent2:#2563eb}
+.sbody[data-theme=light]{--bg:linear-gradient(170deg,#eef3fb,#dde7f3 70%,#cfe0f0);--glow:radial-gradient(70% 45% at 50% 0%,rgba(37,99,235,.12),transparent 70%);--ink:#15233a;--sub:#5a6b85;--card:#fff;--card-h:#fff;--brd:#e3ebf5;--chip:#eef2f9;--chip-ink:#1b3b7a;--accent:#2563eb;--accent2:#1d4ed8;--shadow:0 16px 34px -18px rgba(30,58,120,.35)}
+
+/* ===== التخطيط ===== */
+.wrap{width:100%;max-width:480px;position:relative;z-index:1;animation:fade .5s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.head{text-align:center;margin-bottom:24px}
+.ava-w{width:112px;height:112px;margin:0 auto 14px;border-radius:50%;padding:4px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 30px -10px rgba(0,0,0,.5)}
+.ava{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;display:block}
+.ava.ph{display:grid;place-items:center;padding:12px}
+.ava.ph img{width:100%;height:100%;object-fit:contain;border-radius:50%}
+.name{margin:0;font-size:25px;font-weight:900;letter-spacing:-.3px;line-height:1.3;text-shadow:0 2px 14px rgba(0,0,0,.25)}
+.sbody[data-theme=light] .name{text-shadow:none}
+.tag{margin:7px auto 0;max-width:340px;font-size:14.5px;font-weight:600;color:var(--sub);line-height:1.6}
+
+/* شريط السوشيال الدائري */
+.srow{display:flex;justify-content:center;flex-wrap:wrap;gap:11px;margin-top:16px}
+.srow a{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--chip);color:var(--chip-ink);
+  border:1px solid var(--brd);transition:transform .18s,box-shadow .18s,filter .18s;backdrop-filter:blur(6px)}
+.srow a.br{background:var(--bc);color:#fff;border-color:transparent;box-shadow:0 8px 18px -8px var(--bc)}
+.srow a:hover{transform:translateY(-3px) scale(1.06);filter:brightness(1.07);box-shadow:0 12px 22px -10px rgba(0,0,0,.5)}
+.srow .si{width:23px;height:23px;display:grid;place-items:center}
+.srow svg{width:23px;height:23px;display:block}
+
+/* الأزرار */
+.links{display:flex;flex-direction:column;gap:13px}
+.lnk{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:18px;text-decoration:none;color:var(--ink);
+  background:var(--card);border:1px solid var(--brd);box-shadow:var(--shadow);backdrop-filter:blur(10px);
+  transition:transform .18s,background .18s,box-shadow .18s;position:relative;min-height:66px}
+.sbody[data-btn=pill] .lnk{border-radius:999px;padding-inline:20px}
+.lnk:hover{transform:translateY(-2px);background:var(--card-h);box-shadow:0 20px 40px -16px rgba(0,0,0,.5)}
+.lnk:active{transform:translateY(0) scale(.99)}
+.lnk .ic{width:44px;height:44px;flex:none;border-radius:13px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 16px -8px rgba(0,0,0,.4)}
+.sbody[data-btn=pill] .lnk .ic{border-radius:50%}
+.lnk.br .ic{background:var(--bc)}
+.lnk .ic svg{width:23px;height:23px;display:block}
+.lnk.img .ic{background:#fff;padding:0;overflow:hidden}
+.lnk .ic img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.lnk .t{flex:1;min-width:0;font-weight:800;font-size:16.5px;text-align:center;padding-inline-end:6px}
+.lnk .go{width:20px;height:20px;flex:none;opacity:.4;transition:transform .18s,opacity .18s}
+.lnk:hover .go{opacity:.8;transform:translateX(-4px)}
+/* زر رئيسي (الموقع/التقديم/واتساب) — مملوء بلون مميز */
+.lnk.cta{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:var(--cta-ink);
+  box-shadow:0 16px 34px -14px var(--accent)}
+.lnk.cta .ic{background:rgba(255,255,255,.22);color:var(--cta-ink);box-shadow:none}
+.lnk.cta:hover{filter:brightness(1.05)}
+.lnk.cta .go{opacity:.65}
+
+/* المسؤولين */
+.sec-t{text-align:center;font-size:13px;font-weight:700;color:var(--sub);margin:28px 0 12px;position:relative}
+.sec-t::before,.sec-t::after{content:"";position:absolute;top:50%;width:52px;height:1px;background:var(--brd)}
+.sec-t::before{right:0}.sec-t::after{left:0}
+.people{display:flex;flex-direction:column;gap:11px}
+.person{display:flex;align-items:center;gap:13px;padding:11px 14px;border-radius:16px;background:var(--card);border:1px solid var(--brd);backdrop-filter:blur(10px)}
+.person .pic{width:50px;height:50px;border-radius:50%;object-fit:cover;flex:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}
+.person .pi{flex:1;min-width:0}.person .pi b{display:block;font-size:15.5px;font-weight:800}
+.person .pi span{font-size:13px;color:var(--sub)}
+.person .acts{display:flex;gap:8px;flex:none}
+.person .acts a{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;transition:transform .16s,filter .16s}
+.person .acts a:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.person .acts .c{background:#16a34a}.person .acts .w{background:#25d366}
+.person .acts svg{width:21px;height:21px;display:block}
+
+.empty{text-align:center;color:var(--sub);padding:34px 10px;font-weight:600}
+.foot{text-align:center;margin-top:30px;color:var(--sub);font-size:12.5px}
+.foot a{display:block;color:var(--ink);font-weight:800;font-size:15px;text-decoration:none;margin-bottom:4px}
+
+/* دخول متدرّج للعناصر */
+.rev{animation:rev .45s both}
+@keyframes rev{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.rev,.wrap{animation:none}.lnk,.srow a,.go{transition:none}}
+@media(max-width:380px){.name{font-size:22px}.lnk .t{font-size:15.5px}}

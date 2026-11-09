@@ -1,0 +1,40 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.companies_title, sub: t.companies_sub }) %>
+
+<section class="sec">
+  <div class="wrap co-grid">
+    <div class="co-side reveal">
+      <h2><%= t.process %></h2>
+      <span class="rule start"></span>
+      <ol class="vsteps">
+        <% (site.process || []).forEach(function(s, i){ %><li><span><%= i + 1 %></span><div><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></div></li><% }); %>
+      </ol>
+      <div class="trust">
+        <div><%- icon('shield') %><span><%= t.license %> <b><%= site.brand.license %></b></span></div>
+        <% if (site.profilePdf) { %><a class="btn line-navy" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+      </div>
+    </div>
+    <div class="form-card reveal" id="request">
+      <h2><%= t.f_company_title %></h2>
+      <p class="muted"><%= lang === 'ar' ? 'اكتب احتياجك وابعته بالطريقة اللي تريحك، وهنرد عليك بالترشيحات وخطوات التعاقد.' : 'Tell us what you need and send it the way you prefer. We will reply with shortlists and the contracting steps.' %></p>
+      <%- include('partials/forms', { only: 'company' }) %>
+    </div>
+  </div>
+</section>
+
+<section class="sec sky">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.services %></h2><span class="rule"></span></div>
+    <div class="svc-grid"><% (site.services || []).forEach(function(s){ %><article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></article><% }); %></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span></div>
+    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><div class="sector reveal"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></div><% }); %></div>
+    <div class="center"><a class="btn navy" href="<%= L('/partners') %>"><%= t.partners %></a></div>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,43 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt"><%= tr(album.title) %></h1><p class="sub"><%= items.length %> صورة · <a href="/ar/gallery/<%= album.id %>" target="_blank">عرض على الموقع</a></p></div>
+<a class="btn ghost" href="/admin/gallery"><%- icon('arrowr') %> كل الألبومات</a></div>
+
+<form class="card form" method="post" action="/admin/gallery/<%= album.id %>/upload" enctype="multipart/form-data">
+  <label class="drop"><%- icon('image') %><span>اختار الصور (ممكن تختار لحد 30 صورة مرة واحدة)</span><input type="file" name="images" accept="image/*" multiple required data-preview></label>
+  <div class="preview"></div>
+  <div class="grid2">
+    <label>وصف للصور دي (عربي) - اختياري<input name="caption_ar"></label>
+    <label>الوصف بالإنجليزي<input name="caption_en" dir="ltr"></label>
+  </div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> رفع الصور</button></div>
+</form>
+
+<% if (items.length) { %>
+<div class="gal">
+  <% items.forEach(function(p){ %>
+  <div class="gitem<%= album.cover === p.id ? ' cover' : '' %>">
+    <img src="<%= p.file %>" alt="" loading="lazy">
+    <form method="post" action="/admin/gallery/item/<%= p.id %>/caption" class="cap-form">
+      <input name="caption_ar" value="<%= p.caption ? p.caption.ar : '' %>" placeholder="وصف (عربي)">
+      <input name="caption_en" dir="ltr" value="<%= p.caption ? p.caption.en : '' %>" placeholder="Caption (EN)">
+      <button class="icon-btn" title="حفظ الوصف"><%- icon('check') %></button>
+    </form>
+    <div class="gacts">
+      <form method="post" action="/admin/gallery/item/<%= p.id %>/cover"><button class="btn xs ghost"><%- icon('star') %> <%= album.cover === p.id ? 'الغلاف' : 'اجعلها غلاف' %></button></form>
+      <form method="post" action="/admin/gallery/item/<%= p.id %>/delete" data-confirm="حذف الصورة دي؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<% } %>
+
+<div class="card danger-zone">
+  <form class="inline-form" method="post" action="/admin/gallery/album">
+    <input type="hidden" name="id" value="<%= album.id %>">
+    <label>اسم الألبوم (عربي)<input name="title_ar" value="<%= album.title.ar %>" required></label>
+    <label>بالإنجليزي<input name="title_en" dir="ltr" value="<%= album.title.en %>"></label>
+    <button class="btn ghost" type="submit">حفظ الاسم</button>
+  </form>
+  <form method="post" action="/admin/gallery/album/<%= album.id %>/delete" data-confirm="هيتحذف الألبوم وكل الصور اللي فيه. متأكد؟"><button class="btn sm danger"><%- icon('trash') %> حذف الألبوم كله</button></form>
+</div>
+<%- include('foot') %>

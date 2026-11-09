@@ -1,0 +1,25 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">أقسام إضافية</h1><p class="sub">لو عايز تضيف معلومة أو قسم جديد في الصفحة الرئيسية (عرض، إعلان، معلومة مهمة...)، اعمله هنا واختار مكانه.</p></div>
+  <a class="btn navy" href="/admin/sections/new"><%- icon('plus') %> قسم جديد</a>
+</div>
+<% var posLabel = {}; POSITIONS.forEach(function(p){ posLabel[p[0]] = p[1]; }); %>
+<% if (list.length) { %>
+<div class="list">
+  <% list.forEach(function(s, i){ %>
+  <div class="row static">
+    <% if (s.image) { %><img class="rimg" src="<%= s.image %>" alt=""><% } %>
+    <b><%= tr(s.title) %></b>
+    <span class="muted"><%= posLabel[s.position] %></span>
+    <span class="pill <%= s.visible !== false ? 'on' : 'off' %>"><%= s.visible !== false ? 'ظاهر' : 'مخفي' %></span>
+    <span class="acts">
+      <form method="post" action="/admin/sections/<%= s.id %>/move"><input type="hidden" name="dir" value="up"><button class="icon-btn" title="لفوق"<%= i === 0 ? ' disabled' : '' %>><%- icon('moveup') %></button></form>
+      <form method="post" action="/admin/sections/<%= s.id %>/move"><input type="hidden" name="dir" value="down"><button class="icon-btn" title="لتحت"<%= i === list.length - 1 ? ' disabled' : '' %>><%- icon('chevdown') %></button></form>
+      <a class="icon-btn" href="/admin/sections/<%= s.id %>/edit" title="تعديل"><%- icon('edit') %></a>
+      <form method="post" action="/admin/sections/<%= s.id %>/delete" data-confirm="حذف القسم ده؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
+    </span>
+  </div>
+  <% }); %>
+</div>
+<% } else { %><div class="empty">مفيش أقسام إضافية. الأقسام الأساسية (من نحن، الخدمات، القطاعات...) بتتعدل من <a href="/admin/content">محتوى الموقع</a>.</div><% } %>
+<%- include('foot') %>

@@ -1,0 +1,13 @@
+<% customs(pos).forEach(function(s){ %>
+<section class="sec custom cs-<%= s.style || 'light' %>">
+  <div class="wrap cs-grid<%= s.image ? '' : ' noimg' %>">
+    <div class="cs-text reveal">
+      <h2><%= tr(s.title) %></h2>
+      <span class="rule"></span>
+      <% tr(s.text).split(/\n+/).filter(Boolean).forEach(function(p){ %><p><%= p %></p><% }); %>
+      <% if (s.link && tr(s.btn)) { %><a class="btn gold" href="<%= safeUrl(s.link) %>"<% if (/^https?:/.test(s.link)) { %> target="_blank" rel="noopener"<% } %>><%= tr(s.btn) %></a><% } %>
+    </div>
+    <% if (s.image) { %><div class="cs-img reveal"><img src="<%= s.image %>" alt="<%= tr(s.title) %>" loading="lazy"></div><% } %>
+  </div>
+</section>
+<% }); %>

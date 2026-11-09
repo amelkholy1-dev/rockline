@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<section class="sec">
+  <div class="wrap narrow">
+    <div class="empty">
+      <b class="big404">404</b>
+      <h1><%= t.notfound %></h1>
+      <p><%= t.notfound_sub %></p>
+      <div class="duo-act"><a class="btn navy" href="<%= L('') %>"><%= t.back_home %></a><a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.nav_jobs %></a></div>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

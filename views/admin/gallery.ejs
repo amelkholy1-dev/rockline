@@ -1,0 +1,18 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">معرض الصور</h1><p class="sub">اعمل ألبوم لكل مناسبة (مقابلات، اختبارات، دفعة سفر...) وارفع الصور جواه.</p></div></div>
+<form class="card form inline-form" method="post" action="/admin/gallery/album">
+  <label>اسم ألبوم جديد (عربي) <em>*</em><input name="title_ar" required placeholder="مثال: اختبارات السواقين - سبتمبر"></label>
+  <label>الاسم بالإنجليزي<input name="title_en" dir="ltr" placeholder="Drivers trade test - September"></label>
+  <button class="btn navy" type="submit"><%- icon('plus') %> إنشاء ألبوم</button>
+</form>
+<% if (albums.length) { %>
+<div class="albums">
+  <% albums.forEach(function(a){ %>
+  <a class="album" href="/admin/gallery/<%= a.id %>">
+    <div class="aimg"><% if (a.coverFile) { %><img src="<%= a.coverFile %>" alt=""><% } else { %><span><%- icon('images') %></span><% } %></div>
+    <b><%= tr(a.title) %></b><small><%= a.count %> صورة</small>
+  </a>
+  <% }); %>
+</div>
+<% } else { %><div class="empty">مفيش ألبومات لسه. اكتب اسم ألبوم فوق ودوس "إنشاء ألبوم".</div><% } %>
+<%- include('foot') %>

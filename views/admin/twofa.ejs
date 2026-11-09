@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>التحقق الثنائي | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <form class="login" method="post" action="/admin/2fa" autocomplete="off">
+    <img src="<%= img('logo') %>" alt="">
+    <h1>التحقق الثنائي</h1>
+    <p>أهلاً <%= name %>. اكتب الكود المكوّن من 6 أرقام من تطبيق المصادقة (Google Authenticator أو غيره)، أو كود طوارئ.</p>
+    <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+    <label>الكود<input name="code" dir="ltr" inputmode="numeric" autocomplete="one-time-code" maxlength="20" required autofocus></label>
+    <label class="remember"><input type="checkbox" name="remember" value="1"> افتكر الجهاز ده 30 يوم (مش هيطلب الكود تاني على نفس الجهاز)</label>
+    <button class="btn navy wide" type="submit">تأكيد</button>
+    <a href="/admin/login">الرجوع لتسجيل الدخول</a>
+  </form>
+</body>
+</html>

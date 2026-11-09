@@ -1,0 +1,13 @@
+<div class="ccards reveal">
+  <% if ((site.contact.phonesEG||[]).length) { %>
+  <div class="cc"><span class="cc-ic"><%- icon('phone') %></span><div><h3><%= t.office_eg %></h3><% site.contact.phonesEG.forEach(function(p){ %><a href="<%= tel(p) %>" dir="ltr"><%= p %></a><% }); %></div></div>
+  <% } %>
+  <% if ((site.contact.phonesSA||[]).length) { %>
+  <div class="cc"><span class="cc-ic"><%- icon('phone') %></span><div><h3><%= t.office_sa %></h3><% site.contact.phonesSA.forEach(function(p){ %><a href="<%= tel(p) %>" dir="ltr"><%= p %></a><% }); %></div></div>
+  <% } %>
+  <div class="cc wa-cc"><span class="cc-ic"><%- brand('whatsapp') %></span><div><h3><%= t.whatsapp %></h3><a href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" dir="ltr"><%= site.contact.whatsapp %></a></div></div>
+  <% if (site.contact.email) { %>
+  <div class="cc"><span class="cc-ic"><%- icon('mail') %></span><div><h3><%= t.email %></h3><a href="mailto:<%= site.contact.email %>" dir="ltr"><%= site.contact.email %></a></div></div>
+  <% } %>
+  <div class="cc wide"><span class="cc-ic"><%- icon('map') %></span><div><h3><%= t.address %></h3><a href="<%= mapUrl %>" target="_blank" rel="noopener"><%= tr(site.contact.address) %></a><% if (tr(site.contact.hours)) { %><small><%- icon('clock') %> <%= tr(site.contact.hours) %></small><% } %></div></div>
+</div>

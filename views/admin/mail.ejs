@@ -1,0 +1,27 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">إعدادات الإيميل</h1><p class="sub">عشان رسايل الفورمات توصل على إيميل الشركة لما الزائر يدوس "إرسال بالإيميل".</p></div></div>
+<div class="flash <%= mailReady ? 'ok' : 'warn' %>"><%- icon(mailReady ? 'checkcircle' : 'info') %> <%= mailReady ? 'الإيميل متظبط. جرّب رسالة تجربة عشان تتأكد.' : 'الإيميل لسه مش متظبط: ناقص كلمة مرور صندوق البريد. ولحد ما تتظبط، زرار "إرسال بالإيميل" مش هيظهر للزوار، والواتساب شغال عادي.' %></div>
+<form class="card form" method="post" action="/admin/mail">
+  <div class="grid2">
+    <label>الإيميل اللي هيبعت منه الموقع<input name="user" dir="ltr" value="<%= mail.user || '' %>" placeholder="info@nisrelkhaleeg.com"><small>لازم يكون صندوق بريد حقيقي على الدومين.</small></label>
+    <label>كلمة مرور صندوق البريد<input type="password" name="pass" dir="ltr" autocomplete="new-password" placeholder="<%= mail.pass || envPass ? '•••••••• (محفوظة، سيبها فاضية لو مش عايز تغيّرها)' : 'اكتب كلمة المرور' %>"></label>
+    <label class="span2">الرسايل توصل على<input name="to" dir="ltr" value="<%= mail.to || '' %>" placeholder="info@nisrelkhaleeg.com"><small>ممكن تكتب أكتر من إيميل بينهم فاصلة، مثلاً: info@nisrelkhaleeg.com, mahmoud-elmearag@nisrelkhaleeg.com</small></label>
+    <label>اسم المرسل<input name="fromName" value="<%= mail.fromName || '' %>"></label>
+    <span></span>
+  </div>
+  <details class="adv">
+    <summary>إعدادات السيرفر (متغيرهاش غير لو عارف)</summary>
+    <div class="grid2">
+      <label>SMTP Host<input name="host" dir="ltr" value="<%= mail.host || 'smtp.hostinger.com' %>"></label>
+      <label>Port<input name="port" dir="ltr" value="<%= mail.port || 465 %>"></label>
+      <label class="check"><input type="checkbox" name="secure"<%= mail.secure !== false ? ' checked' : '' %>> SSL (مع بورت 465)</label>
+    </div>
+    <small class="muted">إعدادات Hostinger: smtp.hostinger.com وبورت 465 مع SSL.</small>
+  </details>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button></div>
+</form>
+<form class="card inline-form" method="post" action="/admin/mail/test">
+  <p>بعد الحفظ، ابعت رسالة تجربة واتأكد إنها وصلت (بص في الـ Spam كمان).</p>
+  <button class="btn ghost" type="submit"<%= mailReady ? '' : ' disabled' %>><%- icon('send') %> إرسال رسالة تجربة</button>
+</form>
+<%- include('foot') %>

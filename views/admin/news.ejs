@@ -1,0 +1,26 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">الأخبار والمنشورات</h1><p class="sub">عقود جديدة، دفعات سافرت، مقابلات، زيارات، إعلانات... أي حاجة عايز العملاء يشوفوها.</p></div>
+  <a class="btn navy" href="/admin/news/new"><%- icon('plus') %> خبر جديد</a>
+</div>
+<% if (news.length) { %>
+<div class="cards3">
+  <% news.forEach(function(n){ %>
+  <div class="ncard">
+    <div class="nimg"><% if (n.image) { %><img src="<%= n.image %>" alt=""><% } else { %><span><%- icon('image') %></span><% } %></div>
+    <div class="nbody">
+      <time><%= fmtDate(n.date) %></time>
+      <b><%= tr(n.title) %></b>
+      <% if ((n.fb || []).length) { %><a class="small" href="<%= n.fb[n.fb.length - 1].url %>" target="_blank" rel="noopener"><%- brand('facebook') %> اتنشر على فيسبوك</a><% } %>
+      <div class="acts">
+        <a class="icon-btn" href="/ar/news/<%= n.id %>" target="_blank" title="عرض"><%- icon('eye') %></a>
+        <a class="icon-btn" href="/admin/news/<%= n.id %>/edit" title="تعديل"><%- icon('edit') %></a>
+        <% if (fbConnected) { %><form method="post" action="/admin/news/<%= n.id %>/facebook" data-confirm="تنشر الخبر ده على صفحة فيسبوك؟"><button class="icon-btn fb-ic-btn" title="انشر على فيسبوك"><%- brand('facebook') %></button></form><% } %>
+        <form method="post" action="/admin/news/<%= n.id %>/delete" data-confirm="متأكد إنك عايز تحذف الخبر ده؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<% } else { %><div class="empty">مفيش أخبار لسه. <a href="/admin/news/new">اكتب أول خبر</a></div><% } %>
+<%- include('foot') %>

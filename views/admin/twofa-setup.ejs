@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>تفعيل التحقق الثنائي | لوحة التحكم</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/admin.css?v=7">
+</head>
+<body class="login-page">
+  <form class="login" method="post" action="<%= action %>" autocomplete="off" style="max-width:460px">
+    <img src="<%= img('logo') %>" alt="">
+    <% if (stage === 'codes') { %>
+      <h1>أكواد الطوارئ</h1>
+      <p>اتفعّل التحقق الثنائي. احفظ الأكواد دي في مكان آمن (مرة واحدة بس بتظهر). كل كود بيتستخدم مرة لو ضاع موبايلك.</p>
+      <pre dir="ltr" style="background:#f1f4f9;padding:12px;border-radius:10px;text-align:center;line-height:1.9;margin:0"><%= codes.join('\n') %></pre>
+      <button class="btn navy wide" type="submit">حفظتها — كمّل الدخول</button>
+    <% } else { %>
+      <h1>فعّل التحقق الثنائي</h1>
+      <p>أهلاً <%= name %>. حسابك محتاج تحقق ثنائي عشان صلاحياته. خطوتين:</p>
+      <ol style="text-align:start;margin:0;padding-inline-start:20px;line-height:1.9">
+        <li>ثبّت تطبيق مصادقة (Google Authenticator / Microsoft Authenticator / Authy) وضيف حساب بالمفتاح ده:</li>
+      </ol>
+      <code dir="ltr" style="word-break:break-all;display:block;padding:10px;font-size:1.05rem;letter-spacing:1px"><%= secret %></code>
+      <a href="<%= uri %>">لو على الموبايل نفسه: افتحه في التطبيق</a>
+      <small class="muted">(نوع الحساب: مرتبط بالوقت / Time-based)</small>
+      <% if (error) { %><div class="flash err"><%= error %></div><% } %>
+      <label>2) اكتب الكود اللي ظهر في التطبيق<input name="code" dir="ltr" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required autofocus></label>
+      <button class="btn navy wide" type="submit">تفعيل</button>
+      <a href="/admin/login">إلغاء</a>
+    <% } %>
+  </form>
+</body>
+</html>

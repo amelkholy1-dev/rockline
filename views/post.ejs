@@ -1,0 +1,33 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: tr(item.title), parent: ['/news', t.nav_news] }) %>
+<%
+var imgs = item.images || (item.image ? [item.image] : []);
+var yt = (item.video || '').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
+%>
+<section class="sec">
+  <div class="wrap post">
+    <time class="post-date"><%- icon('calendar') %> <%= fmtDate(item.date) %></time>
+    <% if (imgs[0]) { %><img class="post-cover" src="<%= imgs[0] %>" alt="<%= tr(item.title) %>"><% } %>
+    <div class="prose"><% tr(item.text).split(/\n/).forEach(function(l){ if (l.trim()) { %><p><%= l %></p><% } }); %></div>
+    <% if (yt) { %><div class="video"><iframe src="https://www.youtube-nocookie.com/embed/<%= yt[1] %>" title="video" loading="lazy" allowfullscreen></iframe></div>
+    <% } else if (item.video) { %><p><a class="btn line-navy" href="<%= safeUrl(item.video) %>" target="_blank" rel="noopener"><%- icon('video') %> <%= lang === 'ar' ? 'شاهد الفيديو' : 'Watch the video' %></a></p><% } %>
+    <% if (imgs.length > 1) { %>
+      <div class="pgrid" data-lightbox><% imgs.slice(1).forEach(function(p){ %><a class="ph-it" href="<%= p %>"><img src="<%= p %>" alt="" loading="lazy"></a><% }); %></div>
+    <% } %>
+    <div class="post-share">
+      <a class="btn wa sm" href="https://wa.me/?text=<%= encodeURIComponent(tr(item.title) + ' ' + baseUrl + '/' + lang + '/news/' + item.id) %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.share %></a>
+      <a class="btn line-navy sm" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(baseUrl + '/' + lang + '/news/' + item.id) %>" target="_blank" rel="noopener"><%- brand('facebook') %> Facebook</a>
+    </div>
+  </div>
+  <% if (more.length) { %>
+  <div class="wrap">
+    <div class="shead"><h2><%= t.news %></h2><span class="rule"></span></div>
+    <div class="news-grid"><% more.forEach(function(n){ %>
+      <article class="ncard"><a class="nc-img" href="<%= L('/news/' + n.id) %>"><% if (n.image) { %><img src="<%= n.image %>" alt="" loading="lazy"><% } else { %><img src="<%= img('logo') %>" alt="" class="ph" loading="lazy"><% } %></a>
+      <div class="nc-body"><time><%- icon('calendar') %> <%= fmtDate(n.date) %></time><h3><a href="<%= L('/news/' + n.id) %>"><%= tr(n.title) %></a></h3></div></article>
+    <% }); %></div>
+  </div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>
