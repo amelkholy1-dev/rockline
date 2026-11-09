@@ -106,7 +106,6 @@ function underCon() {
 const UC_SKIP = /^\/(admin|p|t|health|robots\.txt|sitemap\.xml|favicon\.ico|css|js|img|uploads|fonts|vendor)(\/|$)/;
 app.use((req, res, next) => {
   if (UC_SKIP.test(req.path) || !underCon()) return next();
-  if (req.session && req.session.uid && users.byId(req.session.uid)) return next(); // الأدمن بيشوف الموقع الحقيقي
   res.status(503).set('Retry-After', '3600').render('maintenance', { site: store.get('site') || {}, year: new Date().getFullYear() });
 });
 
