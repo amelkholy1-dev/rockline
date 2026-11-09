@@ -10,7 +10,7 @@
 <div class="flash <%= underCon ? 'warn' : 'ok' %>" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
   <%- icon(underCon ? 'shield' : 'checkcircle') %>
   <span style="flex:1;min-width:200px"><b>الموقع للزوار:</b>
-    <%= underCon ? '🔧 تحت التطوير — الزوار (وإنت كمان) تشوفوا صفحة «تحت التطوير»، ولوحة التحكم /admin شغّالة عادي.' : '✅ ظاهر للعامة.' %></span>
+    <%= underCon ? '🔧 تحت التطوير — الزوار يشوفوا صفحة «تحت التطوير»، وإنت (وإنت مسجّل دخول) بتشوف الموقع الحقيقي.' : '✅ ظاهر للعامة.' %></span>
   <form method="post" action="/admin/under-construction" style="margin:0">
     <input type="hidden" name="on" value="<%= underCon ? '0' : '1' %>">
     <button class="btn <%= underCon ? 'navy' : 'line-navy' %> sm" type="submit"><%= underCon ? 'اعرض الموقع للعامة' : 'حطّه تحت التطوير' %></button>

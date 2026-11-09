@@ -95,7 +95,7 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 12, httpOnly: true, sameSite: 'lax', secure: 'auto' }
 }));
 
-/* وضع «تحت التطوير»: الزوار يشوفوا صفحة مؤقتة، والأدمن يدخل ويشوف الموقع الحقيقي عادي.
+/* وضع «تحت التطوير»: الزوار يشوفوا صفحة مؤقتة، والمدير المسجّل دخوله يشوف الموقع الحقيقي (وفوقه شريط تنبيه).
    بيتحكم فيه إعداد محفوظ (site.underConstruction) + متغير UNDER_CONSTRUCTION. كل البيانات محفوظة — مجرد واجهة. */
 function underCon() {
   const e = String(process.env.UNDER_CONSTRUCTION || '').toLowerCase().trim();
@@ -104,8 +104,20 @@ function underCon() {
   return (store.get('site') || {}).underConstruction !== false; // افتراضي: مفعّل
 }
 const UC_SKIP = /^\/(admin|p|t|health|robots\.txt|sitemap\.xml|favicon\.ico|css|js|img|uploads|fonts|vendor)(\/|$)/;
+// المدير المسجّل دخوله (نفس شروط لوحة التحكم: حساب شغّال + الجلسة سليمة + التحقق الثنائي لو مطلوب) بيشوف الموقع الحقيقي
+function ucAdmin(req) {
+  const u = req.session && req.session.uid && users.byId(req.session.uid);
+  if (!u || u.active === false || (req.session.ver || 0) !== (u.tokenVer || 0)) return false;
+  return !(users.twoFaRequired(u) && !users.twoFaOn(u));
+}
 app.use((req, res, next) => {
   if (UC_SKIP.test(req.path) || !underCon()) return next();
+  if (ucAdmin(req)) {
+    // نسخة المدير متتخزنش في أي كاش ومتتأرشفش، عشان الزوار ميشوفوهاش بالغلط
+    res.set({ 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow' });
+    res.locals.ucPreview = true;
+    return next();
+  }
   res.status(503).set('Retry-After', '3600').render('maintenance', { site: store.get('site') || {}, year: new Date().getFullYear() });
 });
 

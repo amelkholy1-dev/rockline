@@ -1,3 +1,9 @@
+<% if (typeof ucPreview !== 'undefined' && ucPreview) { %>
+<div class="uc-preview" role="status" style="background:#b45309;color:#fff;text-align:center;font-size:14px;padding:8px 16px;line-height:1.6">
+  🔧 الموقع «تحت التطوير»: إنت شايف الموقع الحقيقي لأنك مسجّل دخول كمدير، والزوار شايفين صفحة «تحت التطوير».
+  <a href="/admin" style="color:#fff;text-decoration:underline;font-weight:700;margin-inline-start:6px">لوحة التحكم</a>
+</div>
+<% } %>
 <div class="topbar"><div class="wrap">
   <span class="tb-lic"><%- icon('shield') %> <%= t.license %> <b><%= site.brand.license %></b></span>
   <span class="tb-links">
