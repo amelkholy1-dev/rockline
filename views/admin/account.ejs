@@ -3,7 +3,7 @@
 <form class="card form narrow" method="post" action="/admin/account">
   <label>الاسم<input name="name" value="<%= me.name || '' %>"></label>
   <label>اسم المستخدم<input name="user" dir="ltr" value="<%= me.user %>" autocomplete="username" required></label>
-  <label>الإيميل<input type="email" name="email" dir="ltr" value="<%= me.email || '' %>" autocomplete="email" placeholder="name@nisrelkhaleeg.com"><small>تقدر تدخل بيه بدل اسم المستخدم، وعليه بيوصل لينك استرجاع كلمة المرور.</small></label>
+  <label>الإيميل<input type="email" name="email" dir="ltr" value="<%= me.email || '' %>" autocomplete="email" placeholder="name@rocklineg.com"><small>تقدر تدخل بيه بدل اسم المستخدم، وعليه بيوصل لينك استرجاع كلمة المرور.</small></label>
   <% if (can('inbox')) { %><label class="check"><input type="checkbox" name="notify"<%= me.notify ? ' checked' : '' %>> يوصلني إيميل بكل رسالة جديدة من الموقع</label><% } %>
   <hr>
   <label>كلمة مرور جديدة (سيبها فاضية لو مش عايز تغيّرها)<input type="password" name="pass" autocomplete="new-password" minlength="6"><small>6 خانات على الأقل: حرف إنجليزي كبير وصغير ورقم ورمز. تغييرها بيفصل أي جهاز تاني.</small></label>

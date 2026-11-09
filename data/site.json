@@ -1,527 +1,524 @@
 {
  "brand": {
   "name": {
-   "ar": "شركة نسر الخليج لإلحاق العمالة المصرية بالخارج",
-   "en": "Nasr Al-Khaleej for Egyptian Manpower Recruitment Abroad"
+   "ar": "روك لاين جروب للمقاولات العامة",
+   "en": "Rock Line Group for General Contracting"
   },
   "short": {
-   "ar": "نسر الخليج",
-   "en": "Nasr Al-Khaleej"
+   "ar": "روك لاين",
+   "en": "Rock Line"
   },
   "tagline": {
-   "ar": "كفاءات مصرية .. لفرص عالمية",
-   "en": "Egyptian Talents .. Global Opportunities"
+   "ar": "نبني بثقة .. ونسلّم بإتقان",
+   "en": "Built on trust, delivered with precision"
   },
-  "license": "863",
+  "license": "",
+  "grade": "",
+  "cr": "",
+  "tax": "",
   "founded": ""
  },
  "hero": {
   "badge": {
-   "ar": "حلول الموارد البشرية والتوظيف الدولي",
-   "en": "HR solutions & international recruitment"
+   "ar": "مقاولات عامة · إنشاءات · تشطيبات · بنية تحتية",
+   "en": "General contracting · Construction · Finishing · Infrastructure"
   },
   "title": {
-   "ar": "كفاءات مصرية .. لفرص عالمية",
-   "en": "Egyptian talent for global opportunities"
+   "ar": "نبني مشروعك من الأساس حتى التسليم",
+   "en": "We build your project from foundation to handover"
   },
   "sub": {
-   "ar": "نوفر الكفاءات المصرية المؤهلة للشركات والمؤسسات في دول الخليج والأسواق الدولية، من تحديد الاحتياج حتى وصول العامل إلى مقر العمل.",
-   "en": "We provide qualified Egyptian professionals and workers to companies across the Gulf and international markets, from defining the need to the worker's arrival on site."
+   "ar": "روك لاين جروب شركة مقاولات عامة بتنفّذ المشروعات السكنية والتجارية والإدارية والصناعية وأعمال البنية التحتية، بفريق هندسي متخصص والتزام كامل بالجودة والسلامة والجدول الزمني.",
+   "en": "Rock Line Group is a general contractor delivering residential, commercial, administrative and industrial buildings and infrastructure works, with a specialised engineering team and full commitment to quality, safety and schedule."
   }
  },
  "points": [
   {
-   "icon": "handshake",
-   "text": {
-    "ar": "ثقة",
-    "en": "Trust"
-   }
-  },
-  {
-   "icon": "gear",
-   "text": {
-    "ar": "كفاءة",
-    "en": "Efficiency"
-   }
-  },
-  {
-   "icon": "users",
-   "text": {
-    "ar": "التزام",
-    "en": "Commitment"
-   }
-  },
-  {
-   "icon": "chart",
-   "text": {
-    "ar": "مستقبل أفضل",
-    "en": "A better future"
-   }
-  }
- ],
- "stats": [
-  {
-   "value": "10",
-   "label": {
-    "ar": "دول خليجية نعمل بها",
-    "en": "Gulf countries served"
-   }
-  },
-  {
-   "value": "9",
-   "label": {
-    "ar": "قطاعات نوفر لها العمالة",
-    "en": "Sectors we supply"
-   }
-  },
-  {
-   "value": "70+",
-   "label": {
-    "ar": "شركة شريكة",
-    "en": "Partner companies"
-   }
-  },
-  {
-   "value": "",
-   "label": {
-    "ar": "عامل سافر عن طريقنا",
-    "en": "Workers placed"
-   }
-  }
- ],
- "about": {
-  "p1": {
-   "ar": "شركة نسر الخليج شركة متخصصة في حلول الموارد البشرية والتوظيف الدولي، وتعمل على ربط الكفاءات المصرية المتميزة باحتياجات الشركات والمؤسسات داخل دول الخليج والأسواق الدولية.",
-   "en": "Nasr Al-Khaleej specialises in human resources solutions and international recruitment, connecting skilled Egyptian talent with the needs of companies across the Gulf and international markets."
-  },
-  "p2": {
-   "ar": "نعتمد على منظومة عمل احترافية تبدأ من استقطاب المرشحين، ثم الاختيار والتقييم، وإجراء المقابلات، وتجهيز الملفات، ومتابعة إجراءات التعاقد والسفر، بما يضمن توفير عناصر مؤهلة تلبي متطلبات العملاء بكفاءة وسرعة.",
-   "en": "We follow a professional workflow that starts with sourcing candidates, then screening and assessment, interviews, file preparation, and follow-up of contracting and travel, to deliver qualified staff that match client requirements quickly and reliably."
-  },
-  "vision": {
-   "ar": "أن نكون شريكاً موثوقاً ورائداً في تقديم خدمات التوظيف الدولي وحلول الموارد البشرية، وأن نبني شراكات طويلة المدى تقوم على الثقة والجودة والالتزام.",
-   "en": "To be a trusted, leading partner in international recruitment and HR solutions, building long-term partnerships based on trust, quality and commitment."
-  },
-  "mission": {
-   "ar": "تقديم خدمات توظيف احترافية تركز على الجودة وسرعة الإنجاز ودقة الاختيار، مع الحفاظ على حقوق جميع الأطراف وتحقيق قيمة حقيقية لعملائنا.",
-   "en": "Delivering professional recruitment services focused on quality, speed and accurate selection, protecting the rights of all parties and creating real value for our clients."
-  }
- },
- "values": [
-  {
-   "icon": "handshake",
-   "text": {
-    "ar": "الثقة",
-    "en": "Trust"
-   }
-  },
-  {
    "icon": "award",
    "text": {
-    "ar": "الجودة",
+    "ar": "جودة",
     "en": "Quality"
-   }
-  },
-  {
-   "icon": "users",
-   "text": {
-    "ar": "الالتزام",
-    "en": "Commitment"
-   }
-  },
-  {
-   "icon": "timer",
-   "text": {
-    "ar": "السرعة",
-    "en": "Speed"
    }
   },
   {
    "icon": "shield",
    "text": {
-    "ar": "المصداقية",
-    "en": "Credibility"
-   }
-  }
- ],
- "services": [
-  {
-   "icon": "filesearch",
-   "title": {
-    "ar": "تحليل احتياجات العميل",
-    "en": "Client needs analysis"
-   },
-   "desc": {
-    "ar": "دراسة متطلبات الوظائف والتخصصات المطلوبة بدقة.",
-    "en": "Precise study of the required roles and specialisations."
-   }
-  },
-  {
-   "icon": "usersearch",
-   "title": {
-    "ar": "استقطاب الكفاءات",
-    "en": "Sourcing talent"
-   },
-   "desc": {
-    "ar": "البحث عن أفضل المرشحين وفقاً للمهارات والخبرات المطلوبة.",
-    "en": "Finding the best candidates according to the required skills and experience."
-   }
-  },
-  {
-   "icon": "clipboard",
-   "title": {
-    "ar": "الاختيار والتقييم",
-    "en": "Screening and assessment"
-   },
-   "desc": {
-    "ar": "إجراء اختبارات وتقييمات مهنية لضمان جودة الترشيح.",
-    "en": "Trade tests and professional assessments to guarantee the quality of shortlists."
-   }
-  },
-  {
-   "icon": "interview",
-   "title": {
-    "ar": "المقابلات المهنية",
-    "en": "Professional interviews"
-   },
-   "desc": {
-    "ar": "تنظيم المقابلات حضورياً أو أونلاين بما يواكب احتياجات العميل.",
-    "en": "Organising interviews on site or online to suit the client."
-   }
-  },
-  {
-   "icon": "folder",
-   "title": {
-    "ar": "تجهيز الملفات",
-    "en": "File preparation"
-   },
-   "desc": {
-    "ar": "استكمال المستندات والوثائق المطلوبة بدقة واحترافية.",
-    "en": "Completing all required documents accurately and professionally."
-   }
-  },
-  {
-   "icon": "plane",
-   "title": {
-    "ar": "متابعة التعاقد والسفر",
-    "en": "Contracting and travel"
-   },
-   "desc": {
-    "ar": "متابعة الخطوات النهائية حتى الوصول إلى جهة التوظيف.",
-    "en": "Following the final steps until arrival at the employer's site."
-   }
-  }
- ],
- "process": [
-  {
-   "icon": "doc",
-   "title": {
-    "ar": "تحديد الاحتياج",
-    "en": "Defining the need"
-   },
-   "desc": {
-    "ar": "نتفق معك على المهن والعدد والمواصفات والرواتب.",
-    "en": "We agree on trades, headcount, specifications and salaries."
-   }
-  },
-  {
-   "icon": "usersearch",
-   "title": {
-    "ar": "الاستقطاب",
-    "en": "Sourcing"
-   },
-   "desc": {
-    "ar": "نرشّح من قاعدة بياناتنا ومن إعلاناتنا المعتمدة.",
-    "en": "We shortlist from our database and from approved advertisements."
-   }
-  },
-  {
-   "icon": "clipboard",
-   "title": {
-    "ar": "الاختيار",
-    "en": "Selection"
-   },
-   "desc": {
-    "ar": "اختبارات ومقابلات مهنية أمامك حضورياً أو أونلاين.",
-    "en": "Trade tests and interviews in your presence, on site or online."
-   }
-  },
-  {
-   "icon": "folder",
-   "title": {
-    "ar": "التجهيز",
-    "en": "Processing"
-   },
-   "desc": {
-    "ar": "الكشف الطبي والبصمة والتأشيرة واستكمال الملفات.",
-    "en": "Medical examination, fingerprints, visa and document completion."
-   }
-  },
-  {
-   "icon": "plane",
-   "title": {
-    "ar": "التعاقد والسفر",
-    "en": "Contract and travel"
-   },
-   "desc": {
-    "ar": "متابعة حتى استلام الكوادر في مقر العمل.",
-    "en": "Follow-up until the staff are received at the workplace."
-   }
-  }
- ],
- "sectors": [
-  {
-   "icon": "crane",
-   "name": {
-    "ar": "المقاولات والإنشاءات",
-    "en": "Construction & contracting"
-   }
-  },
-  {
-   "icon": "hardhat",
-   "name": {
-    "ar": "القطاع الهندسي والفني",
-    "en": "Engineering & technical"
-   }
-  },
-  {
-   "icon": "medical",
-   "name": {
-    "ar": "القطاع الطبي",
-    "en": "Medical"
-   }
-  },
-  {
-   "icon": "factory",
-   "name": {
-    "ar": "المصانع والإنتاج",
-    "en": "Factories & production"
-   }
-  },
-  {
-   "icon": "restaurant",
-   "name": {
-    "ar": "المطاعم والضيافة",
-    "en": "Restaurants & catering"
-   }
-  },
-  {
-   "icon": "hotel",
-   "name": {
-    "ar": "الفنادق والسياحة",
-    "en": "Hotels & tourism"
-   }
-  },
-  {
-   "icon": "truck",
-   "name": {
-    "ar": "النقل والخدمات اللوجستية",
-    "en": "Transport & logistics"
-   }
-  },
-  {
-   "icon": "briefcase",
-   "name": {
-    "ar": "الكوادر الإدارية والمهنية",
-    "en": "Administrative & professional"
-   }
-  }
- ],
- "why": [
-  {
-   "icon": "database",
-   "text": {
-    "ar": "قاعدة بيانات واسعة من الكفاءات في كل المهن",
-    "en": "A wide candidate database across every trade"
-   }
-  },
-  {
-   "icon": "checkcircle",
-   "text": {
-    "ar": "اختيار دقيق وفق متطلبات العميل",
-    "en": "Accurate selection against client requirements"
+    "ar": "سلامة",
+    "en": "Safety"
    }
   },
   {
    "icon": "timer",
    "text": {
-    "ar": "سرعة في الترشيح والاستجابة",
-    "en": "Fast shortlisting and response"
-   }
-  },
-  {
-   "icon": "globe",
-   "text": {
-    "ar": "خبرة في أسواق الخليج والأسواق الدولية",
-    "en": "Experience in Gulf and international markets"
+    "ar": "التزام بالمواعيد",
+    "en": "On time"
    }
   },
   {
    "icon": "handshake",
    "text": {
-    "ar": "مصداقية والتزام في التنفيذ",
-    "en": "Credibility and commitment in execution"
-   }
-  },
-  {
-   "icon": "headset",
-   "text": {
-    "ar": "متابعة مستمرة حتى استلام الكوادر",
-    "en": "Continuous follow-up until staff are received"
+    "ar": "شفافية",
+    "en": "Transparency"
    }
   }
  ],
- "countries": [
+ "stats": [
+  {
+   "value": "15+",
+   "label": {
+    "ar": "سنة خبرة",
+    "en": "Years of experience"
+   }
+  },
+  {
+   "value": "120+",
+   "label": {
+    "ar": "مشروع منفّذ",
+    "en": "Projects delivered"
+   }
+  },
+  {
+   "value": "350+",
+   "label": {
+    "ar": "مهندس وفني",
+    "en": "Engineers & technicians"
+   }
+  },
+  {
+   "value": "80+",
+   "label": {
+    "ar": "معدة وآلة",
+    "en": "Machines & equipment"
+   }
+  }
+ ],
+ "about": {
+  "p1": {
+   "ar": "روك لاين جروب شركة مقاولات عامة متخصصة في تنفيذ الأعمال الإنشائية والتشطيبات والأعمال الكهروميكانيكية وأعمال البنية التحتية، للقطاع الخاص والجهات الحكومية.",
+   "en": "Rock Line Group is a general contracting company specialised in structural works, finishing, MEP and infrastructure, serving private clients and public entities."
+  },
+  "p2": {
+   "ar": "بنشتغل بمنهجية واضحة من أول دراسة المشروع والمقايسة، مروراً بالتنفيذ والإشراف الهندسي اليومي، لحد التسليم وخدمة ما بعد التسليم — بأسعار تنافسية وجودة مطابقة للمواصفات.",
+   "en": "We follow a clear method from study and bill of quantities, through execution and daily engineering supervision, to handover and after-sales service — at competitive prices and to specification."
+  },
+  "vision": {
+   "ar": "أن نكون من الشركات الرائدة في قطاع المقاولات في مصر والمنطقة، والاختيار الأول لعملائنا في الجودة والالتزام.",
+   "en": "To be a leading contractor in Egypt and the region, and our clients' first choice for quality and commitment."
+  },
+  "mission": {
+   "ar": "تنفيذ مشروعات آمنة ومستدامة بأعلى جودة وفي الوقت المحدد، من خلال فريق محترف وإدارة دقيقة للتكلفة والموارد.",
+   "en": "Delivering safe, sustainable projects to the highest quality and on schedule, through a professional team and careful cost and resource management."
+  }
+ },
+ "values": [
+  {
+   "icon": "award",
+   "text": {
+    "ar": "الجودة والإتقان",
+    "en": "Quality & craftsmanship"
+   }
+  },
+  {
+   "icon": "shield",
+   "text": {
+    "ar": "السلامة أولاً",
+    "en": "Safety first"
+   }
+  },
+  {
+   "icon": "handshake",
+   "text": {
+    "ar": "النزاهة والشفافية",
+    "en": "Integrity & transparency"
+   }
+  },
+  {
+   "icon": "timer",
+   "text": {
+    "ar": "الالتزام بالمواعيد",
+    "en": "Commitment to schedule"
+   }
+  },
+  {
+   "icon": "leaf",
+   "text": {
+    "ar": "الاستدامة",
+    "en": "Sustainability"
+   }
+  }
+ ],
+ "services": [
+  {
+   "icon": "building",
+   "title": {
+    "ar": "المقاولات العامة",
+    "en": "General contracting"
+   },
+   "desc": {
+    "ar": "تنفيذ المشروعات بالكامل من الحفر والأساسات حتى التسليم النهائي.",
+    "en": "Full project delivery from excavation and foundations to final handover."
+   }
+  },
+  {
+   "icon": "layers",
+   "title": {
+    "ar": "الأعمال الإنشائية والخرسانية",
+    "en": "Structural & concrete works"
+   },
+   "desc": {
+    "ar": "الأساسات والهياكل الخرسانية والمباني بأحدث طرق التنفيذ والشدات.",
+    "en": "Foundations, reinforced-concrete frames and masonry with modern formwork methods."
+   }
+  },
+  {
+   "icon": "paintroller",
+   "title": {
+    "ar": "التشطيبات والديكور",
+    "en": "Finishing & fit-out"
+   },
+   "desc": {
+    "ar": "تشطيبات داخلية وخارجية، واجهات، أرضيات، ونجارة ومعادن بمواصفات راقية.",
+    "en": "Interior and exterior finishing, façades, flooring, joinery and metalwork to high standards."
+   }
+  },
+  {
+   "icon": "zap",
+   "title": {
+    "ar": "الأعمال الكهروميكانيكية",
+    "en": "MEP works"
+   },
+   "desc": {
+    "ar": "كهرباء وتيار خفيف، صحي وحريق، تكييف وتهوية، بتنسيق كامل مع باقي الأعمال.",
+    "en": "Electrical and low-current, plumbing and fire fighting, HVAC — fully coordinated with all trades."
+   }
+  },
+  {
+   "icon": "road",
+   "title": {
+    "ar": "البنية التحتية والطرق",
+    "en": "Infrastructure & roads"
+   },
+   "desc": {
+    "ar": "طرق ورصف، شبكات مياه وصرف، وأعمال الموقع العام وتنسيق المواقع.",
+    "en": "Roads and paving, water and sewage networks, site works and landscaping."
+   }
+  },
+  {
+   "icon": "beam",
+   "title": {
+    "ar": "الهياكل المعدنية",
+    "en": "Steel structures"
+   },
+   "desc": {
+    "ar": "تصنيع وتركيب الهناجر والمخازن والمنشآت المعدنية.",
+    "en": "Fabrication and erection of hangars, warehouses and steel buildings."
+   }
+  },
+  {
+   "icon": "ruler",
+   "title": {
+    "ar": "التصميم والتنفيذ",
+    "en": "Design & build"
+   },
+   "desc": {
+    "ar": "حل متكامل من التصميم الهندسي والرسومات التنفيذية حتى التسليم.",
+    "en": "An integrated solution from engineering design and shop drawings to handover."
+   }
+  },
+  {
+   "icon": "clipboard",
+   "title": {
+    "ar": "إدارة المشروعات",
+    "en": "Project management"
+   },
+   "desc": {
+    "ar": "تخطيط ومتابعة وضبط التكلفة والجودة بتقارير دورية للعميل.",
+    "en": "Planning, monitoring, cost and quality control with regular client reporting."
+   }
+  },
+  {
+   "icon": "wrench",
+   "title": {
+    "ar": "الترميم والصيانة",
+    "en": "Restoration & maintenance"
+   },
+   "desc": {
+    "ar": "تدعيم وترميم المباني القائمة وعقود الصيانة الدورية.",
+    "en": "Strengthening and restoring existing buildings and periodic maintenance contracts."
+   }
+  }
+ ],
+ "process": [
+  {
+   "icon": "search",
+   "title": {
+    "ar": "المعاينة ودراسة الطلب",
+    "en": "Site visit & study"
+   },
+   "desc": {
+    "ar": "بنزور الموقع ونفهم احتياجك والرسومات المتاحة.",
+    "en": "We visit the site and study your needs and available drawings."
+   }
+  },
+  {
+   "icon": "ruler",
+   "title": {
+    "ar": "المقايسة والتصميم",
+    "en": "BOQ & design"
+   },
+   "desc": {
+    "ar": "حصر الكميات وتجهيز الرسومات والمواصفات.",
+    "en": "Quantity take-off, drawings and specifications."
+   }
+  },
+  {
+   "icon": "doc",
+   "title": {
+    "ar": "العرض والتعاقد",
+    "en": "Offer & contract"
+   },
+   "desc": {
+    "ar": "عرض سعر مفصّل وجدول زمني واضح قبل التعاقد.",
+    "en": "A detailed priced offer and a clear schedule before signing."
+   }
+  },
+  {
+   "icon": "hardhat",
+   "title": {
+    "ar": "التنفيذ والإشراف",
+    "en": "Execution & supervision"
+   },
+   "desc": {
+    "ar": "تنفيذ بإشراف هندسي يومي وتقارير تقدّم منتظمة.",
+    "en": "Execution under daily engineering supervision with regular progress reports."
+   }
+  },
+  {
+   "icon": "checkcircle",
+   "title": {
+    "ar": "الاستلام والتسليم",
+    "en": "Handover"
+   },
+   "desc": {
+    "ar": "اختبارات واستلام نهائي ومتابعة فترة الضمان.",
+    "en": "Testing, final acceptance and follow-up through the warranty period."
+   }
+  }
+ ],
+ "sectors": [
+  {
+   "icon": "home",
+   "name": {
+    "ar": "سكني",
+    "en": "Residential"
+   }
+  },
+  {
+   "icon": "building",
+   "name": {
+    "ar": "إداري وتجاري",
+    "en": "Administrative & commercial"
+   }
+  },
+  {
+   "icon": "factory",
+   "name": {
+    "ar": "صناعي ومخازن",
+    "en": "Industrial & warehouses"
+   }
+  },
+  {
+   "icon": "graduation",
+   "name": {
+    "ar": "تعليمي",
+    "en": "Educational"
+   }
+  },
+  {
+   "icon": "stethoscope",
+   "name": {
+    "ar": "صحي",
+    "en": "Healthcare"
+   }
+  },
+  {
+   "icon": "hotel",
+   "name": {
+    "ar": "سياحي وفندقي",
+    "en": "Hospitality"
+   }
+  },
+  {
+   "icon": "road",
+   "name": {
+    "ar": "بنية تحتية",
+    "en": "Infrastructure"
+   }
+  },
+  {
+   "icon": "landmark",
+   "name": {
+    "ar": "حكومي",
+    "en": "Government"
+   }
+  }
+ ],
+ "why": [
+  {
+   "icon": "users",
+   "text": {
+    "ar": "فريق هندسي متخصص في كل التخصصات",
+    "en": "A specialised engineering team across all disciplines"
+   }
+  },
+  {
+   "icon": "timer",
+   "text": {
+    "ar": "التزام بالجدول الزمني وتقارير تقدّم دورية",
+    "en": "Committed schedules and regular progress reports"
+   }
+  },
+  {
+   "icon": "award",
+   "text": {
+    "ar": "جودة مطابقة للمواصفات والكود المصري",
+    "en": "Quality to specification and the Egyptian code"
+   }
+  },
+  {
+   "icon": "shield",
+   "text": {
+    "ar": "نظام صارم للسلامة والصحة المهنية في المواقع",
+    "en": "A strict site health & safety system"
+   }
+  },
+  {
+   "icon": "chart",
+   "text": {
+    "ar": "أسعار تنافسية وشفافية كاملة في التكلفة",
+    "en": "Competitive prices and full cost transparency"
+   }
+  },
+  {
+   "icon": "truck",
+   "text": {
+    "ar": "معدات حديثة وسلاسل توريد موثوقة",
+    "en": "Modern equipment and reliable supply chains"
+   }
+  }
+ ],
+ "hse": [
+  {
+   "icon": "shield",
+   "title": {
+    "ar": "السلامة والصحة المهنية",
+    "en": "Health & safety"
+   },
+   "desc": {
+    "ar": "مسؤول سلامة في كل موقع، وتدريب مستمر، ومهمات وقاية لكل العاملين.",
+    "en": "A safety officer on every site, ongoing training and PPE for every worker."
+   }
+  },
+  {
+   "icon": "award",
+   "title": {
+    "ar": "ضبط الجودة",
+    "en": "Quality control"
+   },
+   "desc": {
+    "ar": "اختبارات للمواد واستلامات مرحلية موثّقة لكل بند قبل اللي بعده.",
+    "en": "Material testing and documented stage inspections for every item."
+   }
+  },
+  {
+   "icon": "leaf",
+   "title": {
+    "ar": "البيئة",
+    "en": "Environment"
+   },
+   "desc": {
+    "ar": "تقليل المخلفات وإدارتها، والحفاظ على نظافة الموقع والمحيط.",
+    "en": "Reducing and managing waste, keeping the site and its surroundings clean."
+   }
+  }
+ ],
+ "certificates": [],
+ "milestones": [],
+ "regions": [
   {
    "name": {
-    "ar": "السعودية",
-    "en": "Saudi Arabia"
+    "ar": "القاهرة الكبرى",
+    "en": "Greater Cairo"
    },
    "note": {
-    "ar": "مقاولات، صناعة، ضيافة، نقل",
-    "en": "Construction, industry, hospitality, transport"
+    "ar": "القاهرة الجديدة · الشيخ زايد · 6 أكتوبر",
+    "en": "New Cairo · Sheikh Zayed · 6th of October"
    }
   },
   {
    "name": {
-    "ar": "الإمارات",
-    "en": "UAE"
+    "ar": "العاصمة الإدارية الجديدة",
+    "en": "New Administrative Capital"
    },
    "note": {
-    "ar": "إنشاءات، خدمات، ضيافة",
-    "en": "Construction, services, hospitality"
+    "ar": "مشروعات إدارية وسكنية",
+    "en": "Administrative & residential projects"
    }
   },
   {
    "name": {
-    "ar": "الكويت",
-    "en": "Kuwait"
+    "ar": "الإسكندرية والساحل الشمالي",
+    "en": "Alexandria & North Coast"
    },
    "note": {
-    "ar": "مقاولات، صيانة، خدمات",
-    "en": "Contracting, maintenance, services"
+    "ar": "سكني وسياحي",
+    "en": "Residential & hospitality"
    }
   },
   {
    "name": {
-    "ar": "قطر",
-    "en": "Qatar"
+    "ar": "مدن القناة والعين السخنة",
+    "en": "Canal cities & Ain Sokhna"
    },
    "note": {
-    "ar": "إنشاءات، فنادق، صيانة",
-    "en": "Construction, hotels, maintenance"
+    "ar": "صناعي ومخازن",
+    "en": "Industrial & warehouses"
    }
   },
   {
    "name": {
-    "ar": "البحرين",
-    "en": "Bahrain"
+    "ar": "الصعيد ومحافظات الدلتا",
+    "en": "Upper Egypt & Delta"
    },
    "note": {
-    "ar": "صناعة وخدمات",
-    "en": "Industry and services"
-   }
-  },
-  {
-   "name": {
-    "ar": "عُمان",
-    "en": "Oman"
-   },
-   "note": {
-    "ar": "مقاولات وخدمات",
-    "en": "Contracting and services"
+    "ar": "بنية تحتية ومشروعات حكومية",
+    "en": "Infrastructure & public projects"
    }
   }
  ],
  "professions": [
   {
    "text": {
-    "ar": "نجار مسلح",
-    "en": "Formwork carpenter"
+    "ar": "مهندس مدني (موقع)",
+    "en": "Civil site engineer"
    }
   },
   {
    "text": {
-    "ar": "حداد تسليح",
-    "en": "Steel fixer"
+    "ar": "مهندس مدني (مكتب فني)",
+    "en": "Civil technical-office engineer"
    }
   },
   {
    "text": {
-    "ar": "لحام أرجون",
-    "en": "Argon welder"
+    "ar": "مهندس معماري",
+    "en": "Architect"
    }
   },
   {
    "text": {
-    "ar": "كهربائي إنشاءات",
-    "en": "Construction electrician"
-   }
-  },
-  {
-   "text": {
-    "ar": "سباك",
-    "en": "Plumber"
-   }
-  },
-  {
-   "text": {
-    "ar": "فني تكييف وتبريد",
-    "en": "HVAC technician"
-   }
-  },
-  {
-   "text": {
-    "ar": "فني مصاعد",
-    "en": "Lift technician"
-   }
-  },
-  {
-   "text": {
-    "ar": "مشغل معدات ثقيلة",
-    "en": "Heavy equipment operator"
-   }
-  },
-  {
-   "text": {
-    "ar": "سائق نقل ثقيل",
-    "en": "Heavy truck driver"
-   }
-  },
-  {
-   "text": {
-    "ar": "سائق خفيف",
-    "en": "Light vehicle driver"
-   }
-  },
-  {
-   "text": {
-    "ar": "بليط ومحارة",
-    "en": "Tiler & plasterer"
-   }
-  },
-  {
-   "text": {
-    "ar": "نقاش",
-    "en": "Painter"
-   }
-  },
-  {
-   "text": {
-    "ar": "عامل بناء",
-    "en": "Construction labourer"
-   }
-  },
-  {
-   "text": {
-    "ar": "مشرف عمال",
-    "en": "Site foreman"
-   }
-  },
-  {
-   "text": {
-    "ar": "مهندس مدني",
-    "en": "Civil engineer"
+    "ar": "مهندس كهرباء",
+    "en": "Electrical engineer"
    }
   },
   {
@@ -532,68 +529,38 @@
   },
   {
    "text": {
-    "ar": "فني ميكانيكا سيارات",
-    "en": "Auto mechanic"
+    "ar": "مهندس تخطيط ومتابعة",
+    "en": "Planning engineer"
    }
   },
   {
    "text": {
-    "ar": "خراط ومخرطة",
-    "en": "Lathe operator"
+    "ar": "مهندس حصر وتكاليف",
+    "en": "Quantity surveyor"
    }
   },
   {
    "text": {
-    "ar": "عامل مصنع",
-    "en": "Factory worker"
+    "ar": "مسؤول سلامة وصحة مهنية",
+    "en": "HSE officer"
    }
   },
   {
    "text": {
-    "ar": "ممرض",
-    "en": "Nurse"
+    "ar": "مشرف موقع",
+    "en": "Site foreman"
    }
   },
   {
    "text": {
-    "ar": "فني معمل",
-    "en": "Lab technician"
+    "ar": "مساح",
+    "en": "Surveyor"
    }
   },
   {
    "text": {
-    "ar": "طباخ",
-    "en": "Chef"
-   }
-  },
-  {
-   "text": {
-    "ar": "مساعد طباخ",
-    "en": "Kitchen assistant"
-   }
-  },
-  {
-   "text": {
-    "ar": "عامل ضيافة",
-    "en": "Hospitality worker"
-   }
-  },
-  {
-   "text": {
-    "ar": "ويتر",
-    "en": "Waiter"
-   }
-  },
-  {
-   "text": {
-    "ar": "عامل نظافة",
-    "en": "Cleaner"
-   }
-  },
-  {
-   "text": {
-    "ar": "حارس أمن",
-    "en": "Security guard"
+    "ar": "رسام أوتوكاد",
+    "en": "AutoCAD draftsman"
    }
   },
   {
@@ -604,317 +571,174 @@
   },
   {
    "text": {
-    "ar": "مندوب مبيعات",
-    "en": "Sales representative"
+    "ar": "مسؤول مشتريات",
+    "en": "Procurement officer"
    }
   },
   {
    "text": {
-    "ar": "موظف إداري",
-    "en": "Administrative officer"
+    "ar": "أمين مخزن",
+    "en": "Storekeeper"
+   }
+  },
+  {
+   "text": {
+    "ar": "سائق معدات ثقيلة",
+    "en": "Heavy-equipment operator"
+   }
+  },
+  {
+   "text": {
+    "ar": "عامل ماهر (نجار/حداد/مبيض...)",
+    "en": "Skilled tradesman"
    }
   }
  ],
- "partners": [
+ "vtypes": [
   {
-   "icon": "crane",
-   "group": {
-    "ar": "قطاع المقاولات والإنشاءات",
-    "en": "Construction & contracting"
-   },
-   "items": [
-    "شركة ركائز الوطن للمقاولات",
-    "مؤسسة فيصل زعار العتيبي للمقاولات",
-    "شركة مبلان السعودية",
-    "شركة الأبيض للمقاولات",
-    "مؤسسة أعمال التقوى للمقاولات",
-    "شركة محمد صالح القرني للمقاولات",
-    "المركز الذهبي الهندسي للمصاعد بمكة",
-    "مؤسسة تقنية الروافع للتجارة",
-    "مصنع عيد لصناعة صناديق البوليسترين",
-    "شركة لزازي للتجارة والمقاولات",
-    "شركة راك للمقاولات",
-    "مصنع سعد الشهراني للخرسانة الجاهزة",
-    "مؤسسة تامر لجي للمقاولات",
-    "مؤسسة قم الجزيرة للتجارة والمقاولات",
-    "مؤسسة وليد محمد المرجاني لنقل البضائع",
-    "شركة بن رافع للمقاولات بمكة المكرمة",
-    "مؤسسة الخبز العربي",
-    "مؤسسة ابن المملكة للمقاولات",
-    "مؤسسة الرواء للمقاولات",
-    "مؤسسة منارة الأبراج للمقاولات",
-    "مؤسسة فهد محمد فهد للمقاولات عامة",
-    "المكتب الهندسي لأنس بن عبد الله قهيدان بمكة",
-    "مؤسسة رسم الفخامة للمقاولات",
-    "مؤسسة خالد رويجلي للمقاولات",
-    "مؤسسة فواز سالم الحربي للمقاولات"
-   ]
+   "text": {
+    "ar": "مقاول باطن",
+    "en": "Subcontractor"
+   }
   },
   {
-   "icon": "bus",
-   "group": {
-    "ar": "قطاع النقل وخدمات المعتمرين والسفر",
-    "en": "Transport, Umrah services & travel"
-   },
-   "items": [
-    "شركة حسين حجازي",
-    "شركة البركة الدولية المحدودة",
-    "الشركة الوطنية (نمكو)",
-    "شركة رواحل المشاعر المحدودة",
-    "شركة الأجور",
-    "شركة ركاب الأولى",
-    "شركة قرطاج الحديثة",
-    "شركة السراج العصري",
-    "شركة طواف",
-    "شركة الزهرة المتميزة",
-    "شركة الفرسان لخدمات المعتمرين",
-    "شركة زائر الحديثة",
-    "شركة بوابة السفر",
-    "شركة حملة الإحسان لحجاج الداخل",
-    "شركة عرفة",
-    "شركة القصواء",
-    "شركة يمامة",
-    "شركة المهنا المميز",
-    "شركة سمايا",
-    "شركة السفير"
-   ]
+   "text": {
+    "ar": "مورد مواد بناء",
+    "en": "Building-materials supplier"
+   }
   },
   {
-   "icon": "hotel",
-   "group": {
-    "ar": "القطاع السياحي والضيافة",
-    "en": "Tourism & hospitality"
-   },
-   "items": [
-    "فندق المضحى للشقق الفندقية",
-    "وحدات تبوك رماذا للشقق الفندقية",
-    "أصيل للوحدات السكنية المفروشة",
-    "مؤسسة الضيافة الإسلامية لتنظيم الرحلات",
-    "مطعم قصر الزاد لتقديم الوجبات"
-   ]
+   "text": {
+    "ar": "تأجير معدات",
+    "en": "Equipment rental"
+   }
+  },
+  {
+   "text": {
+    "ar": "مكتب استشاري / تصميم",
+    "en": "Consultant / design office"
+   }
+  },
+  {
+   "text": {
+    "ar": "مورد خدمات",
+    "en": "Service provider"
+   }
   }
  ],
+ "partners": [],
  "quotes": [],
  "docs": [
   {
    "text": {
-    "ar": "جواز سفر ساري لمدة كافية مع صور من الصفحة الأولى",
-    "en": "Valid passport with copies of the data page"
+    "ar": "صورة السجل التجاري",
+    "en": "Commercial register"
    }
   },
   {
    "text": {
-    "ar": "صور شخصية حديثة بخلفية بيضاء",
-    "en": "Recent photos with a white background"
+    "ar": "صورة البطاقة الضريبية",
+    "en": "Tax card"
    }
   },
   {
    "text": {
-    "ar": "بطاقة الرقم القومي سارية",
-    "en": "Valid national ID card"
+    "ar": "شهادة القيد بالاتحاد المصري لمقاولي التشييد والبناء (لمقاولي الباطن)",
+    "en": "Egyptian Federation for Construction & Building Contractors registration (subcontractors)"
    }
   },
   {
    "text": {
-    "ar": "المؤهل الدراسي وشهادات الخبرة",
-    "en": "Qualification certificate and experience letters"
+    "ar": "الملف التعريفي وسابقة الأعمال",
+    "en": "Company profile and track record"
    }
   },
   {
    "text": {
-    "ar": "الفحص الطبي من مركز معتمد",
-    "en": "Medical examination at an approved centre"
+    "ar": "قائمة المعدات والعمالة المتاحة",
+    "en": "List of available equipment and labour"
    }
   },
   {
    "text": {
-    "ar": "البصمة والتأشيرة حسب إجراءات الدولة",
-    "en": "Fingerprints and visa as per the destination country"
-   }
-  },
-  {
-   "text": {
-    "ar": "عقد العمل موقّع ومعتمد",
-    "en": "Signed and approved employment contract"
-   }
-  }
- ],
- "tips": [
-  {
-   "text": {
-    "ar": "اتعامل مع شركة مرخصة، واتأكد من رقم ترخيصها.",
-    "en": "Deal only with a licensed company and verify its license number."
-   }
-  },
-  {
-   "text": {
-    "ar": "اقرأ عقد العمل كويس قبل التوقيع، خصوصاً الراتب ومدة العقد وساعات العمل.",
-    "en": "Read the contract carefully before signing, especially salary, duration and working hours."
-   }
-  },
-  {
-   "text": {
-    "ar": "متدفعش أي مبلغ من غير إيصال رسمي باسم الشركة.",
-    "en": "Never pay any amount without an official receipt in the company's name."
-   }
-  },
-  {
-   "text": {
-    "ar": "احتفظ بنسخة من كل ورقة بتسلمها للشركة.",
-    "en": "Keep a copy of every document you hand over."
-   }
-  },
-  {
-   "text": {
-    "ar": "اتأكد إن بياناتك في جواز السفر مطابقة لبياناتك في العقد.",
-    "en": "Make sure your passport details match your contract details."
-   }
-  },
-  {
-   "text": {
-    "ar": "خلي وسيلة تواصل شغالة معاك طول فترة الإجراءات.",
-    "en": "Keep a working contact number throughout the process."
+    "ar": "بيانات الحساب البنكي",
+    "en": "Bank account details"
    }
   }
  ],
  "faq": [
   {
    "q": {
-    "ar": "إزاي أقدم على وظيفة معلنة عندكم؟",
-    "en": "How do I apply for one of your vacancies?"
+    "ar": "إزاي أطلب عرض سعر لمشروعي؟",
+    "en": "How do I request a quotation?"
    },
    "a": {
-    "ar": "افتح صفحة الوظيفة واضغط تقديم، املأ بياناتك وارفع سيرتك الذاتية، أو ابعتها على الواتساب.",
-    "en": "Open the vacancy page, click apply, fill in your details and upload your CV, or send it on WhatsApp."
+    "ar": "املأ فورم «اطلب عرض سعر» وارفق الرسومات أو المقايسة لو متاحة، وفريقنا هيتواصل معاك لتحديد معاينة.",
+    "en": "Fill in the quotation form and attach drawings or a BOQ if available. Our team will contact you to arrange a site visit."
    }
   },
   {
    "q": {
-    "ar": "هل في رسوم على العامل؟",
-    "en": "Are there any fees charged to the worker?"
+    "ar": "هل بتنفذوا مشروعات صغيرة؟",
+    "en": "Do you take on small projects?"
    },
    "a": {
-    "ar": "أي مبالغ تكون في حدود ما يحدده القانون وبإيصال رسمي من مقر الشركة. متدفعش أي مبلغ لأي شخص خارج المقر.",
-    "en": "Any amounts are within the limits set by law and against an official receipt at the company premises. Never pay anyone outside the office."
+    "ar": "أيوه، بننفّذ مشروعات بأحجام مختلفة من التشطيبات والترميم لحد المشروعات المتكاملة.",
+    "en": "Yes. We deliver projects of different sizes, from finishing and restoration to complete developments."
    }
   },
   {
    "q": {
-    "ar": "الإجراءات بتاخد وقت قد إيه؟",
-    "en": "How long does the process take?"
+    "ar": "هل بتقدموا ضمان على الأعمال؟",
+    "en": "Do you offer a warranty?"
    },
    "a": {
-    "ar": "المدة بتختلف حسب الدولة ونوع التأشيرة وسرعة استخراج الأوراق، وبنبلغك بالخطوة اللي انت فيها أول بأول.",
-    "en": "It varies by country, visa type and document processing speed. We keep you informed at every stage."
+    "ar": "أيوه، كل عقد بيحدد فترة ضمان للأعمال المنفّذة وبنتابع أي ملاحظات خلالها.",
+    "en": "Yes. Every contract defines a warranty period and we follow up on any snags during it."
    }
   },
   {
    "q": {
-    "ar": "شركتنا في الخليج، إزاي نتعاقد معاكم؟",
-    "en": "We are a Gulf company, how do we start?"
+    "ar": "إزاي أسجّل شركتي كمورد أو مقاول باطن؟",
+    "en": "How do I register as a supplier or subcontractor?"
    },
    "a": {
-    "ar": "املأ فورم طلب العمالة أو كلمنا على واتساب، ونتفق على المهن والعدد والمواصفات، وبعدها نبدأ الترشيح والمقابلات.",
-    "en": "Fill in the manpower request form or contact us on WhatsApp. We agree on trades, headcount and specifications, then start shortlisting and interviews."
+    "ar": "من صفحة «الموردين ومقاولي الباطن» املأ البيانات وارفق الملف التعريفي، وهنراجعها ونتواصل معاك.",
+    "en": "Use the Suppliers & Subcontractors page, fill in your details and attach your profile. We will review and contact you."
    }
-  },
-  {
-   "q": {
-    "ar": "بتوفروا مقابلات أونلاين؟",
-    "en": "Do you arrange online interviews?"
-   },
-   "a": {
-    "ar": "أيوة، بننظم مقابلات حضورية في مقر الشركة أو أونلاين مع ممثل جهة العمل.",
-    "en": "Yes, we arrange interviews at our premises or online with the employer's representative."
-   }
-  }
- ],
- "links": [
-  {
-   "title": {
-    "ar": "التحقق من إصدار التأشيرة - الخارجية السعودية",
-    "en": "Saudi visa issuance check"
-   },
-   "url": "https://visa.mofa.gov.sa"
-  },
-  {
-   "title": {
-    "ar": "نتيجة الفحص الطبي - وافد",
-    "en": "Medical examination result - Wafid"
-   },
-   "url": "https://wafid.com/medical-status-search"
-  },
-  {
-   "title": {
-    "ar": "صلاحية التأشيرة - مقيم",
-    "en": "Visa validity - Muqeem"
-   },
-   "url": "https://muqeem.sa"
-  },
-  {
-   "title": {
-    "ar": "مصادقة الشهادات",
-    "en": "Certificate attestation"
-   },
-   "url": "https://www.mosadaqa.sa"
-  },
-  {
-   "title": {
-    "ar": "التحقق المهني للمؤهل",
-    "en": "Professional verification"
-   },
-   "url": "https://qvp.pacc.sa"
-  },
-  {
-   "title": {
-    "ar": "بوابة مصر الرقمية",
-    "en": "Digital Egypt"
-   },
-   "url": "https://digital.gov.eg"
-  },
-  {
-   "title": {
-    "ar": "نتائج تحاليل معامل وزارة الصحة",
-    "en": "Ministry of Health lab results"
-   },
-   "url": "https://clabresults.mohp.gov.eg"
   }
  ],
  "sections": [],
  "contact": {
-  "phonesEG": [
-   "+20 1069804443",
-   "+20 1018968026"
-  ],
-  "phonesSA": [
-   "+966 548837852",
-   "+966 549872785"
-  ],
-  "whatsapp": "+201069804443",
-  "email": "info@nisrelkhaleeg.com",
+  "phones": [],
+  "phones2": [],
+  "whatsapp": "",
+  "email": "",
   "address": {
-   "ar": "113 شارع السودان - الدور الثاني - المهندسين - الجيزة",
-   "en": "113 Sudan St., 2nd Floor, Mohandessin, Giza, Egypt"
+   "ar": "",
+   "en": ""
   },
   "hours": {
-   "ar": "من السبت إلى الخميس، 9 صباحاً حتى 5 مساءً",
-   "en": "Saturday to Thursday, 9:00 - 17:00"
+   "ar": "",
+   "en": ""
   },
-  "facebook": "https://www.facebook.com/profile.php?id=100095372133122",
-  "instagram": "",
-  "linkedin": "",
-  "tiktok": "",
-  "website": "nisrelkhaleeg.com",
-  "whatsappCompanies": "",
-  "youtube": "",
-  "mapLink": "https://www.google.com/maps?q=30.0470299,31.1929058&z=17&hl=ar",
   "slogan": {
-   "ar": "ثقتكم هي أساس نجاحنا",
-   "en": "Your trust is the foundation of our success"
-  }
+   "ar": "",
+   "en": ""
+  },
+  "mapLink": "",
+  "facebook": "",
+  "instagram": "",
+  "tiktok": "",
+  "linkedin": "",
+  "youtube": "",
+  "website": "rocklineg.com"
  },
- "profilePdf": "/files/profile.pdf",
- "images": {
-  "hero": "/uploads/muka43gn-y6yr.png"
- }
+ "profilePdf": "",
+ "images": {},
+ "channels": {
+  "whatsapp": true,
+  "email": true
+ },
+ "sample": true
 }

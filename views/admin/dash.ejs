@@ -18,25 +18,41 @@
 </div>
 <% } %>
 
+<% if (me.owner && (samples.site || samples.projects || samples.jobs)) { %>
+<div class="card nudge">
+  <h2 class="h3"><%- icon('info') %> فيه محتوى نموذجي لازم تراجعه قبل ما تفتح الموقع للعامة</h2>
+  <ul>
+    <% if (samples.site) { %><li>الأرقام (سنين الخبرة، عدد المشروعات...) ونطاق العمل والنصوص مكتوبة كنموذج. <a href="/admin/content/stats">راجع الأرقام</a> · <a href="/admin/content/hero">راجع النصوص</a>
+      <form method="post" action="/admin/samples/clear" style="display:inline"><input type="hidden" name="what" value="site"><button class="btn sm ghost" type="submit">راجعتها ✓</button></form></li><% } %>
+    <% if (samples.projects) { %><li><b><%= samples.projects %></b> مشروع نموذجي (مكتوب عليهم «نموذج»). عدّلهم ببيانات مشروعاتكم الحقيقية وصورها، أو امسحهم.
+      <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح كل المشروعات النموذجية؟"><input type="hidden" name="what" value="projects"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
+    <% if (samples.jobs) { %><li><b><%= samples.jobs %></b> وظيفة نموذجية.
+      <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح الوظايف النموذجية؟"><input type="hidden" name="what" value="jobs"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
+  </ul>
+</div>
+<% } %>
+<% if (noContact && can('contact')) { %><div class="flash warn"><%- icon('phone') %> لسه مفيش أرقام تليفون ولا واتساب للشركة، فزراير الاتصال والواتساب مش ظاهرة على الموقع. <a href="/admin/contact">ضيف بيانات التواصل</a></div><% } %>
+
 <div class="kpis">
+  <% if (can('projects')) { %><a class="kpi" href="/admin/projects"><%- icon('building') %><b><%= counts.projects %></b><span>مشروع ظاهر</span></a><% } %>
   <% if (can('inbox')) { %><a class="kpi" href="/admin/inbox"><%- icon('inbox') %><b><%= counts.messages %></b><span>رسالة (<%= counts.week %> الأسبوع ده)</span></a><% } %>
-  <% if (can('jobs')) { %><a class="kpi" href="/admin/jobs"><%- icon('briefcase') %><b><%= counts.jobs %></b><span>وظيفة ظاهرة</span></a><% } %>
+  <% if (can('jobs')) { %><a class="kpi" href="/admin/jobs"><%- icon('hardhat') %><b><%= counts.jobs %></b><span>وظيفة ظاهرة</span></a><% } %>
   <% if (can('news')) { %><a class="kpi" href="/admin/news"><%- icon('newspaper') %><b><%= counts.news %></b><span>خبر ومنشور</span></a><% } %>
-  <% if (can('gallery')) { %><a class="kpi" href="/admin/gallery"><%- icon('images') %><b><%= counts.photos %></b><span>صورة في المعرض</span></a><% } %>
 </div>
 
 <% if (can('content') && (missingStats.length || !quotesCount)) { %>
 <div class="card nudge">
-  <h2 class="h3"><%- icon('star') %> حاجات بتزوّد ثقة الشركات في الموقع</h2>
+  <h2 class="h3"><%- icon('star') %> حاجات بتزوّد ثقة العملاء في الموقع</h2>
   <ul>
     <% missingStats.forEach(function(s){ %><li>رقم "<%= s %>" لسه فاضي ومش ظاهر. <a href="/admin/content/stats">اكتب الرقم الحقيقي</a></li><% }); %>
-    <% if (!quotesCount) { %><li>مفيش آراء عملاء لسه. رأي حقيقي من شركة اشتغلت معاكم، ولو بفيديو، بيفرق جداً. <a href="/admin/content/quotes">ضيف رأي</a></li><% } %>
+    <% if (!quotesCount) { %><li>مفيش آراء عملاء لسه. رأي حقيقي من عميل نفّذتوا له مشروع، ولو بفيديو، بيفرق جداً. <a href="/admin/content/quotes">ضيف رأي</a></li><% } %>
   </ul>
 </div>
 <% } %>
 
 <h2 class="h2">إضافة سريعة</h2>
 <div class="quick">
+  <% if (can('projects')) { %><a href="/admin/projects/new"><%- icon('plus') %> مشروع جديد</a><% } %>
   <% if (can('jobs')) { %><a href="/admin/jobs/new"><%- icon('plus') %> وظيفة جديدة</a><% } %>
   <% if (can('news')) { %><a href="/admin/news/new"><%- icon('plus') %> خبر أو منشور</a><% } %>
   <% if (can('gallery')) { %><a href="/admin/gallery"><%- icon('plus') %> صور للمعرض</a><% } %>
@@ -53,9 +69,9 @@
 <div class="list">
   <% latest.forEach(function(m){ var f = m.fields || {}; %>
     <a class="row<%= m.read ? '' : ' unread' %>" href="/admin/inbox#m-<%= m.id %>">
-      <span class="tag k-<%= m.kind %>"><%= KIND_LABEL[m.kind] %></span>
-      <b><%= f.company || f.name || '-' %></b>
-      <span class="muted"><%= f.trades || f.profession || (f.message || '').slice(0, 60) %></span>
+      <span class="tag k-<%= m.kind %>"><%= KIND_LABEL[m.kind] || m.kind %></span>
+      <b><%= msgTitle(f) %></b>
+      <span class="muted"><%= msgLine(f) %></span>
       <span class="tag c-<%= m.channel %>"><%= CHANNEL_LABEL[m.channel] %></span>
       <time><%= fmtTime(m.at) %></time>
     </a>

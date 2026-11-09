@@ -1,0 +1,9 @@
+<section class="sec cta-band">
+  <div class="wrap cta-in reveal">
+    <div><h2><%= typeof ctaTitle !== 'undefined' ? ctaTitle : t.p_cta %></h2><p><%= typeof ctaSub !== 'undefined' ? ctaSub : t.p_cta_sub %></p></div>
+    <div class="duo-act">
+      <a class="btn gold lg" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
+      <% if (hasWa) { %><a class="btn wa lg" href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.cta_wa %></a><% } %>
+    </div>
+  </div>
+</section>

@@ -5,30 +5,29 @@
 <form class="card form" method="post" action="/admin/jobs/save" enctype="multipart/form-data">
   <input type="hidden" name="id" value="<%= j.id || '' %>">
   <div class="grid2">
-    <label>اسم الوظيفة (عربي) <em>*</em><input name="title_ar" value="<%= v('title','ar') %>" required placeholder="مثال: نجار مسلح"></label>
-    <label>اسم الوظيفة (إنجليزي)<input name="title_en" dir="ltr" value="<%= v('title','en') %>" placeholder="Formwork carpenter"></label>
-    <label>الدولة (عربي)<input name="country_ar" value="<%= v('country','ar') %>" list="dl-c" placeholder="السعودية"></label>
-    <label>الدولة (إنجليزي)<input name="country_en" dir="ltr" value="<%= v('country','en') %>" placeholder="Saudi Arabia"></label>
-    <label>القطاع (عربي)<input name="sector_ar" value="<%= v('sector','ar') %>" list="dl-s" placeholder="المقاولات والإنشاءات"></label>
-    <label>القطاع (إنجليزي)<input name="sector_en" dir="ltr" value="<%= v('sector','en') %>"></label>
-    <label>الراتب (عربي)<input name="salary_ar" value="<%= v('salary','ar') %>" placeholder="مثال: 1800 ريال + سكن"></label>
-    <label>الراتب (إنجليزي)<input name="salary_en" dir="ltr" value="<%= v('salary','en') %>"></label>
-    <label>العدد المطلوب<input name="count" value="<%= v('count') %>" placeholder="20"></label>
-    <label>كود الوظيفة<input name="code" dir="ltr" value="<%= code %>"><small>بيتكتب في رسالة الواتساب عشان تعرف العامل بيقدّم على إيه.</small></label>
-    <label class="span2">رقم اعتماد الإعلان من مديرية العمل<input name="approval" value="<%= v('approval') %>"><small>مهم: متنشرش الوظيفة من غير اعتماد.</small></label>
+    <label>اسم الوظيفة (عربي) <em>*</em><input name="title_ar" value="<%= v('title','ar') %>" required placeholder="مثال: مهندس مدني موقع"></label>
+    <label>اسم الوظيفة (إنجليزي)<input name="title_en" dir="ltr" value="<%= v('title','en') %>" placeholder="Civil site engineer"></label>
+    <label>الموقع / المدينة (عربي)<input name="location_ar" value="<%= v('location','ar') %>" placeholder="القاهرة الجديدة"></label>
+    <label>الموقع / المدينة (إنجليزي)<input name="location_en" dir="ltr" value="<%= v('location','en') %>" placeholder="New Cairo"></label>
+    <label>القسم (عربي)<input name="dept_ar" value="<%= v('dept','ar') %>" list="dl-d" placeholder="التنفيذ"></label>
+    <label>القسم (إنجليزي)<input name="dept_en" dir="ltr" value="<%= v('dept','en') %>" placeholder="Execution"></label>
+    <label>نوع العمل (عربي)<input name="type_ar" value="<%= v('type','ar') %>" placeholder="دوام كامل"></label>
+    <label>نوع العمل (إنجليزي)<input name="type_en" dir="ltr" value="<%= v('type','en') %>" placeholder="Full time"></label>
+    <label>الخبرة المطلوبة (عربي)<input name="exp_ar" value="<%= v('exp','ar') %>" placeholder="من 3 إلى 5 سنين"></label>
+    <label>الخبرة المطلوبة (إنجليزي)<input name="exp_en" dir="ltr" value="<%= v('exp','en') %>" placeholder="3–5 years"></label>
+    <label class="span2">كود الوظيفة<input name="code" dir="ltr" value="<%= code %>"><small>بيتكتب في رسالة الواتساب وطلب التوظيف عشان تعرف المتقدم بيقدّم على إيه.</small></label>
     <label class="span2">الشروط والتفاصيل (عربي)<textarea name="details_ar" rows="7" placeholder="كل شرط في سطر"><%= v('details','ar') %></textarea></label>
     <label class="span2">الشروط والتفاصيل (إنجليزي)<textarea name="details_en" dir="ltr" rows="5"><%= v('details','en') %></textarea></label>
     <div class="span2">
       <span class="lbl">صورة الوظيفة (اختياري)</span>
-      <p class="muted small" style="margin:0 0 8px">بتظهر في كارت الوظيفة وصفحتها، ولما حد يشارك لينك الوظيفة على فيسبوك أو واتساب، وكمان خلفية لصورة النشر.</p>
+      <p class="muted small" style="margin:0 0 8px">بتظهر في كارت الوظيفة وصفحتها، ولما حد يشارك لينك الوظيفة على السوشيال ميديا أو واتساب، وكمان خلفية لصورة النشر.</p>
       <% if (j.image) { %><div class="thumbs"><label class="thumb"><img src="<%= j.image %>" alt=""><span><input type="checkbox" name="removeImage"> حذف الصورة</span></label></div><% } %>
       <label class="drop"><%- icon('image') %><span>اختار صورة</span><input type="file" name="image" accept="image/*" data-preview></label>
       <div class="preview"></div>
     </div>
     <label class="check span2"><input type="checkbox" name="active"<%= !job || job.active !== false ? ' checked' : '' %>> تظهر على الموقع</label>
   </div>
-  <datalist id="dl-c"><% (site.countries||[]).forEach(function(c){ %><option value="<%= tr(c.name) %>"><% }); %></datalist>
-  <datalist id="dl-s"><% (site.sectors||[]).forEach(function(c){ %><option value="<%= tr(c.name) %>"><% }); %></datalist>
+  <datalist id="dl-d"><% ['التنفيذ', 'المكتب الفني', 'التخطيط والمتابعة', 'السلامة والجودة', 'الكهروميكانيكا', 'المشتريات', 'الحسابات', 'الموارد البشرية'].forEach(function(c){ %><option value="<%= c %>"><% }); %></datalist>
   <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ الوظيفة</button><a class="btn ghost" href="/admin/jobs">إلغاء</a></div>
 </form>
 <%- include('foot') %>

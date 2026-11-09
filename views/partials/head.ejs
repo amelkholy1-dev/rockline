@@ -6,7 +6,7 @@
 <% var fullTitle = (title ? title + ' | ' : '') + tr(site.brand.name); var metaDesc = desc || tr(site.hero && site.hero.sub) || tr(site.about.p1); %>
 <title><%= fullTitle %></title>
 <meta name="description" content="<%= metaDesc.slice(0,160) %>">
-<meta name="theme-color" content="#0c2146">
+<meta name="theme-color" content="#203145">
 <link rel="canonical" href="<%= baseUrl %>/<%= lang %><%= pathNoLang %>">
 <link rel="alternate" hreflang="ar" href="<%= baseUrl %>/ar<%= pathNoLang %>">
 <link rel="alternate" hreflang="en" href="<%= baseUrl %>/en<%= pathNoLang %>">
@@ -21,12 +21,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="stylesheet" href="/css/style.css?v=20">
 <style>:root{--banner:url("<%= img('banner') %>")}</style>
 <script type="application/ld+json"><%- JSON.stringify({
-  '@context': 'https://schema.org', '@type': 'EmploymentAgency',
+  '@context': 'https://schema.org', '@type': 'GeneralContractor',
   name: tr(site.brand.name), url: baseUrl, logo: baseUrl + img('logo'),
-  telephone: (site.contact.phonesEG || [])[0] || '', email: site.contact.email || '',
+  telephone: (site.contact.phones || [])[0] || '', email: site.contact.email || '',
   address: { '@type': 'PostalAddress', streetAddress: tr(site.contact.address), addressCountry: 'EG' },
   sameAs: socials.map(function(s){ return s.url; })
 }).replace(/</g,'\\u003c') %></script>

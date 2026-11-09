@@ -6,12 +6,14 @@
     <%- include('partials/contactcards') %>
     <div class="form-card reveal"><%- include('partials/forms', { tab: tab }) %></div>
   </div>
+  <% if (tr(site.contact.address) || site.contact.mapLink) { %>
   <div class="wrap">
     <a class="map-card reveal" href="<%= mapUrl %>" target="_blank" rel="noopener">
       <span class="mc-ic"><%- icon('mapped') %></span>
-      <span><b><%= tr(site.contact.address) %></b><small><%= t.map %></small></span>
+      <span><b><%= tr(site.contact.address) || tr(site.brand.name) %></b><small><%= t.map %></small></span>
       <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %>
     </a>
   </div>
+  <% } %>
 </section>
 <%- include('partials/footer') %>

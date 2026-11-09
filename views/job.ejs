@@ -1,7 +1,7 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
 <%- include('partials/pagehead', { heading: tr(job.title), parent: ['/jobs', t.nav_jobs] }) %>
-<% var waMsg = (lang === 'ar' ? 'عايز أقدّم على وظيفة ' : 'I would like to apply for ') + (job.code ? job.code + ' - ' : '') + tr(job.title) + (tr(job.country) ? ' - ' + tr(job.country) : ''); %>
+<% var waMsg = (lang === 'ar' ? 'عايز أقدّم على وظيفة ' : 'I would like to apply for ') + (job.code ? job.code + ' - ' : '') + tr(job.title); %>
 <section class="sec">
   <div class="wrap job-grid">
     <article class="job-main reveal">
@@ -9,11 +9,10 @@
       <% if (job.image) { %><img class="job-img" src="<%= job.image %>" alt="<%= tr(job.title) %>"><% } %>
       <dl class="job-facts">
         <% if (job.code) { %><div><dt><%- icon('pin') %><%= t.job_code %></dt><dd dir="ltr"><%= job.code %></dd></div><% } %>
-        <% if (tr(job.country)) { %><div><dt><%- icon('map') %><%= t.country %></dt><dd><%= tr(job.country) %></dd></div><% } %>
-        <% if (tr(job.sector)) { %><div><dt><%- icon('layers') %><%= t.sector %></dt><dd><%= tr(job.sector) %></dd></div><% } %>
-        <% if (job.count) { %><div><dt><%- icon('users') %><%= t.count %></dt><dd><%= job.count %></dd></div><% } %>
-        <% if (tr(job.salary)) { %><div><dt><%- icon('chart') %><%= t.salary %></dt><dd><%= tr(job.salary) %></dd></div><% } %>
-        <% if (job.approval) { %><div><dt><%- icon('shield') %><%= t.approval %></dt><dd><%= job.approval %></dd></div><% } %>
+        <% if (tr(job.location)) { %><div><dt><%- icon('map') %><%= t.location %></dt><dd><%= tr(job.location) %></dd></div><% } %>
+        <% if (tr(job.dept)) { %><div><dt><%- icon('layers') %><%= t.dept %></dt><dd><%= tr(job.dept) %></dd></div><% } %>
+        <% if (tr(job.type)) { %><div><dt><%- icon('clock') %><%= t.jtype %></dt><dd><%= tr(job.type) %></dd></div><% } %>
+        <% if (tr(job.exp)) { %><div><dt><%- icon('award') %><%= t.exp %></dt><dd><%= tr(job.exp) %></dd></div><% } %>
       </dl>
       <% if (tr(job.details)) { %>
         <h2><%= t.requirements %></h2>
@@ -23,11 +22,10 @@
     <aside class="job-side reveal">
       <div class="side-card">
         <h3><%= t.apply %></h3>
-        <a class="btn wa wide" href="<%= wa(waMsg) %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.apply_wa %></a>
         <a class="btn navy wide" href="<%= L('/apply?job=' + job.id) %>"><%- icon('doc') %> <%= t.apply %></a>
+        <% if (hasWa) { %><a class="btn wa wide" href="<%= wa(waMsg) %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.apply_wa %></a><% } %>
         <button class="btn line-navy wide" type="button" data-share data-title="<%= tr(job.title) %>"><%- icon('copy') %> <%= t.share %></button>
       </div>
-      <div class="note-card"><%- icon('info') %><p><%= t.legal_note %></p></div>
     </aside>
   </div>
   <% if (related.length) { %>

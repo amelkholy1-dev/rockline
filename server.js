@@ -1,5 +1,5 @@
 /**
- * موقع شركة نسر الخليج لإلحاق العمالة المصرية بالخارج
+ * موقع شركة روك لاين جروب للمقاولات العامة (Rock Line Group)
  * Node.js + Express + EJS، والبيانات في ملفات JSON (مفيش قاعدة بيانات).
  * التشغيل:  npm install  ثم  npm start
  */
@@ -32,8 +32,20 @@ const users = require('./lib/users');
 users.emergencyReset();
 const analytics = require('./lib/analytics');
 const privacyDefault = require('./lib/privacy-default');
-const facebook = require('./lib/facebook');
-const masar = require('./lib/masar');
+
+// ترقية لمرة واحدة: لو البيانات المحفوظة على السيرفر لسه بتاعة النسخة القديمة (نسر الخليج)، نبدأ بمحتوى روك لاين الافتراضي.
+// بنحتفظ بوضع «تحت التطوير» ومواعيد الاستضافة بس — باقي المحتوى (والصور والوظائف القديمة) بيتشال.
+(function rebrandOldData() {
+  try {
+    const site = store.get('site');
+    if (!/Nasr Al-Khaleej|نسر الخليج/.test(JSON.stringify((site && site.brand) || {}))) return;
+    const fresh = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'site.json'), 'utf8'));
+    ['underConstruction', 'hosting'].forEach(k => { if (site[k] !== undefined) fresh[k] = site[k]; });
+    store.set('site', fresh);
+    store.set('jobs', store.get('jobs').filter(j => !/^NK-/.test(String(j.code || ''))));
+    console.log('اتحدّث محتوى الموقع لروك لاين (كان لسه محتوى النسخة القديمة).');
+  } catch (e) { console.error('rebrand:', e && e.message); }
+})();
 
 const PORT = process.env.PORT || 3000;
 const APP_UPLOADS = path.join(__dirname, 'public', 'uploads');
@@ -88,7 +100,7 @@ app.use((req, res, next) => /^\/+uploads(\/|$)/i.test(req.path.replace(/\\/g, '/
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
 
 app.use(session({
-  name: 'nk.sid',
+  name: 'rl.sid',
   secret: security.sessionSecret(),
   resave: false,
   saveUninitialized: false,
@@ -131,45 +143,6 @@ app.use('/admin', (req, res, next) => {
   next();
 });
 
-// ---------- صفحات التقديم (بتتعرض من هنا وبتتمرّر لمسار HR من ورا الستار) ----------
-// الزائر مبيشوفش دومين مسار أبداً. السيرفر هو اللي بيكلّم مسار بمفتاح سري.
-const TOKEN_RE = /^[A-Za-z0-9_-]{16,64}$/;
-const gone = (res) => res.status(404).type('text/plain; charset=utf-8').send('الرابط مش شغال');
-app.get('/apply/:token', (req, res) => TOKEN_RE.test(req.params.token) ? masar.proxy(req, res, '/p/apply/' + req.params.token) : gone(res));
-app.get('/apply-assets/:file', (req, res) => /^(apply\.js|apply\.css|fonts\.css|client\.css|track\.js|agent\.js|profile\.js|me\.js)$/.test(req.params.file) ? masar.proxy(req, res, '/p/assets/' + req.params.file) : gone(res));
-app.get('/apply-assets/fonts/:file', (req, res) => /^[A-Za-z0-9._-]+\.woff2$/.test(req.params.file) ? masar.proxy(req, res, '/p/assets/fonts/' + req.params.file) : gone(res));
-app.get('/apply-api/form/:token', (req, res) => TOKEN_RE.test(req.params.token) ? masar.proxy(req, res, '/p/api/form/' + req.params.token) : gone(res));
-app.post('/apply-api/apply/:token', (req, res) => {
-  if (!TOKEN_RE.test(req.params.token)) return gone(res);
-  if (tooMany(req.ip || '', 20, 10 * 60 * 1000)) return res.status(429).json({ ok: false, message: 'محاولات كتير، جرّب بعد شوية' });
-  masar.proxy(req, res, '/p/api/apply/' + req.params.token, { body: true, maxBytes: 9 * 1024 * 1024 });
-});
-app.get('/apply-img/:token/:name', (req, res) => TOKEN_RE.test(req.params.token) && /^(logo|[a-f0-9]{16}\.(jpg|png|webp))$/.test(req.params.name) ? masar.proxy(req, res, '/p/img/' + req.params.token + '/' + req.params.name) : gone(res));
-
-// ---------- متابعة الطلب + بوابة المناديب + «ملفي» (مسار بيعرضهم، والموقع بيمرّرهم بالمفتاح السري) ----------
-// (بوابة العميل /client والمعرض /talent و«وظائف متاحة» /openings و«اطلب موظفين» /hire اتشالوا من مسار 3.32 — الروابط دي بقت 404)
-app.get('/track', (req, res) => masar.proxy(req, res, '/p/track'));
-app.get('/agent', (req, res) => masar.proxy(req, res, '/p/agent'));
-app.get('/me', (req, res) => masar.proxy(req, res, '/p/me'));
-const X_API = /^(track\/(lookup|info|edit-info|edit)|me\/(info|signup|login|reset|home|edit|password|logout-all|delete)|agent\/(login|me|people|bulk|export|add|cv|form)|agent\/(person|file)\/[ci]\d{1,9}|logo)$/;
-app.all('/x-api/*', (req, res) => {
-  const rest = String(req.params[0] || ''); if (!X_API.test(rest) || !['GET', 'POST'].includes(req.method)) return gone(res);
-  if (tooMany('x:' + (req.ip || ''), 300, 60 * 1000)) return res.status(429).json({ ok: false, message: 'طلبات كتير، جرّب بعد شوية' });
-  const q = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
-  if (rest === 'agent/login' && tooMany('agl:' + (req.ip || ''), 20, 15 * 60 * 1000)) return res.status(429).json({ ok: false, message: 'محاولات كتير، جرّب بعد شوية' });
-  if (/^me\/(login|signup|reset)$/.test(rest) && tooMany('mel:' + (req.ip || ''), 30, 15 * 60 * 1000)) return res.status(429).json({ ok: false, message: 'محاولات كتير، جرّب بعد شوية' });
-  const tgt = '/p/api/x/' + rest + (/^\?[A-Za-z0-9=&%._-]{0,200}$/.test(q) ? q : ''); const fw = ['x-agent-token', 'x-me-token'];
-  masar.proxy(req, res, tgt, (rest === 'agent/add' || rest === 'agent/cv' || rest === 'track/edit' || rest === 'me/edit') ? { body: true, maxBytes: 9 * 1024 * 1024, forward: fw } : { json: req.method === 'POST', forward: fw });
-});
-// إشعارات مسار (مثلاً مندوب رفع ناس): بتتبعت إيميل للشركة. المفتاح السري هو نفسه مفتاح الربط.
-app.post('/api/masar-notify', async (req, res) => {
-  if (!masar.keyOk(req)) return res.status(404).end();
-  if (tooMany('notify:' + (req.ip || ''), 60, 60 * 60 * 1000)) return res.status(429).json({ ok: false });
-  const b = req.body || {}; const rows = (Array.isArray(b.lines) ? b.lines : []).slice(0, 40).map(r => [clean(r && r[0], 80), clean(r && r[1], 600)]);
-  try { await mailer.send(rows, { subject: clean(b.subject, 150) || 'إشعار من مسار', title: clean(b.title, 150) || 'إشعار من مسار', extraTo: users.notifyEmails() }); res.json({ ok: true }); }
-  catch (e) { res.status(200).json({ ok: false, message: String(e && e.message || e).slice(0, 120) }); }
-});
-
 // ---------- uploads ----------
 const diskImages = multer({
   storage: multer.diskStorage({
@@ -187,10 +160,11 @@ const diskPdf = multer({
   limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => cb(null, /\.pdf$/i.test(file.originalname))
 });
-const memCv = multer({
+// مرفقات الفورمات (رسومات / مقايسة / ملف تعريفي / سيرة ذاتية) — بتتحفظ في data/cv ومش متاحة للعامة
+const memFile = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 8 * 1024 * 1024, files: 1 },
-  fileFilter: (req, file, cb) => cb(null, /\.(pdf|docx?|jpe?g|png|webp)$/i.test(file.originalname))
+  limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => cb(null, /\.(pdf|docx?|xlsx?|jpe?g|png|webp)$/i.test(file.originalname))
 });
 
 // ---------- helpers ----------
@@ -218,14 +192,14 @@ function fmtDate(d, lang) {
 
 // صور الموقع اللي بتتغير من لوحة التحكم (صفحة "صور الموقع")
 const IMAGE_SLOTS = [
-  { k: 'logo', label: 'الشعار', hint: 'بيظهر في أعلى كل الصفحات وفي الفوتر. يفضل PNG بخلفية شفافة، مربع تقريباً.', def: '/img/logo.png' },
-  { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة العريضة اللي تحت العنوان في الصفحة الرئيسية. يفضل عرضها ضعف طولها (مثلاً 1600×640).', def: '/img/hero.jpg' },
-  { k: 'about', label: 'صورة "من نحن"', hint: 'صورة طولية جنب نص من نحن (مثلاً 660×800).', def: '/img/about.jpg' },
-  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة الدول (مثلاً 1200×580).', def: '/img/skyline.jpg' },
-  { k: 'banner', label: 'خلفية عناوين الصفحات والفوتر', hint: 'بتظهر باهتة ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1600×600).', def: '/img/skyline.jpg' },
-  { k: 'p_crane', label: 'صورة شركاء المقاولات', hint: 'في صفحة شركاؤنا، فوق مجموعة المقاولات.', def: '/img/sector-construction.jpg' },
-  { k: 'p_bus', label: 'صورة شركاء النقل', hint: 'في صفحة شركاؤنا، فوق مجموعة النقل.', def: '/img/sector-transport.jpg' },
-  { k: 'p_hotel', label: 'صورة شركاء الفنادق والضيافة', hint: 'في صفحة شركاؤنا، فوق مجموعة الفنادق.', def: '/img/sector-hotels.jpg' },
+  { k: 'logo', label: 'العلامة (الشعار المختصر)', hint: 'العلامة لوحدها — بتظهر في أعلى كل الصفحات جنب اسم الشركة. PNG بخلفية شفافة.', def: '/img/logo.png' },
+  { k: 'logoFull', label: 'الشعار الكامل (على خلفية فاتحة)', hint: 'العلامة + اسم الشركة بالكتابة الغامقة. بيظهر في صفحة «تحت التطوير» وصور النشر. PNG شفاف.', def: '/img/logo-full.png' },
+  { k: 'logoLight', label: 'الشعار الكامل (على خلفية كحلي)', hint: 'نفس الشعار بالكتابة الفاتحة — بيظهر في الفوتر. PNG شفاف.', def: '/img/logo-full-light.png' },
+  { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة العريضة تحت العنوان في الصفحة الرئيسية — يفضل صورة لمشروع أو موقع عمل (مثلاً 1600×560).', def: '/img/hero.svg' },
+  { k: 'about', label: 'صورة "من نحن"', hint: 'صورة طولية جنب نص من نحن (مثلاً 660×800).', def: '/img/about.svg' },
+  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة المناطق (مثلاً 1220×590).', def: '/img/scope.svg' },
+  { k: 'banner', label: 'خلفية عناوين الصفحات والفوتر', hint: 'بتظهر باهتة ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1600×600).', def: '/img/banner.svg' },
+  { k: 'project', label: 'صورة المشروع الافتراضية', hint: 'بتظهر لأي مشروع لسه مرفعتلوش صور.', def: '/img/project.svg' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
 function siteImg(site, slot) {
@@ -236,6 +210,15 @@ function siteImg(site, slot) {
 function customSections(pos) {
   return (store.get('site').sections || []).filter(s => s.visible !== false && s.position === pos);
 }
+// طرق إرسال الفورمات (من لوحة التحكم ← إعدادات الإيميل): واتساب / إيميل
+function channels() { const c = store.get('site').channels || {}; return { whatsapp: c.whatsapp !== false, email: c.email !== false }; }
+
+// ---------- المشروعات ----------
+const STATUS = ['done', 'ongoing'];
+function activeProjects() { return (store.get('projects') || []).filter(p => p.visible !== false); }
+// اسم القطاع بلغة الزائر (المشروع بيتخزن عليه اسم القطاع بالعربي)
+function catName(site, cat, lang) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? tr(s.name, lang) : (cat || ''); }
+function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? s.icon : 'building'; }
 
 function base(req, extra) {
   const lang = langOf(req);
@@ -254,18 +237,23 @@ function base(req, extra) {
     title: '',
     desc: '',
     fmtDate: d => fmtDate(d, lang),
+    hasWa: Boolean(digits(c.whatsapp)),
     wa: msg => waLink(c.whatsapp, msg),
-    waCompanies: msg => waLink(c.whatsappCompanies || c.whatsapp, msg),
     tel: p => 'tel:+' + digits(p),
     safeUrl: u => /^(https?:\/\/|mailto:|tel:|\/(?!\/))/i.test(String(u || '').trim()) ? String(u).trim() : '#', /* يمنع javascript: في الروابط اللي الإدارة بتكتبها */
-    mapUrl: /^https?:\/\//i.test(String(c.mapLink || '').trim()) ? String(c.mapLink).trim() : ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(tr(c.address, 'ar'))),
+    mapUrl: /^https?:\/\//i.test(String(c.mapLink || '').trim()) ? String(c.mapLink).trim() : ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(tr(c.address, 'ar') || tr(site.brand.name, 'ar'))),
     customs: customSections,
     img: slot => siteImg(site, slot),
     baseUrl: siteUrl(req),
     mailReady: mailer.ready(),
-    chans: masar.channels(),
+    chans: channels(),
+    cat: x => catName(site, x, lang),
+    catIcon: x => catIcon(site, x),
+    pimg: p => (p.images && p.images[0]) || siteImg(site, 'project'),
     professions: (site.professions || []).map(p => tr(p.text, lang)).filter(Boolean),
-    countries: (site.countries || []).map(x => tr(x.name, lang)).filter(Boolean),
+    vtypes: (site.vtypes || []).map(p => tr(p.text, lang)).filter(Boolean),
+    ptypes: (site.sectors || []).map(p => tr(p.name, lang)).filter(Boolean),
+    phone1: (c.phones || [])[0] || '',
     socials: ['facebook', 'instagram', 'tiktok', 'linkedin', 'youtube'].filter(k => c[k]).map(k => ({ k, url: c[k] }))
   }, extra || {});
 }
@@ -274,19 +262,27 @@ function activeJobs() { return store.get('jobs').filter(j => j.active !== false)
 
 // ---------- forms (نفس التعريف بيتستخدم في التحقق والإيميل ولوحة التحكم) ----------
 const FORMS = {
-  company: { subject: 'طلب عمالة جديد', fields: [
-    { k: 'company', req: 1, l: 'f_company' }, { k: 'country', l: 'f_country' }, { k: 'person', l: 'f_person' },
-    { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' }, { k: 'trades', req: 1, l: 'f_trades' },
-    { k: 'count', l: 'f_count' }, { k: 'notes', l: 'f_notes' }] },
-  worker: { subject: 'تسجيل عامل جديد', fields: [
-    { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'profession', req: 1, l: 'f_profession' },
-    { k: 'years', l: 'f_years' }, { k: 'country', l: 'f_pref' }, { k: 'job', l: 'f_job' }, { k: 'notes', l: 'f_notes' }] },
+  quote: { subject: 'طلب عرض سعر جديد', file: true, fields: [
+    { k: 'name', req: 1, l: 'f_name' }, { k: 'company', l: 'f_company' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
+    { k: 'ptype', req: 1, l: 'f_ptype' }, { k: 'location', l: 'f_location' }, { k: 'area', l: 'f_area' }, { k: 'start', l: 'f_start' },
+    { k: 'details', req: 1, l: 'f_details' }] },
+  vendor: { subject: 'تسجيل مورد / مقاول باطن', file: true, fields: [
+    { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
+    { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
+    { k: 'grade', l: 'f_grade' }, { k: 'city', l: 'f_city' }, { k: 'notes', l: 'f_notes' }] },
+  career: { subject: 'طلب توظيف جديد', file: true, fields: [
+    { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
+    { k: 'position', req: 1, l: 'f_position' }, { k: 'years', l: 'f_years' }, { k: 'city', l: 'f_city' },
+    { k: 'job', l: 'f_job' }, { k: 'notes', l: 'f_notes' }] },
   contact: { subject: 'رسالة جديدة من الموقع', fields: [
     { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'message', req: 1, l: 'f_message' }] }
 };
-const KIND_LABEL = { company: 'طلب عمالة', worker: 'تسجيل عامل', contact: 'استفسار' };
+const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مقاول باطن', career: 'طلب توظيف', contact: 'استفسار' };
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
+// عنوان مختصر للرسالة في لوحة التحكم
+const msgTitle = f => f.company || f.name || '-';
+const msgLine = f => f.ptype || f.vtype || f.position || (f.message || f.details || '').slice(0, 60);
 
 function readForm(kind, body) {
   const def = FORMS[kind];
@@ -340,7 +336,7 @@ function renderSocialPage(req, res, slug) {
     icon, brand, img: slot => siteImg(site, slot), cfg,
     items: social.items(cfg, base, true),
     icons_json: JSON.stringify(socialIconsMap()).replace(/</g, '\\u003c'), cfg_json: JSON.stringify(cfg).replace(/</g, '\\u003c'), v: pkgVersion,
-    ttl: String(cfg.title || '').trim() || tr(site.brand && site.brand.name, 'ar') || 'نسر الخليج',
+    ttl: String(cfg.title || '').trim() || tr(site.brand && site.brand.name, 'ar') || 'روك لاين',
     baseUrl: base
   });
   return true;
@@ -349,10 +345,11 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/companies', '/jobs', '/apply', '/guide', '/news', '/gallery', '/partners', '/contact', '/privacy'];
+  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/jobs', '/apply', '/news', '/gallery', '/contact', '/privacy'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
+    activeProjects().forEach(p => urls.push(`${b}/${l}/projects/${p.id}`));
     activeJobs().forEach(j => urls.push(`${b}/${l}/jobs/${j.id}`));
     store.get('news').forEach(n => urls.push(`${b}/${l}/news/${n.id}`));
   });
@@ -371,6 +368,7 @@ app.use('/:lang(ar|en)', (req, res, next) => {
       let page = parts[0] || 'home';
       let job = '';
       if (parts[0] === 'jobs' && parts[1]) { page = 'job'; job = parts[1]; }
+      else if (parts[0] === 'projects' && parts[1]) page = 'project';
       else if (parts[0] === 'news' && parts[1]) page = 'post';
       else if (parts[0] === 'gallery' && parts[1]) page = 'album';
       analytics.pageview(req, res, { page, job, lang });
@@ -389,27 +387,60 @@ app.post('/t', (req, res) => {
 
 pub.get('/', (req, res) => {
   const g = store.get('gallery');
+  const all = activeProjects();
+  const featured = all.filter(p => p.featured);
   res.render('home', base(req, {
     page: 'home',
-    jobs: activeJobs().slice(0, 6),
+    projects: featured.concat(all.filter(p => !p.featured)).slice(0, 6), // المختارة الأول، وبعدها الباقي لحد 6
+    projectsCount: all.length,
+    jobs: activeJobs().slice(0, 3),
     news: store.get('news').slice(0, 3),
     photos: g.items.slice(0, 8)
   }));
 });
 
-pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: dict[langOf(req)].about_title })));
-pub.get('/partners', (req, res) => res.render('partners', base(req, { page: 'about', title: dict[langOf(req)].partners })));
-pub.get('/companies', (req, res) => res.render('companies', base(req, { page: 'companies', title: dict[langOf(req)].companies_title })));
-pub.get('/guide', (req, res) => res.render('guide', base(req, { page: 'guide', title: dict[langOf(req)].guide })));
-pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: dict[langOf(req)].contact_title, tab: ['company', 'worker', 'contact'].includes(req.query.tab) ? req.query.tab : 'contact' })));
+const T = req => dict[langOf(req)];
+pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: T(req).about_title })));
+pub.get('/services', (req, res) => res.render('services', base(req, { page: 'services', title: T(req).services })));
+pub.get('/clients', (req, res) => res.render('clients', base(req, { page: 'clients', title: T(req).clients })));
+pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', title: T(req).quote_title, ptype: clean(req.query.type, 100) })));
+pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
+pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: T(req).contact_title, tab: Object.prototype.hasOwnProperty.call(FORMS, req.query.tab) ? req.query.tab : 'quote' })));
+// روابط الموقع القديم
+[['companies', '/quote'], ['partners', '/clients'], ['guide', '/vendors']].forEach(([from, to]) => pub.get('/' + from, (req, res) => res.redirect(301, '/' + langOf(req) + to)));
+
+pub.get('/projects', (req, res) => {
+  const lang = langOf(req);
+  const site = store.get('site');
+  const all = activeProjects();
+  const catQ = clean(req.query.cat, 100);
+  const status = STATUS.includes(req.query.status) ? req.query.status : '';
+  let list = all;
+  if (catQ) list = list.filter(p => p.cat === catQ);
+  if (status) list = list.filter(p => p.status === status);
+  // التصنيفات اللي فيها مشروعات بس، بنفس ترتيب القطاعات
+  const used = new Set(all.map(p => p.cat));
+  const cats = (site.sectors || []).map(s => tr(s.name, 'ar')).filter(c => used.has(c));
+  all.forEach(p => { if (p.cat && !cats.includes(p.cat)) cats.push(p.cat); });
+  res.render('projects', base(req, { page: 'projects', title: dict[lang].projects, list, cats, catQ, status, total: all.length,
+    counts: { done: all.filter(p => p.status === 'done').length, ongoing: all.filter(p => p.status === 'ongoing').length } }));
+});
+pub.get('/projects/:id', (req, res) => {
+  const p = activeProjects().find(x => x.id === req.params.id);
+  if (!p) return notFound(req, res);
+  const lang = langOf(req);
+  const others = activeProjects().filter(x => x.id !== p.id);
+  const related = others.filter(x => x.cat === p.cat).concat(others.filter(x => x.cat !== p.cat)).slice(0, 3);
+  res.render('project', base(req, { page: 'projects', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
+});
 
 pub.get('/privacy', (req, res) => {
   const lang = langOf(req);
   const site = store.get('site');
   const p = (site.privacy && tr(site.privacy.body, lang)) ? site.privacy : privacyDefault;
   const c = site.contact || {};
-  const ltr = x => x ? '\u2066' + x + '\u2069' : '';
-  const vars = { company: tr(site.brand.name, lang), license: site.brand.license || '', email: ltr(c.email || ''), phone: ltr((c.phonesEG || [])[0] || c.whatsapp || ''), address: tr(c.address, lang) };
+  const ltr = x => x ? '⁦' + x + '⁩' : '';
+  const vars = { company: tr(site.brand.name, lang), license: site.brand.license || '', email: ltr(c.email || ''), phone: ltr((c.phones || [])[0] || c.whatsapp || ''), address: tr(c.address, lang) };
   const text = tr(p.body, lang).replace(/\{(company|license|email|phone|address)\}/g, (m, k) => vars[k]);
   // سطور بسيطة: ## عنوان، - نقطة، والباقي فقرات
   const blocks = [];
@@ -422,26 +453,26 @@ pub.get('/privacy', (req, res) => {
       if (last && last.ul) last.ul.push(l.replace(/^[-•]\s+/, '')); else blocks.push({ ul: [l.replace(/^[-•]\s+/, '')] });
     } else blocks.push({ p: l });
   });
-  res.render('privacy', base(req, { page: 'privacy', title: dict[lang].privacy, blocks, updated: p.updated ? '\u2066' + p.updated + '\u2069' : '' }));
+  res.render('privacy', base(req, { page: 'privacy', title: dict[lang].privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
 });
 
 pub.get('/apply', (req, res) => {
   const job = activeJobs().find(j => j.id === req.query.job);
-  res.render('apply', base(req, { page: 'apply', job, title: dict[langOf(req)].apply_title }));
+  res.render('apply', base(req, { page: 'jobs', job, title: dict[langOf(req)].apply_title }));
 });
 
 pub.get('/jobs', (req, res) => {
   const lang = langOf(req);
   const q = clean(req.query.q, 100).toLowerCase();
-  const country = clean(req.query.country, 100);
-  const sector = clean(req.query.sector, 100);
+  const loc = clean(req.query.location, 100);
+  const dept = clean(req.query.dept, 100);
   let jobs = activeJobs();
-  if (country) jobs = jobs.filter(j => tr(j.country, 'ar') === country || tr(j.country, 'en') === country);
-  if (sector) jobs = jobs.filter(j => tr(j.sector, 'ar') === sector || tr(j.sector, 'en') === sector);
-  if (q) jobs = jobs.filter(j => [j.title, j.profession, j.details, j.code].map(x => JSON.stringify(x || '')).join(' ').toLowerCase().includes(q));
+  if (loc) jobs = jobs.filter(j => tr(j.location, 'ar') === loc || tr(j.location, 'en') === loc);
+  if (dept) jobs = jobs.filter(j => tr(j.dept, 'ar') === dept || tr(j.dept, 'en') === dept);
+  if (q) jobs = jobs.filter(j => [j.title, j.dept, j.details, j.code].map(x => JSON.stringify(x || '')).join(' ').toLowerCase().includes(q));
   const all = activeJobs();
   const uniq = key => [...new Set(all.map(j => tr(j[key], lang)).filter(Boolean))];
-  res.render('jobs', base(req, { page: 'jobs', title: dict[lang].jobs_title, jobs, q, country, sector, jobCountries: uniq('country'), jobSectors: uniq('sector') }));
+  res.render('jobs', base(req, { page: 'jobs', title: dict[lang].jobs_title, jobs, q, loc, dept, jobLocations: uniq('location'), jobDepts: uniq('dept') }));
 });
 
 pub.get('/jobs/:id', (req, res) => {
@@ -477,7 +508,7 @@ pub.get('/gallery/:album', (req, res) => {
 
 // إرسال الفورمات: بالإيميل (من السيرفر) أو تسجيل نسخة لما الزائر يبعت على واتساب
 pub.post('/send', (req, res) => {
-  memCv.single('cv')(req, res, async upErr => {
+  memFile.single('file')(req, res, async upErr => {
     const lang = langOf(req);
     const t = dict[lang];
     const wantsJson = req.xhr || /json/.test(req.get('accept') || '');
@@ -494,15 +525,12 @@ pub.post('/send', (req, res) => {
     const { fields, missing } = readForm(kind, b);
     if (missing.length) return reply(false, t.required);
     const channel = b.channel === 'whatsapp' ? 'whatsapp' : 'email';
-    const chans = masar.channels();
-    const toMasar = kind === 'worker' && chans.masar;      // تسجيل العمال والتقديم على الوظائف بتروح الوارد في مسار
-    const emailOn = chans.email && mailer.ready();
+    const emailOn = channels().email && mailer.ready();
     analytics.event('form_' + kind + '_' + channel, req);
     const rec = { id: uid(), kind, channel, lang, at: now(), read: false, fields, mailed: false, consent: b.consent === 'on' };
-    if (toMasar) { rec.masar = 'pending'; rec.masarTries = 0; }
 
     let attachments = [];
-    if (req.file && kind === 'worker' && !upErr) {
+    if (req.file && FORMS[kind].file && !upErr) {
       const safe = uid() + path.extname(req.file.originalname).toLowerCase();
       fs.writeFileSync(path.join(CV_DIR, safe), req.file.buffer);
       rec.cv = safe;
@@ -528,53 +556,19 @@ pub.post('/send', (req, res) => {
         console.error('mail error:', rec.mailError);
       }
       saveMessage(rec);
-      if (toMasar) await pushMasar(rec, ip);
-      // حتى لو الإيميل فشل، الرسالة اتحفظت في لوحة التحكم (وفي مسار لو شغال)
-      return (rec.mailed || rec.masar === 'ok') ? reply(true, t.sent_ok) : reply(false, t.sent_fail, 502);
+      // حتى لو الإيميل فشل، الرسالة اتحفظت في لوحة التحكم
+      return rec.mailed ? reply(true, t.sent_ok) : reply(false, t.sent_fail, 502);
     }
     if (channel === 'email') {
-      // الإيميل مقفول من لوحة التحكم أو مش متظبط: نحفظ الرسالة وندفعها لمسار
+      // الإيميل مقفول من لوحة التحكم أو مش متظبط: نحفظ الرسالة في لوحة التحكم
       rec.channel = 'form';
       saveMessage(rec);
-      if (toMasar) await pushMasar(rec, ip);
       return reply(true, t.sent_ok);
     }
     saveMessage(rec);
-    if (toMasar) pushMasar(rec, ip);
     return reply(true, t.sent_wa_note);
   });
 });
-
-// بيبعت تسجيل عامل/تقديم وظيفة لمسار (الوارد). لو فشل بيتحاول تاني لوحده كل 5 دقايق (6 مرات).
-async function pushMasar(rec, ip) {
-  const f = rec.fields || {};
-  const fd = new FormData();
-  ['name', 'phone', 'profession', 'years', 'country', 'job', 'notes'].forEach(k => fd.set(k, f[k] || ''));
-  fd.set('source', rec.job || f.job ? 'تقديم على وظيفة' : 'سجّل كعامل');
-  fd.set('lang', rec.lang || 'ar');
-  if (rec.cv) {
-    try { fd.set('cv', new Blob([fs.readFileSync(path.join(CV_DIR, path.basename(rec.cv)))]), rec.cvName || rec.cv); } catch (e) { /* الملف اتمسح */ }
-  }
-  const r = await masar.ingest(fd, ip || '');
-  rec.masarTries = (rec.masarTries || 0) + 1;
-  if (r.ok) { rec.masar = 'ok'; rec.masarReceipt = r.receipt; delete rec.masarError; }
-  else { rec.masarError = String(r.message || 'فشل').slice(0, 200); rec.masar = (r.status === 400 || rec.masarTries >= 6) ? 'failed' : 'pending'; }
-  const inbox = store.get('inbox');
-  store.set('inbox', inbox);
-  return r.ok;
-}
-let retrying = false;
-async function retryMasar() {
-  if (retrying || !masar.channels().masar) return;
-  retrying = true;
-  try {
-    const pending = store.get('inbox').messages.filter(m => m.masar === 'pending' && (m.masarTries || 0) < 6);
-    for (const m of pending) await pushMasar(m, '');
-  } catch (e) { console.error('masar retry:', e && e.message); }
-  retrying = false;
-}
-setInterval(retryMasar, 5 * 60 * 1000).unref();
-setTimeout(retryMasar, 30 * 1000).unref();
 
 function notFound(req, res) {
   const lang = (req.originalUrl.match(/^\/(ar|en)\b/) || [])[1] || 'ar';
@@ -604,10 +598,10 @@ function adminView(req, extra) {
     host: me ? hostAlert() : null,
     fmtDate: d => fmtDate(d, 'ar'),
     fmtTime: d => new Date(d).toLocaleString('ar-EG', { timeZone: 'Africa/Cairo', dateStyle: 'medium', timeStyle: 'short' }),
-    KIND_LABEL, CHANNEL_LABEL, FORMS, labels: dict.ar, PERMS: users.PERMS
+    KIND_LABEL, CHANNEL_LABEL, FORMS, msgTitle, msgLine, labels: dict.ar, PERMS: users.PERMS
   }, extra || {});
 }
-const ISSUER = 'Nesr Al-Khaleej';
+const ISSUER = 'Rock Line Group';
 function auth(req, res, next) {
   const u = req.session && req.session.uid && users.byId(req.session.uid);
   // الجلسة بتتلغي لو الحساب اتوقف أو اتغيرت كلمة المرور/الصلاحيات/التحقق الثنائي (رقم النسخة بيتغير)
@@ -622,7 +616,7 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { facebook: 'facebook', stats: 'stats', inbox: 'inbox', jobs: 'jobs', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', masar: 'masar', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { stats: 'stats', inbox: 'inbox', projects: 'projects', jobs: 'jobs', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
@@ -630,7 +624,7 @@ function guard(req, res, next) {
   const perm = Object.prototype.hasOwnProperty.call(PERM_OF, seg) ? PERM_OF[seg] : null;
   if (!perm && (seg === '' || seg === 'account')) return next();
   if (seg === 'hosting' && req.me && req.me.owner) return next();
-  if (seg === 'under-construction' && req.me && req.me.owner) return next();
+  if ((seg === 'under-construction' || seg === 'samples') && req.me && req.me.owner) return next();
   if (perm && users.has(req.me, perm)) return next();
   res.status(403).render('admin/denied', adminView(req, {}));
 }
@@ -747,7 +741,7 @@ app.post('/admin/forgot', async (req, res) => {
       await mailer.send([
         ['الاسم', u.name || u.user], ['اسم المستخدم', u.user],
         ['لينك تغيير كلمة المرور', link], ['ملاحظة', 'اللينك شغال لمدة ساعة واحدة. لو مش إنت اللي طلبت، تجاهل الرسالة.']
-      ], { subject: 'تغيير كلمة مرور لوحة تحكم نسر الخليج', title: 'تغيير كلمة المرور', to: u.email });
+      ], { subject: 'تغيير كلمة مرور لوحة تحكم روك لاين', title: 'تغيير كلمة المرور', to: u.email });
     } catch (e) { console.error('reset mail error:', e.message); }
   }
   // نفس الرد دايماً عشان محدش يعرف مين مسجل
@@ -820,7 +814,7 @@ admin.get('/', (req, res) => {
   res.render('admin/dash', adminView(req, {
     section: 'dash', underCon: underCon(),
     counts: {
-      jobs: activeJobs().length, news: store.get('news').length,
+      projects: activeProjects().length, jobs: activeJobs().length, news: store.get('news').length,
       photos: store.get('gallery').items.length,
       messages: inbox.messages.length,
       week: inbox.messages.filter(m => Date.now() - new Date(m.at) < 7 * 864e5).length
@@ -829,7 +823,13 @@ admin.get('/', (req, res) => {
     defaultPass: Boolean(req.me.defaultPass),
     missingStats: (store.get('site').stats || []).filter(s => !s.value).map(s => tr(s.label, 'ar')),
     quotesCount: (store.get('site').quotes || []).length,
-    noEmail: !req.me.email
+    noEmail: !req.me.email,
+    samples: {
+      site: store.get('site').sample === true,
+      projects: (store.get('projects') || []).filter(p => p.sample).length,
+      jobs: store.get('jobs').filter(j => j.sample).length
+    },
+    noContact: !((store.get('site').contact || {}).phones || []).length && !(store.get('site').contact || {}).whatsapp
   }));
 });
 admin.post('/under-construction', (req, res) => {
@@ -888,14 +888,14 @@ admin.get('/inbox/export.csv', (req, res) => {
   const fx = v => { const t = String(v == null ? '' : v); return /^[=+\-@\t\r]/.test(t) && !/^[+-]?[\d\s().,-]+$/.test(t) ? "'" + t : t; }; /* منع حقن معادلات Excel */
   const csv = '﻿' + rows.map(r => r.map(c => '"' + fx(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', 'attachment; filename="nesr-messages.csv"');
+  res.setHeader('Content-Disposition', 'attachment; filename="rockline-messages.csv"');
   res.send(csv);
 });
 
 // ----- jobs -----
 function nextJobCode() {
   const n = store.get('jobs').map(j => parseInt(String(j.code || '').replace(/\D/g, ''), 10) || 0);
-  return 'NK-' + String((n.length ? Math.max.apply(null, n) : 0) + 1).padStart(3, '0');
+  return 'RL-' + String((n.length ? Math.max.apply(null, n) : 0) + 1).padStart(3, '0');
 }
 admin.get('/jobs', (req, res) => res.render('admin/jobs', adminView(req, { section: 'jobs', jobs: store.get('jobs') })));
 admin.get('/jobs/new', (req, res) => res.render('admin/jobform', adminView(req, { section: 'jobs', job: null, code: nextJobCode() })));
@@ -915,44 +915,25 @@ admin.post('/jobs/save', (req, res) => {
     const rec = {
       id: old ? old.id : uid(),
       code: clean(b.code, 30) || (old && old.code) || nextJobCode(),
-      title: bi(b, 'title'), country: bi(b, 'country'), sector: bi(b, 'sector'),
-      count: clean(b.count, 30), salary: bi(b, 'salary'),
+      title: bi(b, 'title'), location: bi(b, 'location'), dept: bi(b, 'dept'),
+      type: bi(b, 'type'), exp: bi(b, 'exp'),
       details: bi(b, 'details'),
-      approval: clean(b.approval, 100),
       image,
       active: b.active === 'on',
       at: old ? old.at : now(), updated: now()
     };
+    if (old) delete old.sample;
     if (!rec.title.ar) { flash(req, 'اكتب اسم الوظيفة بالعربي', 'err'); return res.redirect(old ? '/admin/jobs/' + old.id + '/edit' : '/admin/jobs/new'); }
     if (old) Object.assign(old, rec); else jobs.unshift(rec);
     store.set('jobs', jobs);
-    flash(req, err ? 'اتحفظت الوظيفة، بس الصورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ الوظيفة. تقدر دلوقتي تعمل لها صورة للفيسبوك من زرار "صورة للنشر".', err ? 'err' : 'ok');
+    flash(req, err ? 'اتحفظت الوظيفة، بس الصورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ الوظيفة. تقدر دلوقتي تعمل لها صورة للسوشيال ميديا من زرار "صورة للنشر".', err ? 'err' : 'ok');
     res.redirect('/admin/jobs');
   });
 });
 admin.get('/jobs/:id/poster', (req, res) => {
   const job = store.get('jobs').find(j => j.id === req.params.id);
   if (!job) return res.redirect('/admin/jobs');
-  res.render('admin/poster', adminView(req, { section: 'jobs', job, jobUrl: siteUrl(req) + '/ar/jobs/' + job.id, fb: { connected: facebook.connected(), page: facebook.cfg().pageName || '' } }));
-});
-// نشر صورة الوظيفة على صفحة فيسبوك
-const memImage = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 1 } });
-admin.post('/jobs/:id/facebook', (req, res) => {
-  memImage.single('image')(req, res, async err => {
-    const jobs = store.get('jobs');
-    const job = jobs.find(j => j.id === req.params.id);
-    if (!job) return res.status(404).json({ ok: false, msg: 'الوظيفة مش موجودة' });
-    if (!facebook.connected()) return res.status(400).json({ ok: false, msg: 'صفحة فيسبوك مش مربوطة لسه.' });
-    if (err || !req.file) return res.status(400).json({ ok: false, msg: 'الصورة موصلتش. جرّب تاني.' });
-    try {
-      const r = await facebook.postPhoto(req.file.buffer, req.file.mimetype, clean((req.body || {}).caption, 5000));
-      job.fb = (job.fb || []).concat([{ id: r.id, url: r.url, at: now(), by: req.me.name || req.me.user }]);
-      store.set('jobs', jobs);
-      res.json({ ok: true, url: r.url, msg: 'اتنشرت على صفحة ' + (facebook.cfg().pageName || 'فيسبوك') });
-    } catch (e) {
-      res.status(502).json({ ok: false, msg: e.message });
-    }
-  });
+  res.render('admin/poster', adminView(req, { section: 'jobs', job, jobUrl: siteUrl(req) + '/ar/jobs/' + job.id }));
 });
 admin.post('/jobs/:id/toggle', (req, res) => {
   const jobs = store.get('jobs');
@@ -966,8 +947,80 @@ admin.post('/jobs/:id/delete', (req, res) => {
   res.redirect('/admin/jobs');
 });
 
+// ----- projects (المشروعات) -----
+const projList = () => store.get('projects') || [];
+const sectorNames = () => (store.get('site').sectors || []).map(s => tr(s.name, 'ar')).filter(Boolean);
+admin.get('/projects', (req, res) => res.render('admin/projects', adminView(req, { section: 'projects', list: projList(), catName: x => x || '—' })));
+admin.get('/projects/new', (req, res) => res.render('admin/projectform', adminView(req, { section: 'projects', item: null, cats: sectorNames() })));
+admin.get('/projects/:id/edit', (req, res) => {
+  const item = projList().find(p => p.id === req.params.id);
+  if (!item) return res.redirect('/admin/projects');
+  res.render('admin/projectform', adminView(req, { section: 'projects', item, cats: sectorNames() }));
+});
+admin.post('/projects/save', (req, res) => {
+  diskImages.array('images', 20)(req, res, err => {
+    const b = req.body || {};
+    const list = projList();
+    const old = list.find(p => p.id === clean(b.id));
+    let images = old ? (old.images || []).slice() : [];
+    const remove = [].concat(b.remove || []);
+    remove.forEach(x => { if (images.includes(x)) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } });
+    images = images.filter(x => !remove.includes(x));
+    // صورة الغلاف = أول صورة
+    if (b.cover && images.includes(b.cover)) images = [b.cover].concat(images.filter(x => x !== b.cover));
+    (req.files || []).forEach(f => images.push('/uploads/' + f.filename));
+    const rec = {
+      id: old ? old.id : uid(),
+      title: bi(b, 'title'), cat: clean(b.cat, 100), status: STATUS.includes(b.status) ? b.status : 'done',
+      client: bi(b, 'client'), location: bi(b, 'location'),
+      year: clean(b.year, 40), area: clean(b.area, 60),
+      scope: bi(b, 'scope'), desc: bi(b, 'desc'),
+      images: images.slice(0, 40),
+      featured: b.featured === 'on', visible: b.visible === 'on',
+      at: old ? old.at : now(), updated: now()
+    };
+    if (!rec.title.ar) { flash(req, 'اكتب اسم المشروع بالعربي', 'err'); return res.redirect(old ? '/admin/projects/' + old.id + '/edit' : '/admin/projects/new'); }
+    if (old) { Object.assign(old, rec); delete old.sample; } else list.unshift(rec);
+    store.set('projects', list);
+    flash(req, err ? 'اتحفظ المشروع، بس فيه صورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ المشروع', err ? 'err' : 'ok');
+    res.redirect('/admin/projects');
+  });
+});
+admin.post('/projects/:id/toggle', (req, res) => {
+  const list = projList(); const p = list.find(x => x.id === req.params.id);
+  if (p) { p.visible = p.visible === false; store.set('projects', list); flash(req, p.visible ? 'المشروع ظاهر على الموقع' : 'المشروع اتخفى من الموقع'); }
+  res.redirect('/admin/projects');
+});
+admin.post('/projects/:id/feature', (req, res) => {
+  const list = projList(); const p = list.find(x => x.id === req.params.id);
+  if (p) { p.featured = !p.featured; store.set('projects', list); flash(req, p.featured ? 'المشروع بقى ضمن المشروعات المختارة في الصفحة الرئيسية' : 'اتشال من المشروعات المختارة'); }
+  res.redirect('/admin/projects');
+});
+admin.post('/projects/:id/move', (req, res) => {
+  const list = projList(); const i = list.findIndex(x => x.id === req.params.id);
+  const j = i + (req.body && req.body.dir === 'up' ? -1 : 1);
+  if (i >= 0 && j >= 0 && j < list.length) { [list[i], list[j]] = [list[j], list[i]]; store.set('projects', list); }
+  res.redirect('/admin/projects');
+});
+admin.post('/projects/:id/delete', (req, res) => {
+  const list = projList(); const p = list.find(x => x.id === req.params.id);
+  if (p) (p.images || []).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} });
+  store.set('projects', list.filter(x => x.id !== req.params.id));
+  flash(req, 'تم حذف المشروع');
+  res.redirect('/admin/projects');
+});
+admin.post('/samples/clear', (req, res) => {
+  if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
+  const what = (req.body && req.body.what) || '';
+  if (what === 'projects') store.set('projects', projList().filter(p => !p.sample));
+  else if (what === 'jobs') store.set('jobs', store.get('jobs').filter(j => !j.sample));
+  else if (what === 'site') { const site = store.get('site'); delete site.sample; store.set('site', site); }
+  flash(req, what === 'site' ? 'تمام — اتشال تنبيه المحتوى النموذجي' : 'اتمسحت النماذج');
+  res.redirect('/admin');
+});
+
 // ----- news -----
-admin.get('/news', (req, res) => res.render('admin/news', adminView(req, { section: 'news', news: store.get('news'), fbConnected: facebook.connected() })));
+admin.get('/news', (req, res) => res.render('admin/news', adminView(req, { section: 'news', news: store.get('news') })));
 admin.get('/news/new', (req, res) => res.render('admin/newsform', adminView(req, { section: 'news', item: null })));
 admin.get('/news/:id/edit', (req, res) => {
   const item = store.get('news').find(n => n.id === req.params.id);
@@ -998,28 +1051,6 @@ admin.post('/news/save', (req, res) => {
     flash(req, err ? 'اتحفظ الخبر، بس فيه صورة متقبلتش (الحد 10 ميجا للصورة)' : 'تم حفظ الخبر', err ? 'err' : 'ok');
     res.redirect('/admin/news');
   });
-});
-admin.post('/news/:id/facebook', async (req, res) => {
-  const news = store.get('news');
-  const item = news.find(n => n.id === req.params.id);
-  if (!item) return res.redirect('/admin/news');
-  if (!facebook.connected()) { flash(req, 'صفحة فيسبوك مش مربوطة لسه.', 'err'); return res.redirect('/admin/news'); }
-  const link = siteUrl(req) + '/ar/news/' + item.id;
-  const caption = [tr(item.title, 'ar'), '', tr(item.text, 'ar'), '', link].join('\n').trim();
-  try {
-    let r;
-    const file = item.image && path.join(UPLOAD_DIR, path.basename(item.image));
-    if (file && fs.existsSync(file)) {
-      const ext = path.extname(file).toLowerCase();
-      r = await facebook.postPhoto(fs.readFileSync(file), ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg', caption);
-    } else {
-      r = await facebook.postLink([tr(item.title, 'ar'), '', tr(item.text, 'ar')].join('\n').trim(), link);
-    }
-    item.fb = (item.fb || []).concat([{ id: r.id, url: r.url, at: now(), by: req.me.name || req.me.user }]);
-    store.set('news', news);
-    flash(req, 'اتنشر الخبر على صفحة ' + (facebook.cfg().pageName || 'فيسبوك'));
-  } catch (e) { flash(req, e.message, 'err'); }
-  res.redirect('/admin/news');
 });
 admin.post('/news/:id/delete', (req, res) => {
   store.set('news', store.get('news').filter(n => n.id !== req.params.id));
@@ -1106,17 +1137,19 @@ admin.post('/contact', (req, res) => {
     const site = store.get('site');
     const c = site.contact;
     const list = s => clean(s).split(/[\n,،]+/).map(x => x.trim()).filter(Boolean);
-    c.phonesEG = list(b.phonesEG);
-    c.phonesSA = list(b.phonesSA);
+    c.phones = list(b.phones);
+    c.phones2 = list(b.phones2);
     c.whatsapp = clean(b.whatsapp, 40);
-    c.whatsappCompanies = clean(b.whatsappCompanies, 40);
     c.email = clean(b.email, 200);
     c.address = bi(b, 'address');
     c.hours = bi(b, 'hours');
     c.slogan = bi(b, 'slogan');
     c.mapLink = clean(b.mapLink, 1000);
     ['facebook', 'instagram', 'tiktok', 'linkedin', 'youtube', 'website'].forEach(k => { c[k] = clean(b[k], 500); });
-    site.brand.license = clean(b.license, 30);
+    site.brand.license = clean(b.license, 40);
+    site.brand.grade = clean(b.grade, 40);
+    site.brand.cr = clean(b.cr, 40);
+    site.brand.tax = clean(b.tax, 40);
     site.brand.founded = clean(b.founded, 10);
     if (req.file) site.profilePdf = '/uploads/' + req.file.filename;
     store.set('site', site);
@@ -1225,8 +1258,8 @@ admin.post('/content/:key', (req, res) => {
 
 // ----- custom sections (أقسام إضافية) -----
 const POSITIONS = [
-  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "خدماتنا"'],
-  ['after_sectors', 'بعد "القطاعات"'], ['after_jobs', 'بعد "أحدث الوظائف"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
+  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "آلية العمل"'],
+  ['after_sectors', 'بعد "الجودة والسلامة"'], ['after_jobs', 'بعد "الوظائف المتاحة"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
 ];
 admin.get('/sections', (req, res) => res.render('admin/sections', adminView(req, { section: 'sections', list: store.get('site').sections || [], POSITIONS })));
 admin.get('/sections/new', (req, res) => res.render('admin/sectionform', adminView(req, { section: 'sections', item: null, POSITIONS })));
@@ -1273,8 +1306,14 @@ admin.post('/sections/:id/delete', (req, res) => {
   res.redirect('/admin/sections');
 });
 
-// ----- mail settings -----
-admin.get('/mail', (req, res) => res.render('admin/mail', adminView(req, { section: 'mail', mail: store.get('mail'), envPass: Boolean(process.env.MAIL_PASS) })));
+// ----- mail settings + طرق إرسال الفورمات -----
+admin.get('/mail', (req, res) => res.render('admin/mail', adminView(req, { section: 'mail', mail: store.get('mail'), envPass: Boolean(process.env.MAIL_PASS), chans: channels() })));
+admin.post('/mail/channels', (req, res) => {
+  const site = store.get('site'); const b = req.body || {};
+  site.channels = { whatsapp: b.ch_whatsapp === 'on', email: b.ch_email === 'on' }; store.set('site', site);
+  flash(req, 'اتحفظت طرق الإرسال' + (!site.channels.whatsapp && !site.channels.email ? ' — الاتنين مقفولين، فهيظهر زرار «إرسال» عادي والرسايل بتتحفظ في لوحة التحكم.' : ''));
+  res.redirect('/admin/mail');
+});
 admin.post('/mail', (req, res) => {
   const b = req.body || {};
   const m = store.get('mail');
@@ -1291,59 +1330,12 @@ admin.post('/mail', (req, res) => {
 });
 admin.post('/mail/test', async (req, res) => {
   try {
-    await mailer.send([['الحالة', 'إعدادات الإيميل شغالة، ورسايل الموقع هتوصل هنا.']], { subject: 'رسالة تجربة من موقع نسر الخليج', title: 'رسالة تجربة' });
+    await mailer.send([['الحالة', 'إعدادات الإيميل شغالة، ورسايل الموقع هتوصل هنا.']], { subject: 'رسالة تجربة من موقع روك لاين', title: 'رسالة تجربة' });
     flash(req, 'اتبعتت رسالة التجربة. شوف صندوق الوارد في ' + mailer.config().to);
   } catch (e) {
     flash(req, 'الإرسال فشل: ' + String(e && e.message || e).slice(0, 200), 'err');
   }
   res.redirect('/admin/mail');
-});
-
-// ----- ربط مسار HR: الاتصال، قنوات الفورمات، وروابط التقديم -----
-admin.get('/masar', async (req, res) => {
-  const c = masar.cfg();
-  let links = null, stats = null, linkErr = '', on = true;
-  if (c.ready) { try { const d = await masar.json('/p/api/links'); links = d.items; stats = d.stats; on = d.on; } catch (e) { linkErr = String(e && e.message || e).slice(0, 200); } }
-  const msgs = store.get('inbox').messages.filter(m => m.masar);
-  res.render('admin/masar', adminView(req, { section: 'masar', m: { url: c.url, hasKey: Boolean(c.key), keyFromEnv: c.fromEnv, ready: c.ready, channels: masar.channels(), set: c.channels }, links, stats, linkErr, on, base: siteUrl(req), sent: { ok: msgs.filter(x => x.masar === 'ok').length, pending: msgs.filter(x => x.masar === 'pending').length, failed: msgs.filter(x => x.masar === 'failed').length } }));
-});
-admin.post('/masar', (req, res) => {
-  const b = req.body || {};
-  const url = clean(b.url, 200).replace(/\/+$/, '');
-  if (url && !masar.okUrl(url)) { flash(req, 'رابط مسار لازم يبدأ بـ https:// (مثال: https://hr.nisrelkhaleeg.com)', 'err'); return res.redirect('/admin/masar'); }
-  /* تغيير رابط مسار أو المفتاح = المدير الأساسي بس (الرابط ده بيتعرض على نفس دومين الموقع، فلو اتغيّر لدومين غريب يبقى استيلاء على اللوحة) */
-  const cur = masar.cfg(); const newKey = clean(b.key, 200); const changed = (url && url !== cur.url) || (newKey && !cur.fromEnv);
-  if (changed && !req.me.owner) { flash(req, 'تغيير رابط مسار أو المفتاح للمدير الأساسي بس.', 'err'); return res.redirect('/admin/masar'); }
-  if (url && url !== cur.url && !newKey && !cur.fromEnv) { const m = store.get('masar') || {}; m.key = ''; store.set('masar', m); } /* الرابط اتغيّر من غير مفتاح جديد = نمسح القديم عشان ميتبعتش لدومين تاني */
-  masar.save({ url, key: newKey, channels: { whatsapp: b.ch_whatsapp === 'on', email: b.ch_email === 'on', masar: b.ch_masar === 'on' } });
-  flash(req, 'تم حفظ الإعدادات.');
-  res.redirect('/admin/masar');
-});
-admin.post('/masar/test', async (req, res) => {
-  try { const d = await masar.json('/p/api/ping'); flash(req, 'الاتصال شغال ✓' + (d.name ? ' — ' + d.name : '')); }
-  catch (e) { flash(req, 'الاتصال فشل: ' + String(e && e.message || e).slice(0, 200), 'err'); }
-  res.redirect('/admin/masar');
-});
-admin.post('/masar/links', async (req, res) => {
-  try { await masar.json('/p/api/links', { method: 'POST', body: { title: clean(req.body.title, 200), source: clean(req.body.source, 200), expires: clean(req.body.expires, 10), max: parseInt(req.body.max, 10) || 0, requireCv: req.body.requireCv === 'on' } }); flash(req, 'اتعمل الرابط. صمّم صفحته (صور ونصوص) من مسار ← الإعدادات ← رابط التقديم العام.'); }
-  catch (e) { flash(req, String(e && e.message || e).slice(0, 200), 'err'); }
-  res.redirect('/admin/masar');
-});
-admin.post('/masar/links/:id/toggle', async (req, res) => {
-  try { await masar.json('/p/api/links/' + parseInt(req.params.id, 10), { method: 'PUT', body: { title: clean(req.body.title, 200), source: clean(req.body.source, 200), active: req.body.active === '1' } }); flash(req, req.body.active === '1' ? 'اتفعّل الرابط.' : 'اتوقف الرابط.'); }
-  catch (e) { flash(req, String(e && e.message || e).slice(0, 200), 'err'); }
-  res.redirect('/admin/masar');
-});
-admin.post('/masar/links/:id/delete', async (req, res) => {
-  try { await masar.json('/p/api/links/' + parseInt(req.params.id, 10), { method: 'DELETE' }); flash(req, 'اتمسح الرابط.'); }
-  catch (e) { flash(req, String(e && e.message || e).slice(0, 200), 'err'); }
-  res.redirect('/admin/masar');
-});
-admin.post('/inbox/:id/masar', async (req, res) => {
-  const inbox = store.get('inbox');
-  const m = inbox.messages.find(x => x.id === req.params.id);
-  if (m && m.masar) { m.masarTries = 0; const ok = await pushMasar(m, ''); flash(req, ok ? 'اتبعتت لمسار ✓' : 'لسه فشل: ' + (m.masarError || ''), ok ? 'ok' : 'err'); }
-  res.redirect(req.get('referer') || '/admin/inbox');
 });
 
 // ----- statistics -----
@@ -1353,48 +1345,6 @@ admin.get('/stats', (req, res) => {
   const jobs = store.get('jobs');
   const jobName = id => { const j = jobs.find(x => x.id === id); return j ? (j.code ? j.code + ' - ' : '') + tr(j.title, 'ar') : 'وظيفة محذوفة'; };
   res.render('admin/stats', adminView(req, { section: 'stats', n, sum, jobName }));
-});
-
-// ----- ربط صفحة فيسبوك -----
-admin.get('/facebook', (req, res) => {
-  const c = facebook.cfg();
-  res.render('admin/facebook', adminView(req, { section: 'facebook', fb: { connected: facebook.connected(), pageName: c.pageName, pageId: c.pageId, appId: c.appId || '', connectedAt: c.connectedAt, pending: (c.pending || []).map(p => ({ id: p.id, name: p.name, canPost: p.canPost })) } }));
-});
-admin.post('/facebook/connect', async (req, res) => {
-  const b = req.body || {};
-  const appId = clean(b.appId, 40), appSecret = clean(b.appSecret, 100), token = clean(b.userToken, 1000);
-  if (!appId || !appSecret || !token) { flash(req, 'اكتب App ID و App Secret والتوكن', 'err'); return res.redirect('/admin/facebook'); }
-  try {
-    const pages = await facebook.connect(appId, appSecret, token);
-    if (pages.length === 1) { facebook.selectPage(pages[0].id); flash(req, 'تم ربط صفحة ' + pages[0].name); }
-    else flash(req, 'لقينا ' + pages.length + ' صفحات. اختار الصفحة اللي عايز تنشر عليها.');
-  } catch (e) { flash(req, e.message, 'err'); }
-  res.redirect('/admin/facebook');
-});
-admin.post('/facebook/select', (req, res) => {
-  const p = facebook.selectPage(clean((req.body || {}).pageId, 40));
-  flash(req, p ? 'تم ربط صفحة ' + p.name : 'اختار صفحة من القايمة', p ? 'ok' : 'err');
-  res.redirect('/admin/facebook');
-});
-admin.post('/facebook/manual', async (req, res) => {
-  const b = req.body || {};
-  try {
-    const info = await facebook.manual(clean(b.pageId, 40), clean(b.pageToken, 1000));
-    flash(req, 'تم ربط صفحة ' + info.name);
-  } catch (e) { flash(req, e.message, 'err'); }
-  res.redirect('/admin/facebook');
-});
-admin.post('/facebook/test', async (req, res) => {
-  try {
-    const info = await facebook.test();
-    flash(req, 'الربط شغال: صفحة ' + info.name + (info.followers_count ? ' (' + info.followers_count + ' متابع)' : ''));
-  } catch (e) { flash(req, e.message, 'err'); }
-  res.redirect('/admin/facebook');
-});
-admin.post('/facebook/disconnect', (req, res) => {
-  facebook.disconnect();
-  flash(req, 'اتلغى ربط الصفحة');
-  res.redirect('/admin/facebook');
 });
 
 // ----- site images -----
@@ -1465,12 +1415,12 @@ admin.post('/account/logout-all', (req, res) => {
 
 // ----- الأمان (للي معاه صلاحية المستخدمين): إعدادات + موافقة الأجهزة + الحسابات المقفولة -----
 admin.get('/security', (req, res) => res.render('admin/security', adminView(req, { section: 'security', st: security.settings(), devices: security.devices().slice().reverse(), list: users.list(), uname: id => { const x = users.byId(id); return x ? (x.name || x.user) : '(محذوف)'; } })));
-// ----- الاستضافة والتجديد + نسخة الموقع على Google Drive (عن طريق سيستم التوظيف) -----
-admin.get('/hosting', (req, res) => { if (!req.me.owner) return res.status(403).render('admin/denied', adminView(req, { section: 'hosting' })); const h = hostCfg(); res.render('admin/hosting', adminView(req, { section: 'hosting', h, drive: Object.assign({ ready: masar.cfg().ready }, store.get('drive') || {}), days: { host: hostDays(h.until), domain: hostDays(h.domainUntil) } })); });
-const SITE_ZIP_README = ['إزاي ترفع الموقع ده على استضافة جديدة:', '', '1) اعمل تطبيق Node.js جديد (Express، Node 20 أو أحدث، ملف الدخول server.js) وارفع الملف ده زي ما هو.', '2) المتغيرات: SESSION_SECRET (نفس القيمة القديمة لو معاك — غير كده المدير يستخدم كود الاسترجاع ويربط التحقق الثنائي من جديد)، SITE_URL، DATA_DIR=~/nesr-data، UPLOAD_DIR=~/nesr-uploads، ومعاهم MAIL_* و MASAR_URL و MASAR_SITE_KEY و OWNER_RESET_CODE لو كانوا مستخدمين.', '3) أول تشغيل بينسخ البيانات (data) والصور (public/uploads) اللي جوه الملف ده لـ DATA_DIR و UPLOAD_DIR لوحده — يعني كل المحتوى والرسايل والمستخدمين بيرجعوا زي ما هم.', '4) اربط الدومين وفعّل SSL.', '', 'الملف ده فيه بيانات الشركة والرسايل — احفظه في مكان آمن.'].join('\r\n');
+// ----- الاستضافة والتجديد + نسخة كاملة من الموقع -----
+admin.get('/hosting', (req, res) => { if (!req.me.owner) return res.status(403).render('admin/denied', adminView(req, { section: 'hosting' })); const h = hostCfg(); res.render('admin/hosting', adminView(req, { section: 'hosting', h, days: { host: hostDays(h.until), domain: hostDays(h.domainUntil) } })); });
+const SITE_ZIP_README = ['إزاي ترفع الموقع ده على استضافة جديدة:', '', '1) اعمل تطبيق Node.js جديد (Express، Node 20 أو أحدث، ملف الدخول server.js) وارفع الملف ده زي ما هو.', '2) المتغيرات: SESSION_SECRET (نفس القيمة القديمة لو معاك — غير كده المدير يستخدم كود الاسترجاع ويربط التحقق الثنائي من جديد)، SITE_URL، DATA_DIR=~/rockline-data، UPLOAD_DIR=~/rockline-uploads، ومعاهم MAIL_* و OWNER_RESET_CODE لو كانوا مستخدمين.', '3) أول تشغيل بينسخ البيانات (data) والصور (public/uploads) اللي جوه الملف ده لـ DATA_DIR و UPLOAD_DIR لوحده — يعني كل المحتوى والرسايل والمستخدمين بيرجعوا زي ما هم.', '4) اربط الدومين وفعّل SSL.', '', 'الملف ده فيه بيانات الشركة والرسايل — احفظه في مكان آمن.'].join('\r\n');
 function siteFiles() {
   const out = []; const skip = n => /^\./.test(n) || n === 'node_modules';
-  const walk = (abs, rel, isSkipped) => { let st; try { st = fs.statSync(abs); } catch (e) { return; } if (st.isDirectory()) { for (const n of fs.readdirSync(abs)) { if (skip(n)) continue; const r = rel ? rel + '/' + n : n; if (isSkipped && isSkipped(r)) continue; walk(path.join(abs, n), r, isSkipped); } } else if (st.isFile() && !/\.env(\.|$)/.test(rel) && rel !== 'data/drive.json') out.push({ rel, abs, size: st.size, mtime: st.mtime }); };
+  const walk = (abs, rel, isSkipped) => { let st; try { st = fs.statSync(abs); } catch (e) { return; } if (st.isDirectory()) { for (const n of fs.readdirSync(abs)) { if (skip(n)) continue; const r = rel ? rel + '/' + n : n; if (isSkipped && isSkipped(r)) continue; walk(path.join(abs, n), r, isSkipped); } } else if (st.isFile() && !/\.env(\.|$)/.test(rel) && !/^data\/(drive|facebook|masar)\.json$/.test(rel)) out.push({ rel, abs, size: st.size, mtime: st.mtime }); };
   for (const f of ['server.js', 'package.json', 'package-lock.json', 'README.md']) walk(path.join(__dirname, f), f);
   for (const d of ['lib', 'views', 'scripts']) walk(path.join(__dirname, d), d);
   walk(path.join(__dirname, 'public'), 'public', r => r === 'public/uploads' || r.startsWith('public/uploads/'));
@@ -1480,35 +1430,8 @@ async function writeSiteZip(out) { const z = require('./lib/zipper').createZip(o
 admin.get('/hosting/export', async (req, res) => {
   if (!req.me.owner) return res.status(403).render('admin/denied', adminView(req, { section: 'hosting' }));
   const day = new Date().toISOString().slice(0, 10);
-  res.setHeader('Content-Type', 'application/zip'); res.setHeader('Content-Disposition', `attachment; filename="nesr-site-full-${day}.zip"`); res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Content-Type', 'application/zip'); res.setHeader('Content-Disposition', `attachment; filename="rockline-site-full-${day}.zip"`); res.setHeader('Cache-Control', 'no-store');
   try { await writeSiteZip(res); security.audit(req.me, 'export_all', day, req.ip); } catch (e) { console.error('export:', e && e.message); try { res.destroy(e); } catch (x) {} }
-});
-let drivePushing = false;
-const siteFp = () => require('crypto').createHash('sha1').update(siteFiles().map(f => f.rel + ':' + f.size + ':' + f.mtime.getTime()).join('|')).digest('hex');
-async function pushSiteDrive(by) {
-  const c = masar.cfg(); if (!c.ready) return { ok: false, error: 'الموقع مش مربوط بسيستم التوظيف (لوحة التحكم ← ربط مسار)' }; if (drivePushing) return { ok: false, error: 'فيه رفع شغال دلوقتي' };
-  drivePushing = true; const st = { at: new Date().toISOString(), by: by || 'تلقائي' }; const tmp = path.join(require('os').tmpdir(), 'site-drive-' + process.pid + '-' + Date.now() + '.zip');
-  try {
-    const fp = siteFp(); await new Promise((ok, bad) => { const w = fs.createWriteStream(tmp); w.on('finish', ok); w.on('error', bad); writeSiteZip(w).catch(bad); });
-    const buf = fs.readFileSync(tmp); const name = `site-full-${st.at.slice(0, 10)}.zip`;
-    const r = await fetch(c.url + '/p/api/site-backup', { method: 'POST', headers: { 'X-Site-Key': c.key, 'Content-Type': 'application/zip', 'X-File-Name': name }, body: buf, redirect: 'manual', signal: AbortSignal.timeout(15 * 60000) });
-    const d = await r.json().catch(() => ({})); if (!r.ok || d.ok === false) throw new Error(d.message || (r.status === 404 ? 'سيستم التوظيف رفض المفتاح — اتأكد من الربط' : r.status === 413 ? 'الملف أكبر من المسموح' : 'خطأ ' + r.status));
-    Object.assign(st, { ok: true, name: d.name || name, mb: d.mb, fp });
-  } catch (e) { Object.assign(st, { ok: false, error: String(e && e.message || e).slice(0, 200) }); }
-  finally { drivePushing = false; try { fs.unlinkSync(tmp); } catch (e) {} }
-  const prev = store.get('drive'); store.set('drive', Object.assign({}, prev, { last: st }, st.ok ? { lastOk: st } : {})); return st;
-}
-async function driveTick() {
-  if (!masar.cfg().ready) return; const d = store.get('drive') || {}; const ok = d.lastOk, last = d.last, now = Date.now();
-  if (last && !last.ok && now - new Date(last.at) < 6 * 3600000) return;
-  if (ok && now - new Date(ok.at) < 7 * 86400000 && (now - new Date(ok.at) < 86400000 || ok.fp === siteFp())) return;
-  await pushSiteDrive('تلقائي');
-}
-setTimeout(() => driveTick().catch(() => {}), 3 * 60000).unref(); setInterval(() => driveTick().catch(() => {}), 3600000).unref();
-admin.post('/hosting/drive', async (req, res) => {
-  if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
-  const st = await pushSiteDrive(req.me.name || 'المدير'); if (st.ok) security.audit(req.me, 'site_drive', st.name, req.ip);
-  flash(req, st.ok ? `اترفعت نسخة الموقع على Google Drive ✓ (${st.mb} ميجا)` : 'الرفع على Drive فشل: ' + st.error, st.ok ? 'ok' : 'err'); res.redirect('/admin/hosting');
 });
 const hostPwFails = { n: 0, until: 0 };
 admin.post('/hosting', (req, res) => {
@@ -1583,7 +1506,7 @@ admin.post('/users/save', async (req, res) => {
           ['أهلاً', u.name || u.user], ['اسم المستخدم', u.user],
           ['اختار كلمة المرور من هنا', siteUrl(req) + '/admin/reset/' + token],
           ['لوحة التحكم', siteUrl(req) + '/admin'], ['ملاحظة', 'اللينك شغال لمدة 48 ساعة.']
-        ], { subject: 'دعوة للوحة تحكم موقع نسر الخليج', title: 'تم إضافتك للوحة التحكم', to: u.email });
+        ], { subject: 'دعوة للوحة تحكم موقع روك لاين', title: 'تم إضافتك للوحة التحكم', to: u.email });
         msg = 'تم إضافة المستخدم، واتبعتله إيميل يختار منه كلمة المرور';
       } catch (e) { msg = 'اتضاف المستخدم، بس إيميل الدعوة مااتبعتش: ' + e.message; }
     } else msg = 'اتضاف المستخدم من غير كلمة مرور. الإيميل مش متظبط، فاكتبله كلمة مرور من صفحة التعديل.';
@@ -1597,7 +1520,7 @@ admin.post('/users/:id/invite', async (req, res) => {
   try {
     const token = users.createReset(u.id, 48 * 60);
     await mailer.send([['اسم المستخدم', u.user], ['اختار كلمة مرور جديدة من هنا', siteUrl(req) + '/admin/reset/' + token], ['ملاحظة', 'اللينك شغال لمدة 48 ساعة.']],
-      { subject: 'لينك كلمة مرور لوحة تحكم نسر الخليج', title: 'تعيين كلمة المرور', to: u.email });
+      { subject: 'لينك كلمة مرور لوحة تحكم روك لاين', title: 'تعيين كلمة المرور', to: u.email });
     flash(req, 'اتبعت لينك كلمة المرور على ' + u.email);
   } catch (e) { flash(req, 'الإرسال فشل: ' + e.message, 'err'); }
   res.redirect('/admin/users');
@@ -1617,4 +1540,4 @@ app.use((err, req, res, next) => {
   res.status(500).send('server error');
 });
 
-app.listen(PORT, () => console.log('Nasr Al-Khaleej website: http://localhost:' + PORT + '  |  admin: /admin'));
+app.listen(PORT, () => console.log('Rock Line Group website: http://localhost:' + PORT + '  |  admin: /admin'));

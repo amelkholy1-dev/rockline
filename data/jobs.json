@@ -1,61 +1,68 @@
 [
  {
-  "id": "mukb885p94jia",
-  "code": "NK-002",
+  "id": "j1",
+  "code": "RL-001",
   "title": {
-   "ar": "مهندس مدني",
-   "en": ""
+   "ar": "مهندس مدني موقع",
+   "en": "Civil site engineer"
   },
-  "country": {
-   "ar": "",
-   "en": ""
+  "location": {
+   "ar": "القاهرة الجديدة",
+   "en": "New Cairo"
   },
-  "sector": {
-   "ar": "المقاولات والإنشاءات",
-   "en": ""
+  "dept": {
+   "ar": "التنفيذ",
+   "en": "Execution"
   },
-  "count": "5",
-  "salary": {
-   "ar": "2000",
-   "en": ""
+  "type": {
+   "ar": "دوام كامل",
+   "en": "Full time"
+  },
+  "exp": {
+   "ar": "من 3 إلى 5 سنين",
+   "en": "3–5 years"
   },
   "details": {
-   "ar": "",
-   "en": ""
+   "ar": "بكالوريوس هندسة مدنية.\nخبرة في تنفيذ المباني الخرسانية ومتابعة المقاولين.\nإجادة قراءة الرسومات التنفيذية وحصر الكميات.",
+   "en": "BSc Civil Engineering.\nExperience executing concrete buildings and managing subcontractors.\nGood at reading shop drawings and quantity take-off."
   },
-  "approval": "",
-  "image": "/uploads/mukb885f-4rfd.jpeg",
+  "image": "",
   "active": true,
-  "at": "2026-09-27T21:07:43.309Z",
-  "updated": "2026-09-27T21:07:43.309Z"
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z",
+  "updated": "2026-11-09T00:00:00.000Z"
  },
  {
-  "id": "muk94pqbb2xe8",
-  "code": "NK-001",
+  "id": "j2",
+  "code": "RL-002",
   "title": {
-   "ar": "اختبارات سائقين",
-   "en": "ؤر"
+   "ar": "مسؤول سلامة وصحة مهنية",
+   "en": "HSE officer"
   },
-  "country": {
-   "ar": "",
-   "en": ""
+  "location": {
+   "ar": "الشيخ زايد",
+   "en": "Sheikh Zayed"
   },
-  "sector": {
-   "ar": "القطاع الهندسي والفني",
-   "en": ""
+  "dept": {
+   "ar": "السلامة والجودة",
+   "en": "HSE & quality"
   },
-  "count": "",
-  "salary": {
-   "ar": "2000",
-   "en": ""
+  "type": {
+   "ar": "دوام كامل",
+   "en": "Full time"
+  },
+  "exp": {
+   "ar": "سنتين على الأقل",
+   "en": "2+ years"
   },
   "details": {
-   "ar": "",
-   "en": ""
+   "ar": "شهادة معتمدة في السلامة والصحة المهنية.\nخبرة في مواقع الإنشاءات وإعداد تقارير السلامة.",
+   "en": "An accredited HSE certificate.\nConstruction-site experience and safety reporting."
   },
-  "approval": "",
+  "image": "",
   "active": true,
-  "at": "2026-09-27T20:09:00.227Z",
-  "updated": "2026-09-27T20:09:00.227Z"
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z",
+  "updated": "2026-11-09T00:00:00.000Z"
  }
 ]

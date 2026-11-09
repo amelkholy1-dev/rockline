@@ -1,0 +1,31 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.quote_title, sub: t.quote_sub }) %>
+<section class="sec">
+  <div class="wrap co-grid">
+    <div class="form-card reveal" id="request">
+      <h2><%= t.f_quote_title %></h2>
+      <%- include('partials/forms', { only: 'quote', ptype: ptype }) %>
+    </div>
+    <div class="co-side reveal">
+      <h2><%= t.process %></h2>
+      <span class="rule start"></span>
+      <ol class="vsteps">
+        <% (site.process || []).forEach(function(s, i){ %><li><span><%= i + 1 %></span><div><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></div></li><% }); %>
+      </ol>
+      <div class="trust">
+        <% if (site.brand.license) { %><div><%- icon('shield') %><span><%= t.member_no %> <b><%= site.brand.license %></b><% if (site.brand.grade) { %> · <%= t.grade %> <b><%= site.brand.grade %></b><% } %></span></div><% } %>
+        <% if (site.profilePdf) { %><a class="btn line-navy" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+        <a class="btn line-navy" href="<%= L('/projects') %>"><%- icon('building') %> <%= t.cta_projects %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sky">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.quote_side %></h2><span class="rule"></span></div>
+    <div class="why-grid light"><% (site.why || []).forEach(function(w){ %><div class="why-it reveal"><span><%- icon(w.icon) %></span><p><%= tr(w.text) %></p></div><% }); %></div>
+  </div>
+</section>
+<%- include('partials/footer') %>

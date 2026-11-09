@@ -1,22 +1,21 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
-<%- include('partials/pagehead', { heading: t.apply_title, sub: t.apply_sub }) %>
+<%- include('partials/pagehead', { heading: t.apply_title, sub: t.apply_sub, parent: ['/jobs', t.nav_jobs] }) %>
 
 <section class="sec">
   <div class="wrap co-grid">
     <div class="form-card reveal" id="register">
       <% if (job) { %>
-        <div class="job-ref"><%- icon('briefcase') %><div><small><%= t.f_job %></small><b><%= tr(job.title) %></b><span><%= job.code %><%= tr(job.country) ? ' · ' + tr(job.country) : '' %></span></div></div>
+        <div class="job-ref"><%- icon('hardhat') %><div><small><%= t.f_job %></small><b><%= tr(job.title) %></b><span><%= job.code %><%= tr(job.location) ? ' · ' + tr(job.location) : '' %></span></div></div>
       <% } %>
-      <h2><%= t.f_worker_title %></h2>
-      <%- include('partials/forms', { only: 'worker', job: job }) %>
+      <h2><%= t.f_career_title %></h2>
+      <%- include('partials/forms', { only: 'career', job: job }) %>
     </div>
     <div class="co-side reveal">
-      <div class="note-card warn"><%- icon('shield') %><p><%= t.legal_note %></p></div>
-      <h2><%= t.docs %></h2>
+      <h2><%= t.why %></h2>
       <span class="rule start"></span>
-      <ul class="checks"><% (site.docs || []).forEach(function(d){ %><li><%- icon('checkcircle') %><%= tr(d.text) %></li><% }); %></ul>
-      <a class="btn line-navy" href="<%= L('/guide') %>"><%= t.guide %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a>
+      <ul class="checks"><% (site.values || []).forEach(function(v){ %><li><%- icon(v.icon) %><%= tr(v.text) %></li><% }); %></ul>
+      <a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.latest_jobs %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a>
     </div>
   </div>
 </section>

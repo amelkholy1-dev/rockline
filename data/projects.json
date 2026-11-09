@@ -1,0 +1,194 @@
+[
+ {
+  "id": "p1",
+  "title": {
+   "ar": "مبنى إداري متعدد الطوابق",
+   "en": "Multi-storey office building"
+  },
+  "cat": "إداري وتجاري",
+  "status": "done",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "القاهرة الجديدة",
+   "en": "New Cairo"
+  },
+  "year": "2024",
+  "area": "14,500 م²",
+  "scope": {
+   "ar": "هيكل خرساني\nتشطيبات خارجية بواجهات زجاجية\nأعمال كهروميكانيكية كاملة",
+   "en": "Concrete frame\nGlazed façade finishing\nComplete MEP works"
+  },
+  "desc": {
+   "ar": "تنفيذ مبنى إداري من بدروم وأرضي و8 أدوار متكررة، شاملاً الهيكل الإنشائي والتشطيبات والأعمال الكهروميكانيكية حتى التسليم.",
+   "en": "An office building with basement, ground and eight typical floors, including structure, finishing and MEP through to handover."
+  },
+  "images": [],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ },
+ {
+  "id": "p2",
+  "title": {
+   "ar": "مجمع سكني متكامل",
+   "en": "Integrated residential compound"
+  },
+  "cat": "سكني",
+  "status": "ongoing",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "الشيخ زايد",
+   "en": "Sheikh Zayed"
+  },
+  "year": "2025 – 2026",
+  "area": "36 عمارة",
+  "scope": {
+   "ar": "أعمال الحفر والأساسات\nالهياكل الخرسانية\nالبنية التحتية للموقع",
+   "en": "Excavation and foundations\nConcrete structures\nSite infrastructure"
+  },
+  "desc": {
+   "ar": "تنفيذ مجموعة عمارات سكنية مع شبكات المرافق والطرق الداخلية وتنسيق الموقع.",
+   "en": "Residential buildings with utility networks, internal roads and landscaping."
+  },
+  "images": [],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ },
+ {
+  "id": "p3",
+  "title": {
+   "ar": "مخازن ومصنع بهياكل معدنية",
+   "en": "Steel-structure factory & warehouses"
+  },
+  "cat": "صناعي ومخازن",
+  "status": "done",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "العين السخنة",
+   "en": "Ain Sokhna"
+  },
+  "year": "2023",
+  "area": "22,000 م²",
+  "scope": {
+   "ar": "تصنيع وتركيب الهياكل المعدنية\nأرضيات صناعية\nأعمال الحريق والكهرباء",
+   "en": "Steel fabrication and erection\nIndustrial flooring\nFire fighting and electrical works"
+  },
+  "desc": {
+   "ar": "إنشاء مصنع ومخازن بهياكل معدنية وأرضيات صناعية عالية التحمل.",
+   "en": "A factory and warehouses with steel structures and heavy-duty industrial floors."
+  },
+  "images": [],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ },
+ {
+  "id": "p4",
+  "title": {
+   "ar": "مدرسة تجريبية",
+   "en": "Experimental school"
+  },
+  "cat": "تعليمي",
+  "status": "done",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "الجيزة",
+   "en": "Giza"
+  },
+  "year": "2022",
+  "area": "6,800 م²",
+  "scope": {
+   "ar": "هيكل خرساني\nتشطيبات\nملاعب وأسوار",
+   "en": "Concrete frame\nFinishing\nSports courts and fencing"
+  },
+  "desc": {
+   "ar": "تنفيذ مبنى تعليمي من 3 أدوار مع الملاعب والأسوار والمرافق.",
+   "en": "A three-storey school building with sports courts, fencing and utilities."
+  },
+  "images": [],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ },
+ {
+  "id": "p5",
+  "title": {
+   "ar": "تطوير ورصف طرق داخلية",
+   "en": "Internal roads development & paving"
+  },
+  "cat": "بنية تحتية",
+  "status": "ongoing",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "العاصمة الإدارية الجديدة",
+   "en": "New Administrative Capital"
+  },
+  "year": "2025",
+  "area": "12 كم",
+  "scope": {
+   "ar": "أعمال ترابية\nطبقات أساس ورصف\nشبكات صرف أمطار وإنارة",
+   "en": "Earthworks\nBase layers and asphalt\nStorm drainage and lighting"
+  },
+  "desc": {
+   "ar": "تنفيذ شبكة طرق داخلية شاملة الأعمال الترابية والرصف والإنارة وصرف الأمطار.",
+   "en": "An internal road network including earthworks, paving, lighting and storm drainage."
+  },
+  "images": [],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ },
+ {
+  "id": "p6",
+  "title": {
+   "ar": "فندق وشاليهات ساحلية",
+   "en": "Coastal hotel & chalets"
+  },
+  "cat": "سياحي وفندقي",
+  "status": "done",
+  "client": {
+   "ar": "",
+   "en": ""
+  },
+  "location": {
+   "ar": "الساحل الشمالي",
+   "en": "North Coast"
+  },
+  "year": "2023",
+  "area": "120 وحدة",
+  "scope": {
+   "ar": "تشطيبات فندقية\nحمامات سباحة\nلاندسكيب",
+   "en": "Hotel-grade finishing\nSwimming pools\nLandscaping"
+  },
+  "desc": {
+   "ar": "تنفيذ أعمال التشطيبات الفندقية وحمامات السباحة وتنسيق المواقع لمنتجع ساحلي.",
+   "en": "Hotel-grade finishing, swimming pools and landscaping for a coastal resort."
+  },
+  "images": [],
+  "featured": false,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-09T00:00:00.000Z"
+ }
+]

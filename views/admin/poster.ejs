@@ -3,17 +3,16 @@
 var c = site.contact || {};
 var lines = String(tr(job.details) || '').split(/\n+/).map(function(x){ return x.replace(/^[\s\-•*·]+/, '').trim(); }).filter(Boolean).slice(0, 5);
 var P = {
-  title: tr(job.title), country: tr(job.country), sector: tr(job.sector), count: job.count || '', salary: tr(job.salary),
-  code: job.code || '', approval: job.approval || '', image: job.image || img('banner'), hasImage: Boolean(job.image),
+  title: tr(job.title), location: tr(job.location), dept: tr(job.dept), type: tr(job.type), exp: tr(job.exp),
+  code: job.code || '', image: job.image || img('project'), hasImage: Boolean(job.image),
   logo: img('logo'), brand: tr(site.brand.short), license: site.brand.license || '',
-  whatsapp: c.whatsapp || '', phones: (c.phonesEG || []).slice(0, 2), website: c.website || '', url: jobUrl, lines: lines
+  whatsapp: c.whatsapp || (c.phones || [])[0] || '', phones: (c.phones || []).slice(0, 2), website: c.website || '', url: jobUrl, lines: lines
 };
 %>
 <div class="pthead">
-  <div><h1 class="pt">صورة للنشر: <%= tr(job.title) %></h1><p class="sub">صورة جاهزة للفيسبوك والإنستجرام والواتساب، بالشعار وبيانات الوظيفة وكود QR بيفتح صفحة الوظيفة. عدّل اللي عايزه على الشمال والصورة بتتحدث لوحدها.</p></div>
+  <div><h1 class="pt">صورة للنشر: <%= tr(job.title) %></h1><p class="sub">صورة جاهزة للفيسبوك والإنستجرام ولينكدإن والواتساب، بالشعار وبيانات الوظيفة وكود QR بيفتح صفحة الوظيفة. عدّل اللي عايزه والصورة بتتحدث لوحدها، وبعدين حمّلها وانشرها.</p></div>
   <a class="btn ghost" href="/admin/jobs"><%- icon('arrowr') %> الوظائف</a>
 </div>
-<% if (!job.approval) { %><div class="flash warn"><%- icon('info') %> الوظيفة دي ملهاش رقم اعتماد من مديرية العمل. متنشرش الإعلان غير بعد الاعتماد.</div><% } %>
 <div class="poster-wrap">
   <div class="card poster-view">
     <canvas id="poster" width="1080" height="1350"></canvas>
@@ -25,24 +24,19 @@ var P = {
         <option value="1080x1080">بوست مربع 1080×1080</option>
         <option value="1080x1920">ستوري / حالة واتساب 1080×1920</option>
       </select></label>
-    <label>السطر اللي فوق العنوان<input name="headline" value="<%= P.country ? 'مطلوب للعمل في ' + P.country : 'مطلوب للعمل بالخارج' %>"></label>
+    <label>السطر اللي فوق العنوان<input name="headline" value="انضم لفريق <%= P.brand %>"></label>
     <label>اسم الوظيفة<input name="title" value="<%= P.title %>"></label>
     <div class="grid2">
-      <label>العدد<input name="count" value="<%= P.count %>"></label>
-      <label>الراتب<input name="salary" value="<%= P.salary %>"></label>
+      <label>الموقع<input name="location" value="<%= P.location %>"></label>
+      <label>الخبرة<input name="exp" value="<%= P.exp %>"></label>
     </div>
     <label>المميزات والشروط (كل سطر لوحده، بحد أقصى 5)<textarea name="lines" rows="5"><%= P.lines.join('\n') %></textarea></label>
-    <label>رقم التقديم على واتساب<input name="whatsapp" dir="ltr" value="<%= P.whatsapp %>"></label>
+    <label>رقم التقديم (واتساب)<input name="whatsapp" dir="ltr" value="<%= P.whatsapp %>"></label>
     <label class="check"><input type="checkbox" name="qr" checked> كود QR بيفتح صفحة الوظيفة على الموقع</label>
     <label class="check"><input type="checkbox" name="photo"<%= P.hasImage ? ' checked' : ' checked' %>> صورة في الخلفية<%= P.hasImage ? '' : ' (صورة الموقع، لأن الوظيفة ملهاش صورة)' %></label>
     <div class="form-foot">
       <button class="btn navy" type="button" id="dl"><%- icon('download') %> تحميل الصورة</button>
-      <% if (fb.connected) { %><button class="btn fb" type="button" id="fbPost"><%- brand('facebook') %> انشر على فيسبوك</button><% } %>
     </div>
-    <% if (fb.connected) { %><p class="muted small" style="margin:0">هتتنشر على صفحة <b><%= fb.page %></b> بالصورة ونص البوست اللي تحت.</p>
-    <% } else if (can('facebook')) { %><p class="muted small" style="margin:0">عايز تنشر على صفحة فيسبوك مباشرة من هنا؟ <a href="/admin/facebook">اربط الصفحة</a></p><% } %>
-    <p class="fb-result" id="fbResult" role="status"></p>
-    <% if ((job.fb || []).length) { %><p class="muted small" style="margin:0">اتنشرت قبل كده: <% job.fb.forEach(function(x, i){ %><a href="<%= x.url %>" target="_blank" rel="noopener"><%= fmtDate(x.at) %></a><%= i < job.fb.length - 1 ? '، ' : '' %><% }); %></p><% } %>
     <hr>
     <label>نص البوست (انسخه مع الصورة)<textarea name="caption" id="caption" rows="9"></textarea></label>
     <button class="btn ghost" type="button" id="copyCap"><%- icon('copy') %> نسخ النص</button>
@@ -53,7 +47,7 @@ var P = {
 (function () {
   var P = <%- JSON.stringify(P).replace(/</g, '\\u003c') %>;
   var cv = document.getElementById('poster'), ctx = cv.getContext('2d'), form = document.getElementById('pctl');
-  var NAVY = '#0c2146', NAVY3 = '#071631', GOLD = '#c9a14a', GOLD2 = '#e9cf8b', WHITE = '#ffffff';
+  var NAVY = '#203145', NAVY3 = '#152131', GOLD = '#b7a98e', GOLD2 = '#ddd3bf', WHITE = '#ffffff';
   var F = function (w, s) { return w + ' ' + s + 'px Cairo, Tahoma, sans-serif'; };
   function load(src) { return new Promise(function (r) { if (!src) return r(null); var i = new Image(); i.onload = function () { r(i); }; i.onerror = function () { r(null); }; i.src = src; }); }
   var imgs = {};
@@ -68,19 +62,19 @@ var P = {
     return out;
   }
   function txt(s, x, y, font, color, align, dir) { ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'right'; ctx.direction = dir || 'rtl'; ctx.fillText(s, x, y); }
-  function goldGrad(x0, y0, x1, y1) { var g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, '#f1dc9d'); g.addColorStop(.5, GOLD); g.addColorStop(1, '#a47d2c'); return g; }
+  function goldGrad(x0, y0, x1, y1) { var g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, '#e6dfcf'); g.addColorStop(.5, GOLD); g.addColorStop(1, '#93836a'); return g; }
 
   function draw() {
     var sz = val('size').split('x'), W = +sz[0], H = +sz[1];
     cv.width = W; cv.height = H;
     var tall = H >= 1900, square = H <= 1080, M = 64, R = W - M;
     // background
-    var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#13306a'); bg.addColorStop(.45, NAVY); bg.addColorStop(1, NAVY3);
+    var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#2c4260'); bg.addColorStop(.45, NAVY); bg.addColorStop(1, NAVY3);
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     var photoH = square ? 430 : tall ? 900 : 620;
     if (val('photo') && imgs.photo) {
       ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, photoH); ctx.clip(); ctx.globalAlpha = P.hasImage ? 1 : .45; cover(imgs.photo, 0, 0, W, photoH); ctx.restore();
-      var ov = ctx.createLinearGradient(0, 0, 0, photoH); ov.addColorStop(0, 'rgba(7,22,49,.8)'); ov.addColorStop(.3, 'rgba(7,22,49,.2)'); ov.addColorStop(.6, 'rgba(12,33,70,.45)'); ov.addColorStop(.85, 'rgba(12,33,70,.9)'); ov.addColorStop(1, '#0f2858');
+      var ov = ctx.createLinearGradient(0, 0, 0, photoH); ov.addColorStop(0, 'rgba(21,33,49,.8)'); ov.addColorStop(.3, 'rgba(21,33,49,.2)'); ov.addColorStop(.6, 'rgba(32,48,69,.45)'); ov.addColorStop(.85, 'rgba(32,48,69,.9)'); ov.addColorStop(1, '#22344b');
       ctx.fillStyle = ov; ctx.fillRect(0, 0, W, photoH);
     }
     // gold top line
@@ -89,8 +83,8 @@ var P = {
     var ly = 40, ls = square ? 104 : 120;
     if (imgs.logo) { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 16; var lw = ls * imgs.logo.width / imgs.logo.height; ctx.drawImage(imgs.logo, R - lw, ly, lw, ls); ctx.restore(); var tx = R - lw - 20; } else var tx = R;
     txt(P.brand, tx, ly + 50, F(800, 46), WHITE);
-    txt('لإلحاق العمالة المصرية بالخارج', tx, ly + 88, F(700, 26), GOLD2);
-    if (P.license) txt('ترخيص وزارة القوى العاملة رقم ' + P.license, tx, ly + 120, F(600, 22), 'rgba(255,255,255,.85)');
+    txt('جروب للمقاولات العامة', tx, ly + 88, F(700, 26), GOLD2);
+    if (P.license) txt('رقم القيد بالاتحاد المصري لمقاولي التشييد والبناء ' + P.license, tx, ly + 120, F(600, 22), 'rgba(255,255,255,.85)');
     // headline pill
     var y = photoH - (square ? 120 : 150);
     var head = val('headline');
@@ -106,11 +100,11 @@ var P = {
     tl.forEach(function (l, i) { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; txt(l, R, y + i * tH, F(800, square ? 76 : 88), WHITE); ctx.restore(); });
     y += (tl.length - 1) * tH + 36;
     // info chips
-    var chips = [['العدد المطلوب', val('count')], ['الراتب', val('salary')], ['القطاع', P.sector]].filter(function (c) { return c[1]; });
+    var chips = [['الموقع', val('location')], ['الخبرة', val('exp')], ['القسم', P.dept]].filter(function (c) { return c[1]; });
     if (chips.length) {
       var gap = 18, cw = (W - 2 * M - gap * (chips.length - 1)) / chips.length, ch = 104, cx = R;
       chips.forEach(function (c) {
-        rr(cx - cw, y, cw, ch, 20); ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fill(); ctx.strokeStyle = 'rgba(233,207,139,.55)'; ctx.lineWidth = 2; ctx.stroke();
+        rr(cx - cw, y, cw, ch, 20); ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fill(); ctx.strokeStyle = 'rgba(221,211,191,.55)'; ctx.lineWidth = 2; ctx.stroke();
         txt(c[0], cx - 22, y + 38, F(700, 22), GOLD2);
         var v = wrap(c[1], cw - 44, F(800, 30), 1)[0];
         txt(v, cx - 22, y + 80, F(800, 30), WHITE);
@@ -130,7 +124,7 @@ var P = {
       y += tall ? 78 : 54;
     });
     // legal line
-    var legal = [P.code ? 'كود الوظيفة ' + P.code : '', P.approval ? 'رقم اعتماد الإعلان ' + P.approval : ''].filter(Boolean).join('   •   ');
+    var legal = [P.code ? 'كود الوظيفة ' + P.code : '', P.type].filter(Boolean).join('   •   ');
     if (legal) txt(legal, R, bandY - 26, F(600, 22), 'rgba(255,255,255,.7)');
     // bottom band
     ctx.fillStyle = goldGrad(0, bandY, W, H); ctx.fillRect(0, bandY, W, bandH);
@@ -147,22 +141,21 @@ var P = {
     ctx.save(); ctx.font = F(800, square ? 54 : 60); var ww = ctx.measureText(wa).width; ctx.restore();
     txt(wa, R, bandY + (square ? 122 : 136), F(800, square ? 54 : 60), NAVY3, 'right', 'ltr');
     var sub = [P.phones.filter(function (p) { return p.replace(/\D/g, '') !== wa.replace(/\D/g, ''); })[0], P.website].filter(Boolean).join('   |   ');
-    if (sub) txt(sub, R, bandY + (square ? 164 : 184), F(700, 24), 'rgba(7,22,49,.8)', 'right', 'ltr');
+    if (sub) txt(sub, R, bandY + (square ? 164 : 184), F(700, 24), 'rgba(21,33,49,.8)', 'right', 'ltr');
     updateCaption();
   }
   function updateCaption() {
     var bl = val('lines').split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean);
     var cap = [
-      '📢 ' + (val('headline') || 'مطلوب للعمل بالخارج'),
+      '📢 ' + (val('headline') || 'وظيفة متاحة'),
       '*' + val('title') + '*',
-      val('count') ? '👥 العدد: ' + val('count') : '',
-      val('salary') ? '💰 الراتب: ' + val('salary') : '',
+      val('location') ? '📍 الموقع: ' + val('location') : '',
+      val('exp') ? '🎓 الخبرة: ' + val('exp') : '',
       bl.length ? '\n' + bl.map(function (l) { return '✔️ ' + l; }).join('\n') : '',
       '\n📲 للتقديم واتساب: ' + val('whatsapp'),
       '🔗 التفاصيل والتقديم: ' + P.url,
-      P.approval ? '\nرقم اعتماد الإعلان: ' + P.approval : '',
-      P.brand + ' لإلحاق العمالة المصرية بالخارج - ترخيص رقم ' + P.license,
-      '\n#وظائف_السعودية #وظائف_الخليج #نسر_الخليج'
+      '\n' + P.brand + ' جروب للمقاولات العامة',
+      '\n#وظائف_مهندسين #وظائف_مقاولات #روك_لاين'
     ].filter(Boolean).join('\n');
     document.getElementById('caption').value = cap;
   }
@@ -178,27 +171,6 @@ var P = {
       var a = document.createElement('a'); a.href = URL.createObjectURL(b);
       a.download = (P.code || 'job') + '-' + val('size') + '.png'; document.body.appendChild(a); a.click(); a.remove();
     }, 'image/png');
-  });
-  var fbBtn = document.getElementById('fbPost');
-  if (fbBtn) fbBtn.addEventListener('click', function () {
-    if (!confirm('تنشر الصورة دي على صفحة فيسبوك دلوقتي؟')) return;
-    var out = document.getElementById('fbResult');
-    fbBtn.disabled = true; out.className = 'fb-result'; out.textContent = 'جاري النشر...';
-    cv.toBlob(function (b) {
-      var fd = new FormData();
-      fd.append('image', b, (P.code || 'job') + '.jpg');
-      fd.append('caption', document.getElementById('caption').value);
-      fetch('/admin/jobs/<%= job.id %>/facebook', { method: 'POST', body: fd })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          out.className = 'fb-result ' + (res.ok ? 'ok' : 'err');
-          out.innerHTML = '';
-          out.appendChild(document.createTextNode(res.msg + ' '));
-          if (res.url) { var a = document.createElement('a'); a.href = res.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'شوف البوست'; out.appendChild(a); }
-        })
-        .catch(function () { out.className = 'fb-result err'; out.textContent = 'حصلت مشكلة في الاتصال. جرّب تاني.'; })
-        .then(function () { fbBtn.disabled = false; });
-    }, 'image/jpeg', 0.92);
   });
   document.getElementById('copyCap').addEventListener('click', function (e) {
     var t = document.getElementById('caption'); t.select();

@@ -1,4 +1,4 @@
-/* نسر الخليج - تفاعلات الموقع */
+/* روك لاين جروب - تفاعلات الموقع */
 (function () {
   'use strict';
   document.documentElement.classList.add('js');
@@ -129,7 +129,7 @@
       try {
         var fd = new FormData(form);
         fd.set('channel', 'whatsapp');
-        fd.delete('cv');
+        fd.delete('file');
         var body = new URLSearchParams(fd);
         if (navigator.sendBeacon) navigator.sendBeacon(form.action, body);
         else fetch(form.action, { method: 'POST', body: body, keepalive: true });

@@ -24,7 +24,7 @@ var yt = (item.video || '').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11}
   <div class="wrap">
     <div class="shead"><h2><%= t.news %></h2><span class="rule"></span></div>
     <div class="news-grid"><% more.forEach(function(n){ %>
-      <article class="ncard"><a class="nc-img" href="<%= L('/news/' + n.id) %>"><% if (n.image) { %><img src="<%= n.image %>" alt="" loading="lazy"><% } else { %><img src="<%= img('logo') %>" alt="" class="ph" loading="lazy"><% } %></a>
+      <article class="ncard"><a class="nc-img" href="<%= L('/news/' + n.id) %>"><img src="<%= n.image || img('project') %>" alt="" loading="lazy"></a>
       <div class="nc-body"><time><%- icon('calendar') %> <%= fmtDate(n.date) %></time><h3><a href="<%= L('/news/' + n.id) %>"><%= tr(n.title) %></a></h3></div></article>
     <% }); %></div>
   </div>

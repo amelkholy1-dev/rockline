@@ -1,15 +1,17 @@
 {
   "name": "rockline",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "private": true,
-  "description": "Nasr Al-Khaleej recruitment website",
+  "description": "Rock Line Group general contracting website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "reset-password": "node scripts/reset-password.js",
     "test:security": "node test/security.js",
-    "test:uc": "node test/under-construction.js"
+    "test:uc": "node test/under-construction.js",
+    "test:site": "node test/site.js",
+    "test": "node test/security.js && node test/under-construction.js && node test/site.js"
   },
   "engines": {
     "node": ">=20"

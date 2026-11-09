@@ -5,7 +5,7 @@
   <input type="hidden" name="id" value="<%= u.id || '' %>">
   <div class="grid2">
     <label>الاسم<input name="name" value="<%= u.name || '' %>" placeholder="مثال: محمود المعراج"></label>
-    <label>الإيميل <em>*</em><input type="email" name="email" dir="ltr" value="<%= u.email || '' %>" required placeholder="name@nisrelkhaleeg.com"></label>
+    <label>الإيميل <em>*</em><input type="email" name="email" dir="ltr" value="<%= u.email || '' %>" required placeholder="name@rocklineg.com"></label>
     <label>اسم المستخدم <em>*</em><input name="user" dir="ltr" value="<%= u.user || '' %>" required placeholder="mahmoud"></label>
     <label>كلمة المرور<input type="password" name="pass" dir="ltr" autocomplete="new-password" minlength="6" placeholder="<%= item ? 'سيبها فاضية لو مش عايز تغيّرها' : 'اختياري' %>">
       <small><%= item ? '8 حروف على الأقل.' : (mailReady ? 'لو سبتها فاضية، هيوصله إيميل يختار منه كلمة المرور بنفسه.' : 'الإيميل مش متظبط، فاكتب كلمة مرور وقولهاله.') %></small></label>

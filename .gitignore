@@ -4,7 +4,7 @@ node_modules
 # أسرار وإعدادات الجهاز - متترفعش أبداً
 .env
 
-# بيانات حساسة: كلمات مرور، رسايل العملاء، السير الذاتية، توكن فيسبوك
+# بيانات حساسة: كلمات مرور، رسايل العملاء، ملفات الفورمات
 data/mail.json
 data/facebook.json
 data/masar.json
@@ -26,4 +26,4 @@ Claude outputs/
 *.log
 
 # ملف الرفع الجاهز لهوستنجر (من غير أسرار)
-!release/nesr-site.zip
+!release/rockline-site.zip

@@ -4,7 +4,7 @@
 (function () {
   var TYPES = {
     site: { icon: 'globe', label: 'الموقع الإلكتروني', kind: 'site' },
-    apply: { icon: 'briefcase', label: 'قدّم في وظائف الخارج', kind: 'apply' },
+    apply: { icon: 'briefcase', label: 'اطلب عرض سعر', kind: 'apply' },
     whatsapp: { icon: 'whatsapp', label: 'واتساب', brand: 1, kind: 'wa' },
     wagroup: { icon: 'whatsapp', label: 'جروب واتساب', brand: 1, kind: 'url' },
     wachannel: { icon: 'whatsapp', label: 'قناة واتساب', brand: 1, kind: 'url' },
@@ -33,7 +33,7 @@
   function href(it, base) {
     var t = TYPES[it.type] || TYPES.url, v = String(it.value || '').trim();
     if (t.kind === 'site') return autoUrl(v) || (base + '/ar');
-    if (t.kind === 'apply') return autoUrl(v) || (base + '/ar/apply');
+    if (t.kind === 'apply') return autoUrl(v) || (base + '/ar/quote');
     if (t.kind === 'wa') return wa(v);
     if (t.kind === 'tel') { var d = intl(v); return d ? 'tel:+' + d : ''; }
     if (t.kind === 'mail') return v && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) ? 'mailto:' + v : '';

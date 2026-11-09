@@ -6,18 +6,18 @@
   <div class="wrap">
     <form class="jfilter" method="get" action="<%= L('/jobs') %>" role="search">
       <label class="jf-q"><%- icon('search') %><input type="search" name="q" value="<%= q %>" placeholder="<%= t.search %>" aria-label="<%= t.search %>"></label>
-      <% if (jobCountries.length) { %><select name="country" aria-label="<%= t.country %>"><option value=""><%= t.all_countries %></option><% jobCountries.forEach(function(c){ %><option<%= c === country ? ' selected' : '' %>><%= c %></option><% }); %></select><% } %>
-      <% if (jobSectors.length) { %><select name="sector" aria-label="<%= t.sector %>"><option value=""><%= t.all_sectors %></option><% jobSectors.forEach(function(c){ %><option<%= c === sector ? ' selected' : '' %>><%= c %></option><% }); %></select><% } %>
+      <% if (jobLocations.length) { %><select name="location" aria-label="<%= t.location %>"><option value=""><%= t.all_locations %></option><% jobLocations.forEach(function(c){ %><option<%= c === loc ? ' selected' : '' %>><%= c %></option><% }); %></select><% } %>
+      <% if (jobDepts.length) { %><select name="dept" aria-label="<%= t.dept %>"><option value=""><%= t.all_depts %></option><% jobDepts.forEach(function(c){ %><option<%= c === dept ? ' selected' : '' %>><%= c %></option><% }); %></select><% } %>
       <button class="btn navy" type="submit"><%= t.filter %></button>
-      <% if (q || country || sector) { %><a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.clear %></a><% } %>
+      <% if (q || loc || dept) { %><a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.clear %></a><% } %>
     </form>
 
     <% if (jobs.length) { %>
       <div class="jobs-grid"><% jobs.forEach(function(j){ %><%- include('partials/jobcard', { j: j }) %><% }); %></div>
     <% } else { %>
-      <div class="empty"><%- icon('briefcase') %><p><%= t.no_jobs %></p><a class="btn gold" href="<%= L('/apply') %>"><%= t.cta_register %></a></div>
+      <div class="empty"><%- icon('hardhat') %><p><%= t.no_jobs %></p><a class="btn gold" href="<%= L('/apply') %>"><%= t.send_cv %></a></div>
     <% } %>
-    <div class="note-card"><%- icon('info') %><p><%= t.legal_note %></p></div>
+    <div class="note-card"><%- icon('doc') %><p><%= lang === 'ar' ? 'مش لاقي وظيفة مناسبة؟ ابعت سيرتك الذاتية وهنحتفظ بيها ونتواصل معاك أول ما تتاح فرصة.' : 'No suitable role? Send us your CV and we will keep it on file and contact you when a role opens.' %> <a href="<%= L('/apply') %>"><b><%= t.send_cv %></b></a></p></div>
   </div>
 </section>
 <%- include('partials/footer') %>
