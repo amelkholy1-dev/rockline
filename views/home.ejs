@@ -165,16 +165,6 @@
 </section>
 <% } %>
 
-<% if (jobs.length) { %>
-<section class="sec<%= allPartners.length ? ' sky' : '' %>" id="jobs">
-  <div class="wrap">
-    <div class="shead reveal"><h2><%= t.latest_jobs %></h2><span class="rule"></span><p><%= t.jobs_sub %></p></div>
-    <div class="jobs-grid"><% jobs.forEach(function(j){ %><%- include('partials/jobcard', { j: j }) %><% }); %></div>
-    <div class="center"><a class="btn navy" href="<%= L('/jobs') %>"><%= t.view_all %> <%- arrow %></a></div>
-  </div>
-</section>
-<% } %>
-
 <%- include('partials/customs', { pos: 'after_jobs' }) %>
 
 <% if (news.length) { %>
@@ -234,7 +224,6 @@
       <p><%= t.vendors_sub %></p>
       <div class="duo-act">
         <a class="btn navy" href="<%= L('/vendors') %>"><%= t.cta_vendor %></a>
-        <a class="btn line-navy" href="<%= L('/jobs') %>"><%= t.nav_jobs %></a>
       </div>
     </div>
   </div>

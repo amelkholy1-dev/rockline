@@ -1,9 +1,9 @@
 <%- include('nav') %>
 <%
-var PAGE = { home: 'الرئيسية', about: 'من نحن', services: 'خدماتنا', projects: 'المشروعات', project: 'صفحة مشروع', clients: 'عملاؤنا', quote: 'اطلب عرض سعر', vendors: 'الموردين ومقاولي الباطن', jobs: 'الوظائف', job: 'صفحة وظيفة', apply: 'التقديم على وظيفة', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', privacy: 'سياسة الخصوصية', other: 'أخرى' };
+var PAGE = { home: 'الرئيسية', about: 'من نحن', services: 'خدماتنا', projects: 'المشروعات', project: 'صفحة مشروع', clients: 'عملاؤنا', quote: 'اطلب عرض سعر', vendors: 'الموردين ومقاولي الباطن', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', privacy: 'سياسة الخصوصية', other: 'أخرى' };
 var SRC = { direct: 'دخول مباشر أو لينك محفوظ', facebook: 'فيسبوك', google: 'جوجل', instagram: 'إنستجرام', whatsapp: 'واتساب', linkedin: 'لينكدإن', tiktok: 'تيك توك', bing: 'Bing', x: 'X (تويتر)' };
 var T = sum.tot, ev = T.ev;
-var FK = [['quote', 'طلب عرض سعر'], ['vendor', 'مورد / مقاول باطن'], ['career', 'طلب توظيف'], ['contact', 'استفسار']];
+var FK = [['quote', 'طلب عرض سعر'], ['vendor', 'مورد / مقاول باطن'], ['contact', 'استفسار']];
 var forms = FK.reduce(function(a, k){ return a + (ev['form_' + k[0] + '_email'] || 0) + (ev['form_' + k[0] + '_whatsapp'] || 0); }, 0);
 var nf = function(x){ return Number(x || 0).toLocaleString('en-US'); };
 var pct = function(a, b){ return b ? Math.round(a * 100 / b) : 0; };
@@ -70,12 +70,6 @@ var fmtD = function(s){ var p = s.split('-'); return Number(p[2]) + '/' + Number
     <h2 class="h3"><%- icon('layers') %> أكتر الصفحات زيارة</h2>
     <% var pages = sum.top(T.pages, 10); %>
     <% if (pages.length) { %><ul class="hbars"><% pages.forEach(function(r){ %><li><span class="hl"><%= PAGE[r[0]] || r[0] %></span><span class="hb"><i style="width:<%= pct(r[1], pages[0][1]) %>%"></i></span><b><%= r[1] %></b></li><% }); %></ul>
-    <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
-  </div>
-  <div class="card">
-    <h2 class="h3"><%- icon('briefcase') %> أكتر الوظائف مشاهدة</h2>
-    <% var jb = sum.top(T.jobs, 8); %>
-    <% if (jb.length) { %><ul class="hbars"><% jb.forEach(function(r){ %><li><span class="hl"><%= jobName(r[0]) %></span><span class="hb"><i style="width:<%= pct(r[1], jb[0][1]) %>%"></i></span><b><%= r[1] %></b></li><% }); %></ul>
     <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
   </div>
   <div class="card">

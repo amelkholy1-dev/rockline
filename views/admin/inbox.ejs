@@ -8,7 +8,7 @@
 </div>
 <div class="filters">
   <a href="/admin/inbox" class="<%= !kind ? 'on' : '' %>">الكل</a>
-  <% Object.keys(KIND_LABEL).forEach(function(k){ %><a href="/admin/inbox?kind=<%= k %>" class="<%= kind === k ? 'on' : '' %>"><%= KIND_LABEL[k] %></a><% }); %>
+  <% Object.keys(FORMS).forEach(function(k){ %><a href="/admin/inbox?kind=<%= k %>" class="<%= kind === k ? 'on' : '' %>"><%= KIND_LABEL[k] %></a><% }); %>
 </div>
 <% if (list.length) { %>
 <div class="msgs">

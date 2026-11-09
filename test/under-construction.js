@@ -25,7 +25,7 @@ const BANNER = 'uc-preview';
   const V = jar();
   let r = await req(V, 'GET', '/'); ok(r.s === 503 && /تحت التطوير/.test(r.t) && !r.t.includes(BANNER), 'visitor sees maintenance (503)');
   r = await req(V, 'GET', '/ar'); ok(r.s === 503 && !r.t.includes(BANNER), 'visitor: /ar also 503');
-  r = await req(V, 'GET', '/en/jobs'); ok(r.s === 503, 'visitor: inner pages also 503');
+  r = await req(V, 'GET', '/en/projects'); ok(r.s === 503, 'visitor: inner pages also 503');
   // مدير لسه مكمّلش التحقق الثنائي → لسه زائر
   const A = jar();
   r = await req(A, 'POST', '/admin/login', { user: 'owner', pass: 'Strong#Pass1' }); ok(r.loc === '/admin/2fa/setup', 'login → 2fa setup');
@@ -37,7 +37,7 @@ const BANNER = 'uc-preview';
   r = await req(A, 'GET', '/ar'); ok(r.s === 200 && r.t.includes(BANNER) && /class="hd"/.test(r.t), 'admin sees the real site + banner ' + r.s + ' ' + r.loc);
   ok(/no-store/.test(r.h.get('cache-control') || '') && /private/.test(r.h.get('cache-control') || ''), 'admin page is private, no-store');
   ok(/noindex/.test(r.h.get('x-robots-tag') || ''), 'admin page noindex');
-  r = await req(A, 'GET', '/en/jobs'); ok(r.s === 200 && r.t.includes(BANNER), 'admin: inner pages real too');
+  r = await req(A, 'GET', '/en/projects'); ok(r.s === 200 && r.t.includes(BANNER), 'admin: inner pages real too');
   // الزائر لسه شايف الصفحة المؤقتة
   r = await req(V, 'GET', '/'); ok(r.s === 503, 'visitor still sees maintenance');
   // بعد الخروج يرجع زائر

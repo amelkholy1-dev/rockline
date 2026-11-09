@@ -1,14 +1,12 @@
 <%
-/* الفورمات: طلب عرض سعر، تسجيل مورد / مقاول باطن، طلب توظيف، استفسار.
+/* الفورمات: طلب عرض سعر، تسجيل مورد / مقاول باطن، استفسار.
    كل فورم يتبعت بطريقتين: واتساب (رسالة جاهزة) أو إيميل (من السيرفر). */
-var KINDS = ['quote', 'vendor', 'career', 'contact'];
+var KINDS = ['quote', 'vendor', 'contact'];
 var tabsOn = typeof only === 'undefined' || !only;
 var active = (typeof tab !== 'undefined' && tab) || (typeof only !== 'undefined' && only) || 'quote';
-var jobObj = (typeof job !== 'undefined' && job) || null;
-var jobRef = jobObj ? (job.code ? job.code + ' - ' : '') + tr(job.title) + (tr(job.location) ? ' - ' + tr(job.location) : '') : '';
 var pre = (typeof ptype !== 'undefined' && ptype) || '';
 var waNum = String(site.contact.whatsapp || '').replace(/[^0-9]/g, '');
-var TAB_IC = { quote: 'doc', vendor: 'package', career: 'hardhat', contact: 'mail' };
+var TAB_IC = { quote: 'doc', vendor: 'package', contact: 'mail' };
 function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function fld(o) {
   var req = o.req ? ' required' : '';
@@ -88,23 +86,6 @@ var show = function(k){ return tabsOn || only === k; };
   </form>
   <% } %>
 
-  <% if (show('career')) { %>
-  <%- open('career') %>
-    <div class="fgrid">
-      <%- fld({ name: 'name', label: t.f_name, req: 1, auto: 'name' }) %>
-      <%- fld({ name: 'phone', label: t.f_phone, req: 1, type: 'tel', ph: '01xxxxxxxxx', auto: 'tel' }) %>
-      <%- fld({ name: 'email', label: t.f_email, type: 'email', auto: 'email' }) %>
-      <%- fld({ name: 'position', label: t.f_position, req: 1, list: 'dl-professions', value: jobObj ? tr(jobObj.title) : '' }) %>
-      <%- fld({ name: 'years', label: t.f_years, type: 'number' }) %>
-      <%- fld({ name: 'city', label: t.f_city }) %>
-      <% if (jobRef) { %><%- fld({ name: 'job', label: t.f_job, value: jobRef, wide: 1 }) %><% } %>
-      <%- fld({ name: 'notes', label: t.f_notes, wide: 1, type: 'textarea', rows: 2 }) %>
-      <%- file(t.f_file_career) %>
-    </div>
-    <%- actions() %>
-  </form>
-  <% } %>
-
   <% if (show('contact')) { %>
   <%- open('contact') %>
     <div class="fgrid">
@@ -116,5 +97,4 @@ var show = function(k){ return tabsOn || only === k; };
     <%- actions() %>
   </form>
   <% } %>
-  <datalist id="dl-professions"><% professions.forEach(function(p){ %><option value="<%= p %>"><% }); %></datalist>
 </div>

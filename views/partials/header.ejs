@@ -19,11 +19,10 @@
 </div></div>
 <header class="hd" id="hd"><div class="wrap">
   <a class="logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>">
-    <img src="<%= img('logo') %>" alt="" width="27" height="50">
-    <span><b><%= tr(site.brand.short) %></b><small><%= lang === 'ar' ? 'جروب للمقاولات العامة' : 'Group · General Contracting' %></small></span>
+    <img class="logo-full" src="<%= img('logoFull') %>" alt="<%= tr(site.brand.name) %>" width="111" height="56">
   </a>
   <nav class="nav" id="nav" aria-label="main">
-    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/services', 'services', t.nav_services], ['/projects', 'projects', t.nav_projects], ['/clients', 'clients', t.nav_clients], ['/jobs', 'jobs', t.nav_jobs], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
+    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/services', 'services', t.nav_services], ['/projects', 'projects', t.nav_projects], ['/clients', 'clients', t.nav_clients], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
       <a href="<%= L(n[0]) %>"<% if (page === n[1]) { %> class="on" aria-current="page"<% } %>><%= n[2] %></a>
     <% }); %>
     <div class="nav-extra">

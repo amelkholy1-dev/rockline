@@ -42,7 +42,6 @@ const privacyDefault = require('./lib/privacy-default');
     const fresh = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'site.json'), 'utf8'));
     ['underConstruction', 'hosting'].forEach(k => { if (site[k] !== undefined) fresh[k] = site[k]; });
     store.set('site', fresh);
-    store.set('jobs', store.get('jobs').filter(j => !/^NK-/.test(String(j.code || ''))));
     console.log('اتحدّث محتوى الموقع لروك لاين (كان لسه محتوى النسخة القديمة).');
   } catch (e) { console.error('rebrand:', e && e.message); }
 })();
@@ -250,15 +249,12 @@ function base(req, extra) {
     cat: x => catName(site, x, lang),
     catIcon: x => catIcon(site, x),
     pimg: p => (p.images && p.images[0]) || siteImg(site, 'project'),
-    professions: (site.professions || []).map(p => tr(p.text, lang)).filter(Boolean),
     vtypes: (site.vtypes || []).map(p => tr(p.text, lang)).filter(Boolean),
     ptypes: (site.sectors || []).map(p => tr(p.name, lang)).filter(Boolean),
     phone1: (c.phones || [])[0] || '',
     socials: ['facebook', 'instagram', 'tiktok', 'linkedin', 'youtube'].filter(k => c[k]).map(k => ({ k, url: c[k] }))
   }, extra || {});
 }
-
-function activeJobs() { return store.get('jobs').filter(j => j.active !== false); }
 
 // ---------- forms (نفس التعريف بيتستخدم في التحقق والإيميل ولوحة التحكم) ----------
 const FORMS = {
@@ -270,15 +266,11 @@ const FORMS = {
     { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
     { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'grade', l: 'f_grade' }, { k: 'city', l: 'f_city' }, { k: 'notes', l: 'f_notes' }] },
-  career: { subject: 'طلب توظيف جديد', file: true, fields: [
-    { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
-    { k: 'position', req: 1, l: 'f_position' }, { k: 'years', l: 'f_years' }, { k: 'city', l: 'f_city' },
-    { k: 'job', l: 'f_job' }, { k: 'notes', l: 'f_notes' }] },
   contact: { subject: 'رسالة جديدة من الموقع', fields: [
     { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'message', req: 1, l: 'f_message' }] }
 };
-const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مقاول باطن', career: 'طلب توظيف', contact: 'استفسار' };
+const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مقاول باطن', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
 // عنوان مختصر للرسالة في لوحة التحكم
 const msgTitle = f => f.company || f.name || '-';
@@ -345,12 +337,11 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/jobs', '/apply', '/news', '/gallery', '/contact', '/privacy'];
+  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
     activeProjects().forEach(p => urls.push(`${b}/${l}/projects/${p.id}`));
-    activeJobs().forEach(j => urls.push(`${b}/${l}/jobs/${j.id}`));
     store.get('news').forEach(n => urls.push(`${b}/${l}/news/${n.id}`));
   });
   res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
@@ -366,9 +357,8 @@ app.use('/:lang(ar|en)', (req, res, next) => {
     res.on('finish', () => {
       if (res.statusCode !== 200) return;
       let page = parts[0] || 'home';
-      let job = '';
-      if (parts[0] === 'jobs' && parts[1]) { page = 'job'; job = parts[1]; }
-      else if (parts[0] === 'projects' && parts[1]) page = 'project';
+      const job = '';
+      if (parts[0] === 'projects' && parts[1]) page = 'project';
       else if (parts[0] === 'news' && parts[1]) page = 'post';
       else if (parts[0] === 'gallery' && parts[1]) page = 'album';
       analytics.pageview(req, res, { page, job, lang });
@@ -393,7 +383,6 @@ pub.get('/', (req, res) => {
     page: 'home',
     projects: featured.concat(all.filter(p => !p.featured)).slice(0, 6), // المختارة الأول، وبعدها الباقي لحد 6
     projectsCount: all.length,
-    jobs: activeJobs().slice(0, 3),
     news: store.get('news').slice(0, 3),
     photos: g.items.slice(0, 8)
   }));
@@ -407,7 +396,7 @@ pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', t
 pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
 pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: T(req).contact_title, tab: Object.prototype.hasOwnProperty.call(FORMS, req.query.tab) ? req.query.tab : 'quote' })));
 // روابط الموقع القديم
-[['companies', '/quote'], ['partners', '/clients'], ['guide', '/vendors']].forEach(([from, to]) => pub.get('/' + from, (req, res) => res.redirect(301, '/' + langOf(req) + to)));
+[['companies', '/quote'], ['partners', '/clients'], ['guide', '/vendors'], ['jobs', ''], ['apply', '']].forEach(([from, to]) => pub.get(['/' + from, '/' + from + '/*'], (req, res) => res.redirect(301, '/' + langOf(req) + to)));
 
 pub.get('/projects', (req, res) => {
   const lang = langOf(req);
@@ -454,32 +443,6 @@ pub.get('/privacy', (req, res) => {
     } else blocks.push({ p: l });
   });
   res.render('privacy', base(req, { page: 'privacy', title: dict[lang].privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
-});
-
-pub.get('/apply', (req, res) => {
-  const job = activeJobs().find(j => j.id === req.query.job);
-  res.render('apply', base(req, { page: 'jobs', job, title: dict[langOf(req)].apply_title }));
-});
-
-pub.get('/jobs', (req, res) => {
-  const lang = langOf(req);
-  const q = clean(req.query.q, 100).toLowerCase();
-  const loc = clean(req.query.location, 100);
-  const dept = clean(req.query.dept, 100);
-  let jobs = activeJobs();
-  if (loc) jobs = jobs.filter(j => tr(j.location, 'ar') === loc || tr(j.location, 'en') === loc);
-  if (dept) jobs = jobs.filter(j => tr(j.dept, 'ar') === dept || tr(j.dept, 'en') === dept);
-  if (q) jobs = jobs.filter(j => [j.title, j.dept, j.details, j.code].map(x => JSON.stringify(x || '')).join(' ').toLowerCase().includes(q));
-  const all = activeJobs();
-  const uniq = key => [...new Set(all.map(j => tr(j[key], lang)).filter(Boolean))];
-  res.render('jobs', base(req, { page: 'jobs', title: dict[lang].jobs_title, jobs, q, loc, dept, jobLocations: uniq('location'), jobDepts: uniq('dept') }));
-});
-
-pub.get('/jobs/:id', (req, res) => {
-  const job = store.get('jobs').find(j => j.id === req.params.id);
-  if (!job) return notFound(req, res);
-  const lang = langOf(req);
-  res.render('job', base(req, { page: 'jobs', job, title: tr(job.title, lang), desc: tr(job.details, lang).slice(0, 160), related: activeJobs().filter(j => j.id !== job.id).slice(0, 3), ogImage: job.image || '' }));
 });
 
 pub.get('/news', (req, res) => res.render('news', base(req, { page: 'news', title: dict[langOf(req)].news, news: store.get('news') })));
@@ -616,7 +579,7 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { stats: 'stats', inbox: 'inbox', projects: 'projects', jobs: 'jobs', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
@@ -814,7 +777,7 @@ admin.get('/', (req, res) => {
   res.render('admin/dash', adminView(req, {
     section: 'dash', underCon: underCon(),
     counts: {
-      projects: activeProjects().length, jobs: activeJobs().length, news: store.get('news').length,
+      projects: activeProjects().length, news: store.get('news').length,
       photos: store.get('gallery').items.length,
       messages: inbox.messages.length,
       week: inbox.messages.filter(m => Date.now() - new Date(m.at) < 7 * 864e5).length
@@ -826,8 +789,7 @@ admin.get('/', (req, res) => {
     noEmail: !req.me.email,
     samples: {
       site: store.get('site').sample === true,
-      projects: (store.get('projects') || []).filter(p => p.sample).length,
-      jobs: store.get('jobs').filter(j => j.sample).length
+      projects: (store.get('projects') || []).filter(p => p.sample).length
     },
     noContact: !((store.get('site').contact || {}).phones || []).length && !(store.get('site').contact || {}).whatsapp
   }));
@@ -890,61 +852,6 @@ admin.get('/inbox/export.csv', (req, res) => {
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', 'attachment; filename="rockline-messages.csv"');
   res.send(csv);
-});
-
-// ----- jobs -----
-function nextJobCode() {
-  const n = store.get('jobs').map(j => parseInt(String(j.code || '').replace(/\D/g, ''), 10) || 0);
-  return 'RL-' + String((n.length ? Math.max.apply(null, n) : 0) + 1).padStart(3, '0');
-}
-admin.get('/jobs', (req, res) => res.render('admin/jobs', adminView(req, { section: 'jobs', jobs: store.get('jobs') })));
-admin.get('/jobs/new', (req, res) => res.render('admin/jobform', adminView(req, { section: 'jobs', job: null, code: nextJobCode() })));
-admin.get('/jobs/:id/edit', (req, res) => {
-  const job = store.get('jobs').find(j => j.id === req.params.id);
-  if (!job) return res.redirect('/admin/jobs');
-  res.render('admin/jobform', adminView(req, { section: 'jobs', job, code: job.code }));
-});
-admin.post('/jobs/save', (req, res) => {
-  diskImages.single('image')(req, res, err => {
-    const b = req.body || {};
-    const jobs = store.get('jobs');
-    const old = jobs.find(j => j.id === clean(b.id));
-    let image = old ? (old.image || '') : '';
-    if (b.removeImage === 'on') image = '';
-    if (req.file) image = '/uploads/' + req.file.filename;
-    const rec = {
-      id: old ? old.id : uid(),
-      code: clean(b.code, 30) || (old && old.code) || nextJobCode(),
-      title: bi(b, 'title'), location: bi(b, 'location'), dept: bi(b, 'dept'),
-      type: bi(b, 'type'), exp: bi(b, 'exp'),
-      details: bi(b, 'details'),
-      image,
-      active: b.active === 'on',
-      at: old ? old.at : now(), updated: now()
-    };
-    if (old) delete old.sample;
-    if (!rec.title.ar) { flash(req, 'اكتب اسم الوظيفة بالعربي', 'err'); return res.redirect(old ? '/admin/jobs/' + old.id + '/edit' : '/admin/jobs/new'); }
-    if (old) Object.assign(old, rec); else jobs.unshift(rec);
-    store.set('jobs', jobs);
-    flash(req, err ? 'اتحفظت الوظيفة، بس الصورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ الوظيفة. تقدر دلوقتي تعمل لها صورة للسوشيال ميديا من زرار "صورة للنشر".', err ? 'err' : 'ok');
-    res.redirect('/admin/jobs');
-  });
-});
-admin.get('/jobs/:id/poster', (req, res) => {
-  const job = store.get('jobs').find(j => j.id === req.params.id);
-  if (!job) return res.redirect('/admin/jobs');
-  res.render('admin/poster', adminView(req, { section: 'jobs', job, jobUrl: siteUrl(req) + '/ar/jobs/' + job.id }));
-});
-admin.post('/jobs/:id/toggle', (req, res) => {
-  const jobs = store.get('jobs');
-  const j = jobs.find(x => x.id === req.params.id);
-  if (j) { j.active = j.active === false; store.set('jobs', jobs); flash(req, j.active ? 'الوظيفة ظاهرة على الموقع' : 'الوظيفة اتقفلت واتخفت من الموقع'); }
-  res.redirect('/admin/jobs');
-});
-admin.post('/jobs/:id/delete', (req, res) => {
-  store.set('jobs', store.get('jobs').filter(j => j.id !== req.params.id));
-  flash(req, 'تم حذف الوظيفة');
-  res.redirect('/admin/jobs');
 });
 
 // ----- projects (المشروعات) -----
@@ -1013,7 +920,6 @@ admin.post('/samples/clear', (req, res) => {
   if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
   const what = (req.body && req.body.what) || '';
   if (what === 'projects') store.set('projects', projList().filter(p => !p.sample));
-  else if (what === 'jobs') store.set('jobs', store.get('jobs').filter(j => !j.sample));
   else if (what === 'site') { const site = store.get('site'); delete site.sample; store.set('site', site); }
   flash(req, what === 'site' ? 'تمام — اتشال تنبيه المحتوى النموذجي' : 'اتمسحت النماذج');
   res.redirect('/admin');
@@ -1259,7 +1165,7 @@ admin.post('/content/:key', (req, res) => {
 // ----- custom sections (أقسام إضافية) -----
 const POSITIONS = [
   ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "آلية العمل"'],
-  ['after_sectors', 'بعد "الجودة والسلامة"'], ['after_jobs', 'بعد "الوظائف المتاحة"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
+  ['after_sectors', 'بعد "الجودة والسلامة"'], ['after_jobs', 'بعد "العملاء"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
 ];
 admin.get('/sections', (req, res) => res.render('admin/sections', adminView(req, { section: 'sections', list: store.get('site').sections || [], POSITIONS })));
 admin.get('/sections/new', (req, res) => res.render('admin/sectionform', adminView(req, { section: 'sections', item: null, POSITIONS })));
@@ -1342,9 +1248,7 @@ admin.post('/mail/test', async (req, res) => {
 admin.get('/stats', (req, res) => {
   const n = [7, 30, 90].includes(Number(req.query.days)) ? Number(req.query.days) : 30;
   const sum = analytics.summary(n);
-  const jobs = store.get('jobs');
-  const jobName = id => { const j = jobs.find(x => x.id === id); return j ? (j.code ? j.code + ' - ' : '') + tr(j.title, 'ar') : 'وظيفة محذوفة'; };
-  res.render('admin/stats', adminView(req, { section: 'stats', n, sum, jobName }));
+  res.render('admin/stats', adminView(req, { section: 'stats', n, sum }));
 });
 
 // ----- site images -----

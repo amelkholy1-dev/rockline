@@ -18,7 +18,7 @@
 </div>
 <% } %>
 
-<% if (me.owner && (samples.site || samples.projects || samples.jobs)) { %>
+<% if (me.owner && (samples.site || samples.projects)) { %>
 <div class="card nudge">
   <h2 class="h3"><%- icon('info') %> فيه محتوى نموذجي لازم تراجعه قبل ما تفتح الموقع للعامة</h2>
   <ul>
@@ -26,8 +26,6 @@
       <form method="post" action="/admin/samples/clear" style="display:inline"><input type="hidden" name="what" value="site"><button class="btn sm ghost" type="submit">راجعتها ✓</button></form></li><% } %>
     <% if (samples.projects) { %><li><b><%= samples.projects %></b> مشروع نموذجي (مكتوب عليهم «نموذج»). عدّلهم ببيانات مشروعاتكم الحقيقية وصورها، أو امسحهم.
       <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح كل المشروعات النموذجية؟"><input type="hidden" name="what" value="projects"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
-    <% if (samples.jobs) { %><li><b><%= samples.jobs %></b> وظيفة نموذجية.
-      <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح الوظايف النموذجية؟"><input type="hidden" name="what" value="jobs"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
   </ul>
 </div>
 <% } %>
@@ -36,7 +34,6 @@
 <div class="kpis">
   <% if (can('projects')) { %><a class="kpi" href="/admin/projects"><%- icon('building') %><b><%= counts.projects %></b><span>مشروع ظاهر</span></a><% } %>
   <% if (can('inbox')) { %><a class="kpi" href="/admin/inbox"><%- icon('inbox') %><b><%= counts.messages %></b><span>رسالة (<%= counts.week %> الأسبوع ده)</span></a><% } %>
-  <% if (can('jobs')) { %><a class="kpi" href="/admin/jobs"><%- icon('hardhat') %><b><%= counts.jobs %></b><span>وظيفة ظاهرة</span></a><% } %>
   <% if (can('news')) { %><a class="kpi" href="/admin/news"><%- icon('newspaper') %><b><%= counts.news %></b><span>خبر ومنشور</span></a><% } %>
 </div>
 
@@ -53,7 +50,6 @@
 <h2 class="h2">إضافة سريعة</h2>
 <div class="quick">
   <% if (can('projects')) { %><a href="/admin/projects/new"><%- icon('plus') %> مشروع جديد</a><% } %>
-  <% if (can('jobs')) { %><a href="/admin/jobs/new"><%- icon('plus') %> وظيفة جديدة</a><% } %>
   <% if (can('news')) { %><a href="/admin/news/new"><%- icon('plus') %> خبر أو منشور</a><% } %>
   <% if (can('gallery')) { %><a href="/admin/gallery"><%- icon('plus') %> صور للمعرض</a><% } %>
   <% if (can('images')) { %><a href="/admin/images"><%- icon('image') %> تغيير صور الصفحة الرئيسية</a><% } %>

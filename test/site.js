@@ -24,7 +24,7 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   for (let i = 0; i < 40; i++) { try { await fetch(B + '/admin/login'); break; } catch (e) { await new Promise(r => setTimeout(r, 250)); } }
   const V = jar();
   // الصفحات
-  for (const p of ['/ar', '/en', '/ar/about', '/ar/services', '/ar/projects', '/ar/projects/p1', '/ar/clients', '/ar/quote', '/ar/vendors', '/ar/jobs', '/ar/jobs/j1', '/ar/apply?job=j1', '/ar/contact', '/ar/news', '/ar/gallery', '/ar/privacy', '/en/projects?status=ongoing']) {
+  for (const p of ['/ar', '/en', '/ar/about', '/ar/services', '/ar/projects', '/ar/projects/p1', '/ar/clients', '/ar/quote', '/ar/vendors', '/ar/contact', '/ar/news', '/ar/gallery', '/ar/privacy', '/en/projects?status=ongoing']) {
     const r = await req(V, 'GET', p); ok(r.s === 200, 'page ' + p + ' ' + r.s);
   }
   let r = await req(V, 'GET', '/ar');
@@ -39,7 +39,9 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   let f = await send({ kind: 'quote', name: 'أحمد', phone: '01000000000', ptype: 'سكني' }); ok(f.s === 400, 'quote without details → 400');
   f = await send({ kind: 'quote', name: 'أحمد', phone: '01000000000', ptype: 'سكني', details: 'فيلا دورين', consent: 'on' }); ok(f.s === 200 && f.j.ok, 'quote sent');
   f = await send({ kind: 'vendor', company: 'مورد', vtype: 'مورد مواد بناء', specialty: 'حديد', phone: '01000000001' }); ok(f.s === 200 && f.j.ok, 'vendor sent');
-  f = await send({ kind: 'career', name: 'سارة', phone: '01000000002', position: 'مهندس مدني' }); ok(f.s === 200 && f.j.ok, 'career sent');
+  f = await send({ kind: 'career', name: 'سارة', phone: '01000000002', position: 'مهندس مدني' }); ok(f.s === 400, 'career form removed (falls back to contact → needs message)');
+  for (const p of ['/ar/jobs', '/ar/jobs/j1', '/en/apply']) { const x = await req(V, 'GET', p); ok(x.s === 301 && /^\/(ar|en)$/.test(x.loc), 'jobs removed: ' + p + ' → home ' + x.s + ' ' + x.loc); }
+  r = await req(V, 'GET', '/ar'); ok(!/\/ar\/jobs|data-kind="career"/.test(r.t), 'no jobs links or career form on home');
   f = await send({ kind: 'company', company: 'x', phone: '1', trades: 'x' }); ok(f.s === 400, 'old kind=company falls back to contact and needs its fields');
   // لوحة التحكم
   const A = jar();
@@ -47,11 +49,11 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   r = await req(A, 'GET', '/admin/2fa/setup'); const secret = (r.t.match(/<code[^>]*>([A-Z2-7]{32})<\/code>/) || [])[1];
   await req(A, 'POST', '/admin/2fa/setup', { code: totp(secret) }); await req(A, 'POST', '/admin/2fa/setup', {});
   r = await req(A, 'GET', '/admin'); ok(r.s === 200 && /محتوى نموذجي/.test(r.t), 'dashboard shows sample-content notice');
-  ok(!/admin\/masar|admin\/facebook/.test(r.t), 'no Masar/Facebook in admin menu');
-  for (const p of ['/admin/masar', '/admin/facebook']) { const x = await req(A, 'GET', p); ok(x.s === 403 || x.s === 404, 'admin ' + p + ' gone ' + x.s); }
+  ok(!/admin\/masar|admin\/facebook|admin\/jobs/.test(r.t), 'no Masar/Facebook/Jobs in admin menu');
+  for (const p of ['/admin/masar', '/admin/facebook', '/admin/jobs']) { const x = await req(A, 'GET', p); ok(x.s === 403 || x.s === 404, 'admin ' + p + ' gone ' + x.s); }
   r = await req(A, 'GET', '/admin/inbox?kind=quote'); ok(/فيلا دورين|أحمد/.test(r.t) && /طلب عرض سعر/.test(r.t), 'quote in inbox');
-  r = await req(A, 'GET', '/admin/inbox'); ok(/مورد مواد بناء/.test(r.t) && /مهندس مدني/.test(r.t), 'vendor + career in inbox');
-  for (const p of ['/admin/projects', '/admin/projects/new', '/admin/projects/p1/edit', '/admin/jobs', '/admin/jobs/new', '/admin/jobs/j1/poster', '/admin/news', '/admin/gallery', '/admin/content/hero', '/admin/content/sectors', '/admin/content/certificates', '/admin/images', '/admin/contact', '/admin/mail', '/admin/stats', '/admin/hosting', '/admin/users', '/admin/sections']) {
+  r = await req(A, 'GET', '/admin/inbox'); ok(/مورد مواد بناء/.test(r.t), 'vendor in inbox');
+  for (const p of ['/admin/projects', '/admin/projects/new', '/admin/projects/p1/edit', '/admin/news', '/admin/gallery', '/admin/content/hero', '/admin/content/sectors', '/admin/content/certificates', '/admin/images', '/admin/contact', '/admin/mail', '/admin/stats', '/admin/hosting', '/admin/users', '/admin/sections']) {
     const x = await req(A, 'GET', p); ok(x.s === 200, 'admin page ' + p + ' ' + x.s);
   }
   // مشروع جديد

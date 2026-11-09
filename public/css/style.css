@@ -442,7 +442,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .cc small { display: flex; gap: 6px; align-items: center; color: var(--muted); margin-top: 4px; }
 .form-card { background: #fff; border-radius: 22px; padding: 26px; border: 1px solid var(--line); box-shadow: var(--shadow); }
 .form-card > h2 { font-size: 1.4rem; margin-bottom: 6px; }
-.ftabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 5px; border-radius: 14px; background: var(--sky); margin-bottom: 20px; }
+.ftabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; border-radius: 14px; background: var(--sky); margin-bottom: 20px; }
 .ftabs button { border: 0; background: none; padding: 10px 6px; border-radius: 10px; font-weight: 800; color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: .2s; }
 .ftabs button[aria-selected="true"] { background: var(--navy); color: #fff; box-shadow: var(--shadow); }
 .ftabs button[aria-selected="true"] .ic { color: var(--gold-2); }
@@ -725,7 +725,6 @@ a.sector { display: block; color: inherit; }
   .timeline::before { inset-inline-start: 34px; }
   .timeline li > b { width: 70px; font-size: .9rem; }
   .seg a { padding: 7px 12px; font-size: .88rem; }
-  .ftabs { grid-template-columns: repeat(4, 1fr); }
   .cta-in .duo-act { width: 100%; }
   .cta-in .btn { flex: 1 1 100%; }
 }
@@ -736,3 +735,7 @@ a.sector { display: block; color: inherit; }
   .jobs-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 390px)); justify-content: center; }
 }
 @media (max-width: 680px) { .mbar { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 1fr; } }
+
+/* الشعار الكامل في الهيدر */
+.logo img.logo-full { height: 56px; width: auto; }
+@media (max-width: 680px) { .logo img.logo-full { height: 44px; } }
