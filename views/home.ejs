@@ -2,60 +2,23 @@
 <%- include('partials/header') %>
 <% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
 
-<section class="hero">
-  <div class="hero-bg" aria-hidden="true"></div>
-  <div class="wrap hero-grid">
-    <div class="hero-text">
-      <span class="eyebrow"><%= tr(site.hero.badge) %></span>
-      <h1><%= tr(site.hero.title) %></h1>
-      <span class="rule"></span>
-      <p class="lead"><%= tr(site.hero.sub) %></p>
-      <div class="hero-cta">
-        <a class="btn gold lg" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
-        <a class="btn line lg" href="<%= L('/projects') %>"><%- icon('building') %> <%= t.cta_projects %></a>
-      </div>
-      <% if (site.brand.license) { %><a class="lic-badge" href="<%= L('/about') %>"><%- icon('shield') %><span><%= t.member_no %> <b><%= site.brand.license %></b><% if (site.brand.grade) { %> · <%= t.grade %> <b><%= site.brand.grade %></b><% } %></span></a><% } %>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-logo"><img src="<%= img('logo') %>" alt="<%= tr(site.brand.name) %>" width="120" height="220"></div>
-      <ul class="hero-points">
-        <% (site.points || []).forEach(function(p){ %><li><span><%- icon(p.icon) %></span><%= tr(p.text) %></li><% }); %>
-      </ul>
-    </div>
-  </div>
-  <div class="hero-people"><img src="<%= img('hero') %>" alt="<%= lang === 'ar' ? 'مشروعات روك لاين تحت الإنشاء' : 'Rock Line projects under construction' %>" width="1600" height="560" fetchpriority="high"></div>
-</section>
-
 <% var stats = (site.stats || []).filter(function(s){ return s.value; }); %>
-<section class="band">
-  <div class="wrap band-grid">
-    <% stats.forEach(function(s){ %>
-      <div class="stat"><b data-count="<%= s.value %>"><%= s.value %></b><span><%= tr(s.label) %></span></div>
-    <% }); %>
-    <div class="stat sectors-mini">
-      <% (site.sectors || []).slice(0, 6).forEach(function(s){ %><span title="<%= tr(s.name) %>"><%- icon(s.icon) %></span><% }); %>
-    </div>
-  </div>
-</section>
+<%- include('partials/hero/' + theme, { arrow: arrow, stats: stats }) %>
 
 <%- include('partials/customs', { pos: 'after_hero' }) %>
 
-<section class="sec about-sec" id="about">
-  <div class="wrap about-grid">
-    <div class="about-img reveal">
-      <img src="<%= img('about') %>" alt="" loading="lazy" width="330" height="400">
-      <div class="about-seal"><img src="<%= img('logo') %>" alt="" loading="lazy"><span><%= tr(site.brand.short) %><b><%= site.brand.founded ? t.founded + ' ' + site.brand.founded : (lang === 'ar' ? 'جروب' : 'Group') %></b></span></div>
+<section class="sec ab-sec" id="about">
+  <div class="wrap ab-grid">
+    <div class="ab-ph reveal">
+      <img src="<%= img('about') %>" alt="" loading="lazy" width="600" height="480">
+      <% if (stats[0]) { %><div class="ab-yrs"><b><%= stats[0].value %></b><%= tr(stats[0].label) %></div><% } %>
     </div>
-    <div class="about-text reveal">
-      <span class="eyebrow"><%= t.about_title %></span>
+    <div class="ab-tx reveal">
+      <span class="kick"><%= t.about_title %></span>
       <h2><%= tr(site.brand.name) %></h2>
-      <span class="rule start"></span>
       <p><%= tr(site.about.p1) %></p>
       <p><%= tr(site.about.p2) %></p>
-      <div class="vm">
-        <div><span class="vm-ic"><%- icon('eye') %></span><h3><%= t.vision %></h3><p><%= tr(site.about.vision) %></p></div>
-        <div><span class="vm-ic"><%- icon('mission') %></span><h3><%= t.mission %></h3><p><%= tr(site.about.mission) %></p></div>
-      </div>
+      <ul class="ab-chk"><% (site.why || []).slice(0, 4).forEach(function(w){ %><li><%- icon('checkcircle') %><%= tr(w.text) %></li><% }); %></ul>
       <a class="btn navy" href="<%= L('/about') %>"><%= t.more %> <%- arrow %></a>
     </div>
   </div>
@@ -63,26 +26,28 @@
 
 <%- include('partials/customs', { pos: 'after_about' }) %>
 
-<section class="sec sky" id="services">
+<section class="sec sky sv-sec" id="services">
   <div class="wrap">
-    <div class="shead reveal"><h2><%= t.services %></h2><span class="rule"></span><p><%= t.services_sub %></p></div>
-    <div class="svc-grid">
-      <% (site.services || []).forEach(function(s){ %>
-        <article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></article>
+    <div class="shx reveal"><div><span class="kick"><%= t.services %></span><h2><%= t.services_sub %></h2></div><a class="btn navy" href="<%= L('/services') %>"><%= t.view_all %> <%- arrow %></a></div>
+    <div class="sv-g">
+      <% (site.services || []).forEach(function(s, i){ %>
+        <article class="sv reveal">
+          <img class="sv-img" src="<%= svcImg(i) %>" alt="" loading="lazy">
+          <span class="sv-n"><%= String(i + 1).padStart(2, '0') %></span>
+          <span class="sv-ic"><%- icon(s.icon) %></span>
+          <div class="sv-tx"><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></div>
+          <a class="sv-ar" href="<%= L('/quote') %>" aria-label="<%= t.cta_quote %>"><%- arrow %></a>
+        </article>
       <% }); %>
     </div>
-    <div class="center"><a class="btn line-navy" href="<%= L('/services') %>"><%= t.view_all %> <%- arrow %></a></div>
   </div>
 </section>
 
 <% if (projects.length) { %>
-<section class="sec" id="projects">
+<section class="sec pj-sec" id="projects">
   <div class="wrap">
-    <div class="shead reveal"><h2><%= t.featured %></h2><span class="rule"></span><p><%= t.projects_sub %></p></div>
-    <div class="proj-grid">
-      <% projects.forEach(function(p){ %><%- include('partials/projectcard', { p: p }) %><% }); %>
-    </div>
-    <div class="center"><a class="btn navy" href="<%= L('/projects') %>"><%= t.view_all %> (<%= projectsCount %>) <%- arrow %></a></div>
+    <div class="shx reveal"><div><span class="kick"><%= t.nav_projects %></span><h2><%= t.featured %></h2></div><a class="btn line-gold" href="<%= L('/projects') %>"><%= t.view_all %> (<%= projectsCount %>) <%- arrow %></a></div>
+    <div class="proj-grid"><% projects.forEach(function(p){ %><%- include('partials/projectcard', { p: p }) %><% }); %></div>
   </div>
 </section>
 <% } %>
@@ -206,6 +171,8 @@
   </div>
 </section>
 <% } %>
+
+<%- include('partials/cta', { ctaTitle: lang === 'ar' ? 'عندك مشروع؟ خلّينا نبنيه.' : 'Have a project? Let\'s build it.', ctaSub: t.quote_sub }) %>
 
 <section class="sec duo">
   <div class="wrap duo-grid">

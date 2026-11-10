@@ -194,17 +194,35 @@ const IMAGE_SLOTS = [
   { k: 'logo', label: 'العلامة (الشعار المختصر)', hint: 'العلامة لوحدها — بتظهر في أعلى كل الصفحات جنب اسم الشركة. PNG بخلفية شفافة.', def: '/img/logo.png' },
   { k: 'logoFull', label: 'الشعار الكامل (على خلفية فاتحة)', hint: 'العلامة + اسم الشركة بالكتابة الغامقة. بيظهر في صفحة «تحت التطوير» وصور النشر. PNG شفاف.', def: '/img/logo-full.png' },
   { k: 'logoLight', label: 'الشعار الكامل (على خلفية كحلي)', hint: 'نفس الشعار بالكتابة الفاتحة — بيظهر في الفوتر. PNG شفاف.', def: '/img/logo-full-light.png' },
-  { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة العريضة تحت العنوان في الصفحة الرئيسية — يفضل صورة لمشروع أو موقع عمل (مثلاً 1600×560).', def: '/img/hero.svg' },
-  { k: 'about', label: 'صورة "من نحن"', hint: 'صورة طولية جنب نص من نحن (مثلاً 660×800).', def: '/img/about.svg' },
-  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة المناطق (مثلاً 1220×590).', def: '/img/scope.svg' },
-  { k: 'banner', label: 'خلفية عناوين الصفحات والفوتر', hint: 'بتظهر باهتة ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1600×600).', def: '/img/banner.svg' },
+  { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة الكبيرة في أول الصفحة الرئيسية — يفضل صورة لمشروع أو موقع عمل، عرضية وعالية الجودة (مثلاً 1920×1080). لو سبتها فاضية كل تصميم بيستخدم صورته الافتراضية.', def: '' },
+  { k: 'about', label: 'صورة "من نحن"', hint: 'صورة لفريق العمل أو موقع (مثلاً 1200×960).', def: '/img/photos/05.jpg' },
+  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة المناطق (مثلاً 1220×590).', def: '/img/photos/51.jpg' },
+  { k: 'banner', label: 'خلفية عناوين الصفحات', hint: 'بتظهر ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1920×700).', def: '/img/photos/50.jpg' },
   { k: 'project', label: 'صورة المشروع الافتراضية', hint: 'بتظهر لأي مشروع لسه مرفعتلوش صور.', def: '/img/project.svg' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
-function siteImg(site, slot) {
-  const def = (IMAGE_SLOTS.find(x => x.k === slot) || {}).def || '';
-  return (site.images && site.images[slot]) || def;
+function siteImg(site, slot, theme) {
+  if (site.images && site.images[slot]) return site.images[slot];
+  if (slot === 'hero') return THEMES[theme || themeKey(site)].hero;
+  return (IMAGE_SLOTS.find(x => x.k === slot) || {}).def || '';
 }
+
+// ---------- تصميمات الموقع (بتتغير من لوحة التحكم ← شكل الموقع) ----------
+const THEMES = {
+  a: { label: 'كلاسيكي فاخر', desc: 'صورة كبيرة بعرض الشاشة، كحلي ورملي زي الشعار، وشكل رسمي هادي.', font: 'IBM+Plex+Sans+Arabic:wght@300;400;500;600;700', hero: '/img/photos/50.jpg', color: '#1c2b3e' },
+  b: { label: 'داكن جريء', desc: 'خلفية غامقة وخط كبير وصورة مقصوصة بزاوية زي حرف R في الشعار.', font: 'Cairo:wght@400;600;700;800;900', hero: '/img/photos/04.jpg', color: '#0d0f12' },
+  d: { label: 'حديث بلمسة برتقالي', desc: 'أبيض ورمادي غامق مع برتقالي مواقع العمل، وكروت بصور.', font: 'Tajawal:wght@400;500;700;800', hero: '/img/photos/33.jpg', color: '#f0661c' }
+};
+const themeKey = site => (Object.prototype.hasOwnProperty.call(THEMES, site && site.theme) ? site.theme : 'a');
+// المدير المسجّل دخوله يقدر يعاين أي تصميم قبل ما يعتمده (المعاينة محفوظة في جلسته بس)
+function themeOf(req) {
+  const pv = req.session && req.session.previewTheme;
+  if (pv && Object.prototype.hasOwnProperty.call(THEMES, pv) && ucAdmin(req)) return pv;
+  return themeKey(store.get('site'));
+}
+// صور افتراضية للخدمات (بتظهر في التصميم البرتقالي) بالترتيب
+const SVC_IMG = ['/img/photos/04.jpg', '/img/photos/02.jpg', '/img/photos/14.jpg', '/img/photos/22.jpg', '/img/photos/30.jpg', '/img/photos/03.jpg', '/img/photos/39.jpg', '/img/photos/05.jpg', '/img/photos/35.jpg'];
+const photoCredits = require('./lib/photo-credits.json');
 
 function customSections(pos) {
   return (store.get('site').sections || []).filter(s => s.visible !== false && s.position === pos);
@@ -222,6 +240,8 @@ function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name
 function base(req, extra) {
   const lang = langOf(req);
   const site = store.get('site');
+  const theme = themeOf(req);
+  const pv = req.session && req.session.previewTheme && theme === req.session.previewTheme && theme !== themeKey(site) ? theme : '';
   const c = site.contact || {};
   const t = dict[lang];
   const pathNoLang = req.path === '/' ? '' : req.path;
@@ -242,7 +262,8 @@ function base(req, extra) {
     safeUrl: u => /^(https?:\/\/|mailto:|tel:|\/(?!\/))/i.test(String(u || '').trim()) ? String(u).trim() : '#', /* يمنع javascript: في الروابط اللي الإدارة بتكتبها */
     mapUrl: /^https?:\/\//i.test(String(c.mapLink || '').trim()) ? String(c.mapLink).trim() : ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(tr(c.address, 'ar') || tr(site.brand.name, 'ar'))),
     customs: customSections,
-    img: slot => siteImg(site, slot),
+    img: slot => siteImg(site, slot, theme),
+    theme, themeInfo: THEMES[theme], previewTheme: pv, svcImg: i => SVC_IMG[i % SVC_IMG.length],
     baseUrl: siteUrl(req),
     mailReady: mailer.ready(),
     chans: channels(),
@@ -337,7 +358,7 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy'];
+  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
@@ -422,6 +443,8 @@ pub.get('/projects/:id', (req, res) => {
   const related = others.filter(x => x.cat === p.cat).concat(others.filter(x => x.cat !== p.cat)).slice(0, 3);
   res.render('project', base(req, { page: 'projects', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
 });
+
+pub.get('/credits', (req, res) => res.render('credits', base(req, { page: 'credits', title: langOf(req) === 'ar' ? 'مصادر الصور' : 'Photo credits', credits: photoCredits })));
 
 pub.get('/privacy', (req, res) => {
   const lang = langOf(req);
@@ -579,7 +602,7 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
@@ -871,7 +894,7 @@ admin.post('/projects/save', (req, res) => {
     const old = list.find(p => p.id === clean(b.id));
     let images = old ? (old.images || []).slice() : [];
     const remove = [].concat(b.remove || []);
-    remove.forEach(x => { if (images.includes(x)) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } });
+    remove.forEach(x => { if (images.includes(x) && /^\/uploads\//.test(x)) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } });
     images = images.filter(x => !remove.includes(x));
     // صورة الغلاف = أول صورة
     if (b.cover && images.includes(b.cover)) images = [b.cover].concat(images.filter(x => x !== b.cover));
@@ -911,7 +934,7 @@ admin.post('/projects/:id/move', (req, res) => {
 });
 admin.post('/projects/:id/delete', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) (p.images || []).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} });
+  if (p) (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); // صور الموقع الأصلية (/img/...) متتمسحش
   store.set('projects', list.filter(x => x.id !== req.params.id));
   flash(req, 'تم حذف المشروع');
   res.redirect('/admin/projects');
@@ -1250,6 +1273,22 @@ admin.get('/stats', (req, res) => {
   const sum = analytics.summary(n);
   res.render('admin/stats', adminView(req, { section: 'stats', n, sum }));
 });
+
+// ----- شكل الموقع (اختيار التصميم + معاينة) -----
+admin.get('/design', (req, res) => res.render('admin/design', adminView(req, { section: 'design', THEMES, current: themeKey(store.get('site')), preview: req.session.previewTheme || '' })));
+admin.post('/design', (req, res) => {
+  const t = (req.body || {}).theme;
+  if (!Object.prototype.hasOwnProperty.call(THEMES, t)) { flash(req, 'اختار تصميم من القايمة', 'err'); return res.redirect('/admin/design'); }
+  const site = store.get('site'); site.theme = t; store.set('site', site); delete req.session.previewTheme;
+  security.audit(req.me, 'theme', t, req.ip);
+  flash(req, 'تم تغيير شكل الموقع لـ «' + THEMES[t].label + '» — ظاهر للزوار دلوقتي.');
+  res.redirect('/admin/design');
+});
+admin.get('/design/preview/:t', (req, res) => {
+  if (!Object.prototype.hasOwnProperty.call(THEMES, req.params.t)) return res.redirect('/admin/design');
+  req.session.previewTheme = req.params.t; res.redirect('/ar');
+});
+admin.get('/design/preview-off', (req, res) => { delete req.session.previewTheme; res.redirect(String(req.query.back || '') === 'site' ? '/ar' : '/admin/design'); });
 
 // ----- site images -----
 admin.get('/images', (req, res) => res.render('admin/images', adminView(req, { section: 'images', slots: IMAGE_SLOTS })));

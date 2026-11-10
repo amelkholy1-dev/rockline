@@ -1,0 +1,17 @@
+<section class="hx hx-b">
+  <div class="wrap hx-grid">
+    <div class="hx-tx">
+      <span class="kick">ROCK LINE GROUP — <%= tr(site.hero.badge).split('·')[0] %></span>
+      <h1><%= tr(site.hero.title) %></h1>
+      <p><%= tr(site.hero.sub) %></p>
+      <div class="hx-cta">
+        <a class="btn gold lg" href="<%= L('/quote') %>"><%= t.cta_quote %> <%- arrow %></a>
+        <a class="btn line-gold lg" href="<%= L('/projects') %>"><%= t.nav_projects %></a>
+      </div>
+    </div>
+    <div class="hx-vis"><img src="<%= img('hero') %>" alt="" fetchpriority="high"><% if (stats[1]) { %><div class="hx-badge"><b><%= stats[1].value %></b><%= tr(stats[1].label) %></div><% } %></div>
+  </div>
+</section>
+<% var mq = (site.sectors || []).map(function(s){ return tr(s.name); }).concat((site.services || []).slice(0, 4).map(function(s){ return tr(s.title); })); %>
+<% if (mq.length) { %><div class="mq-b" aria-hidden="true"><div class="mq-b-t"><% mq.concat(mq).forEach(function(x){ %><span><%= x %></span><i>✦</i><% }); %></div></div><% } %>
+<% if (stats.length) { %><section class="stx stx-b"><div class="wrap"><div class="stx-g"><% stats.forEach(function(s){ %><div class="st"><b data-count="<%= s.value %>"><%= s.value %></b><span><%= tr(s.label) %></span></div><% }); %></div></div></section><% } %>

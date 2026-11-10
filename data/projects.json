@@ -25,7 +25,9 @@
    "ar": "تنفيذ مبنى إداري من بدروم وأرضي و8 أدوار متكررة، شاملاً الهيكل الإنشائي والتشطيبات والأعمال الكهروميكانيكية حتى التسليم.",
    "en": "An office building with basement, ground and eight typical floors, including structure, finishing and MEP through to handover."
   },
-  "images": [],
+  "images": [
+   "/img/photos/22.jpg"
+  ],
   "featured": true,
   "visible": true,
   "sample": true,
@@ -57,7 +59,10 @@
    "ar": "تنفيذ مجموعة عمارات سكنية مع شبكات المرافق والطرق الداخلية وتنسيق الموقع.",
    "en": "Residential buildings with utility networks, internal roads and landscaping."
   },
-  "images": [],
+  "images": [
+   "/img/photos/04.jpg",
+   "/img/photos/05.jpg"
+  ],
   "featured": true,
   "visible": true,
   "sample": true,
@@ -89,7 +94,10 @@
    "ar": "إنشاء مصنع ومخازن بهياكل معدنية وأرضيات صناعية عالية التحمل.",
    "en": "A factory and warehouses with steel structures and heavy-duty industrial floors."
   },
-  "images": [],
+  "images": [
+   "/img/photos/03.jpg",
+   "/img/photos/02.jpg"
+  ],
   "featured": true,
   "visible": true,
   "sample": true,
@@ -121,7 +129,9 @@
    "ar": "تنفيذ مبنى تعليمي من 3 أدوار مع الملاعب والأسوار والمرافق.",
    "en": "A three-storey school building with sports courts, fencing and utilities."
   },
-  "images": [],
+  "images": [
+   "/img/photos/39.jpg"
+  ],
   "featured": true,
   "visible": true,
   "sample": true,
@@ -153,7 +163,12 @@
    "ar": "تنفيذ شبكة طرق داخلية شاملة الأعمال الترابية والرصف والإنارة وصرف الأمطار.",
    "en": "An internal road network including earthworks, paving, lighting and storm drainage."
   },
-  "images": [],
+  "images": [
+   "/img/photos/33.jpg",
+   "/img/photos/30.jpg",
+   "/img/photos/34.jpg",
+   "/img/photos/35.jpg"
+  ],
   "featured": true,
   "visible": true,
   "sample": true,
@@ -185,7 +200,10 @@
    "ar": "تنفيذ أعمال التشطيبات الفندقية وحمامات السباحة وتنسيق المواقع لمنتجع ساحلي.",
    "en": "Hotel-grade finishing, swimming pools and landscaping for a coastal resort."
   },
-  "images": [],
+  "images": [
+   "/img/photos/14.jpg",
+   "/img/photos/20.jpg"
+  ],
   "featured": false,
   "visible": true,
   "sample": true,

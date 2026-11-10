@@ -36,7 +36,7 @@
   </div>
   <div class="ft-bar"><div class="wrap">
     <span><%= tr(site.contact.slogan) || tr(site.brand.tagline) %></span>
-    <span>&copy; <%= new Date().getFullYear() %> <%= tr(site.brand.name) %> &middot; <%= t.rights %> &middot; <a href="<%= L('/privacy') %>"><%= t.privacy %></a></span>
+    <span>&copy; <%= new Date().getFullYear() %> <%= tr(site.brand.name) %> &middot; <%= t.rights %> &middot; <a href="<%= L('/privacy') %>"><%= t.privacy %></a> &middot; <a href="<%= L('/credits') %>"><%= lang === 'ar' ? 'مصادر الصور' : 'Photo credits' %></a></span>
   </div></div>
 </footer>
 

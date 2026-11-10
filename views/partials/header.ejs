@@ -4,6 +4,13 @@
   <a href="/admin">لوحة التحكم</a>
 </div>
 <% } %>
+<% if (previewTheme) { %>
+<div class="uc-preview pv" role="status">
+  👁️ إنت بتعاين تصميم «<%= themeInfo.label %>» — الزوار لسه شايفين التصميم الحالي.
+  <form method="post" action="/admin/design" style="display:inline"><input type="hidden" name="theme" value="<%= theme %>"><button type="submit">اعتمد التصميم ده</button></form>
+  <a href="/admin/design/preview-off?back=site">الغي المعاينة</a> · <a href="/admin/design">كل التصميمات</a>
+</div>
+<% } %>
 <div class="topbar"><div class="wrap">
   <% if (site.brand.license) { %>
     <span class="tb-lic"><%- icon('shield') %> <%= t.member %> · <%= t.member_no %> <b><%= site.brand.license %></b><% if (site.brand.grade) { %> · <%= t.grade %> <b><%= site.brand.grade %></b><% } %></span>
@@ -19,7 +26,7 @@
 </div></div>
 <header class="hd" id="hd"><div class="wrap">
   <a class="logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>">
-    <img class="logo-full" src="<%= img('logoFull') %>" alt="<%= tr(site.brand.name) %>" width="111" height="56">
+    <img class="logo-full" src="<%= img(theme === 'd' ? 'logoFull' : 'logoLight') %>" alt="<%= tr(site.brand.name) %>" width="111" height="56">
   </a>
   <nav class="nav" id="nav" aria-label="main">
     <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/services', 'services', t.nav_services], ['/projects', 'projects', t.nav_projects], ['/clients', 'clients', t.nav_clients], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>

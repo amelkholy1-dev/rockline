@@ -73,6 +73,22 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   // بيانات التواصل بتظهر للزوار
   await req(A, 'POST', '/admin/contact', { phones: '+20 100 000 0000', whatsapp: '+201000000000', email: 'info@rocklineg.com', license: '12345', grade: 'الأولى' });
   r = await req(V, 'GET', '/ar'); ok(/wa\.me\/201000000000/.test(r.t) && /12345/.test(r.t) && /info@rocklineg\.com/.test(r.t), 'contact + federation number shown');
+  // التصميمات: الافتراضي A، المعاينة للمدير بس، والاعتماد بيغيّر للزوار
+  r = await req(V, 'GET', '/ar'); ok(/class="p-home t-a"/.test(r.t) && /theme-a\.css/.test(r.t) && /hx-a/.test(r.t), 'default theme A for visitors');
+  for (const c of ['a', 'b', 'd']) { const x = await fetch(B + '/css/theme-' + c + '.css'); ok(x.status === 200, 'theme css ' + c); }
+  r = await req(A, 'GET', '/admin/design'); ok(r.s === 200 && /داكن جريء/.test(r.t) && /حديث بلمسة برتقالي/.test(r.t), 'admin design page lists themes');
+  r = await req(A, 'GET', '/admin/design/preview/b'); ok(r.s === 302, 'start preview B');
+  r = await req(A, 'GET', '/ar'); ok(/t-b/.test(r.t) && /hx-b/.test(r.t) && /بتعاين تصميم/.test(r.t), 'admin sees preview B with banner');
+  r = await req(V, 'GET', '/ar'); ok(/t-a/.test(r.t) && !/بتعاين/.test(r.t), 'visitor still sees A during preview');
+  r = await req(A, 'GET', '/admin/design/preview/zzz'); r = await req(A, 'GET', '/ar'); ok(/t-b/.test(r.t), 'invalid preview ignored');
+  r = await req(A, 'POST', '/admin/design', { theme: 'x' }); ok(JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf8')).theme !== 'x', 'invalid theme rejected');
+  r = await req(A, 'POST', '/admin/design', { theme: 'd' }); ok(r.s === 302, 'apply theme D');
+  r = await req(V, 'GET', '/ar'); ok(/t-d/.test(r.t) && /hx-d/.test(r.t), 'visitor sees D after applying');
+  r = await req(A, 'GET', '/ar'); ok(/t-d/.test(r.t) && !/بتعاين/.test(r.t), 'preview cleared after applying');
+  r = await req(V, 'GET', '/en/projects'); ok(r.s === 200 && /t-d/.test(r.t), 'inner page uses theme D');
+  await req(A, 'POST', '/admin/design', { theme: 'b' }); r = await req(V, 'GET', '/en'); ok(/t-b/.test(r.t) && /hx-b/.test(r.t), 'theme B (English)');
+  r = await req(V, 'GET', '/ar/credits'); ok(r.s === 200 && /Wikimedia|ويكيميديا/.test(r.t) && /CC BY-SA/.test(r.t), 'photo credits page');
+  await req(A, 'POST', '/admin/design', { theme: 'a' });
   // طرق الإرسال
   await req(A, 'POST', '/admin/mail/channels', {});
   r = await req(V, 'GET', '/ar/quote'); ok(!/data-ch="whatsapp"/.test(r.t) && /data-ch="email"/.test(r.t), 'channels off → plain submit only');

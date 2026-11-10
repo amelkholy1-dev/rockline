@@ -1,0 +1,20 @@
+<%- include('nav') %>
+<div class="pthead"><div><h1 class="pt">شكل الموقع</h1><p class="sub">اختار تصميم الموقع. كل التصميمات بتستخدم نفس المحتوى والصور، فتقدر تغيّر في أي وقت من غير ما تخسر حاجة. دوس «معاينة» عشان تشوف الموقع الحقيقي بالتصميم ده قبل ما تعتمده — الزوار مش بيشوفوا المعاينة.</p></div></div>
+<% if (preview) { %><div class="flash warn"><%- icon('eye') %> إنت بتعاين تصميم «<%= THEMES[preview].label %>» دلوقتي. <a href="/admin/design/preview-off">الغي المعاينة</a></div><% } %>
+<div class="themes">
+  <% Object.keys(THEMES).forEach(function(k){ var th = THEMES[k]; %>
+  <div class="card theme-card<%= k === current ? ' on' : '' %>">
+    <div class="th-shot"><img src="/img/themes/<%= k %>.jpg" alt="<%= th.label %>"><% if (k === current) { %><span class="th-badge"><%- icon('checkcircle') %> التصميم الحالي</span><% } %></div>
+    <div class="th-body">
+      <h2 class="h3"><span class="th-dot" style="background:<%= th.color %>"></span> <%= k.toUpperCase() %> — <%= th.label %></h2>
+      <p class="muted"><%= th.desc %></p>
+      <div class="acts">
+        <a class="btn ghost" href="/admin/design/preview/<%= k %>" target="_blank"><%- icon('eye') %> معاينة على الموقع</a>
+        <% if (k !== current) { %><form method="post" action="/admin/design" data-confirm="تغيّر شكل الموقع لـ «<%= th.label %>»؟ هيظهر للزوار على طول."><input type="hidden" name="theme" value="<%= k %>"><button class="btn navy" type="submit"><%- icon('check') %> اعتمد التصميم ده</button></form><% } %>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<p class="muted small">صورة الواجهة: لو رفعت صورة من «صور الموقع» هتظهر في كل التصميمات. لو سبتها، كل تصميم بيستخدم صورته الافتراضية.</p>
+<%- include('foot') %>

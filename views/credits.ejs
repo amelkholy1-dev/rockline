@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: title, sub: lang === 'ar' ? 'الصور العامة المستخدمة في تصميم الموقع، من ويكيميديا كومنز برخص مفتوحة. الصور اتصغّرت أو اتقصّت عشان تناسب التصميم.' : 'General photos used in the site design, from Wikimedia Commons under open licences. Images were resized or cropped to fit the layout.' }) %>
+<section class="sec">
+  <div class="wrap">
+    <ul class="cr-list">
+      <% credits.forEach(function(c){ %>
+        <li><img src="<%= c.file %>" alt="" loading="lazy"><div><b><%= c.title %></b><%= lang === 'ar' ? 'تصوير' : 'By' %>: <%= c.author %><br><%= c.license %> · <a href="<%= c.url %>" target="_blank" rel="noopener"><%= lang === 'ar' ? 'المصدر' : 'Source' %></a></div></li>
+      <% }); %>
+    </ul>
+  </div>
+</section>
+<%- include('partials/footer') %>

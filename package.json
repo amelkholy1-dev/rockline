@@ -1,6 +1,6 @@
 {
   "name": "rockline",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "description": "Rock Line Group general contracting website",
   "main": "server.js",

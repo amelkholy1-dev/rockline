@@ -739,3 +739,63 @@ a.sector { display: block; color: inherit; }
 /* الشعار الكامل في الهيدر */
 .logo img.logo-full { height: 56px; width: auto; }
 @media (max-width: 680px) { .logo img.logo-full { height: 44px; } }
+
+/* =====================================================================
+   مكونات مشتركة بين التصميمات (A / B / D) — كل تصميم بيلوّنها في theme-*.css
+   ===================================================================== */
+.kick { display: inline-flex; align-items: center; gap: 12px; font-weight: 700; font-size: .92rem; color: var(--gold-3); letter-spacing: .01em; }
+.kick::before { content: ""; width: 36px; height: 2px; background: var(--gold); flex: none; }
+.shx { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
+.shx h2 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); font-weight: 800; margin: 10px 0 0; max-width: 20em; }
+.btn.ghost-light { border-color: rgba(255, 255, 255, .6); color: #fff; }
+.btn.ghost-light:hover { background: #fff; color: var(--navy); }
+.btn.line-gold { border-color: var(--gold); color: var(--gold-3); }
+.btn.line-gold:hover { background: var(--gold); color: var(--navy); }
+
+.hx { position: relative; }
+.hx h1 { font-weight: 800; line-height: 1.22; margin: 16px 0 18px; }
+.hx-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.stx-g { display: grid; grid-template-columns: repeat(4, 1fr); }
+.stx .st b { display: block; font-weight: 800; line-height: 1.05; }
+
+.ab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.ab-ph { position: relative; }
+.ab-ph > img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; }
+.ab-yrs { position: absolute; bottom: -26px; inset-inline-start: -26px; padding: 22px 26px; font-weight: 700; line-height: 1.35; max-width: 190px; }
+.ab-yrs b { display: block; font-size: 2.6rem; line-height: 1; margin-bottom: 4px; }
+.ab-tx h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; margin: 12px 0 18px; }
+.ab-chk { list-style: none; padding: 0; margin: 22px 0 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; }
+.ab-chk li { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; color: var(--ink); line-height: 1.5; }
+.ab-chk .ic { color: var(--gold); margin-top: .15em; }
+
+.sv-g { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.sv { position: relative; }
+.sv-img, .sv-n, .sv-ar { display: none; }
+.sv-ic { display: grid; place-items: center; width: 58px; height: 58px; }
+.sv-ic .ic { width: 26px; height: 26px; }
+.sv h3 { font-size: 1.2rem; margin: 0 0 6px; }
+.sv p { margin: 0; color: var(--muted); font-size: .97rem; }
+
+.mq-b { display: none; }
+.hx-badge { display: none; }
+
+@media (max-width: 980px) {
+  .ab-grid { grid-template-columns: 1fr; gap: 50px; }
+  .sv-g { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 680px) {
+  .stx-g { grid-template-columns: 1fr 1fr; }
+  .sv-g, .ab-chk { grid-template-columns: 1fr; }
+  .ab-yrs { inset-inline-start: 10px; bottom: -20px; }
+  .hx-cta .btn { flex: 1 1 100%; }
+  .shx .btn { display: none; }
+}
+
+/* صفحة مصادر الصور */
+.cr-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.cr-list li { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); font-size: .85rem; line-height: 1.5; }
+.cr-list img { width: 84px; height: 64px; object-fit: cover; border-radius: 6px; flex: none; }
+.cr-list b { display: block; color: var(--ink); font-size: .88rem; word-break: break-word; }
+.cr-list a { color: var(--gold-3); text-decoration: underline; }
+.uc-preview.pv { background: #1f6f43; }
+.uc-preview button { font: inherit; font-weight: 800; background: #fff; color: #1f6f43; border: 0; border-radius: 6px; padding: 2px 12px; cursor: pointer; margin-inline: 6px; }
