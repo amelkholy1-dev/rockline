@@ -1,11 +1,20 @@
 <%- include('nav') %>
-<div class="pthead"><div><h1 class="pt">إعدادات الإيميل</h1><p class="sub">عشان رسايل الفورمات توصل على إيميل الشركة لما الزائر يدوس "إرسال بالإيميل".</p></div></div>
+<div class="pthead"><div><h1 class="pt">الإيميل وطرق الإرسال</h1><p class="sub">عشان رسايل الفورمات توصل على إيميل الشركة لما الزائر يدوس "إرسال بالإيميل". وكل الرسايل بتتحفظ كمان في «الرسائل».</p></div></div>
+<form class="card form" method="post" action="/admin/mail/channels">
+  <h2 class="h3"><%- icon('send') %> طرق إرسال الفورمات اللي تظهر للزوار</h2>
+  <div class="grid2">
+    <label class="check"><input type="checkbox" name="ch_whatsapp"<%= chans.whatsapp ? ' checked' : '' %>> واتساب (رسالة جاهزة على رقم الشركة)</label>
+    <label class="check"><input type="checkbox" name="ch_email"<%= chans.email ? ' checked' : '' %>> الإيميل (بيوصل على الإيميل اللي تحت)</label>
+  </div>
+  <small class="muted">لو قفلت الاتنين، بيظهر زرار «إرسال» عادي والرسالة بتتحفظ في «الرسائل» بس. زرار الواتساب بيظهر بس لو رقم الواتساب متكتب في «بيانات الشركة والتواصل».</small>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ طرق الإرسال</button></div>
+</form>
 <div class="flash <%= mailReady ? 'ok' : 'warn' %>"><%- icon(mailReady ? 'checkcircle' : 'info') %> <%= mailReady ? 'الإيميل متظبط. جرّب رسالة تجربة عشان تتأكد.' : 'الإيميل لسه مش متظبط: ناقص كلمة مرور صندوق البريد. ولحد ما تتظبط، زرار "إرسال بالإيميل" مش هيظهر للزوار، والواتساب شغال عادي.' %></div>
 <form class="card form" method="post" action="/admin/mail">
   <div class="grid2">
-    <label>الإيميل اللي هيبعت منه الموقع<input name="user" dir="ltr" value="<%= mail.user || '' %>" placeholder="info@nisrelkhaleeg.com"><small>لازم يكون صندوق بريد حقيقي على الدومين.</small></label>
+    <label>الإيميل اللي هيبعت منه الموقع<input name="user" dir="ltr" value="<%= mail.user || '' %>" placeholder="info@rocklineg.com"><small>لازم يكون صندوق بريد حقيقي على الدومين.</small></label>
     <label>كلمة مرور صندوق البريد<input type="password" name="pass" dir="ltr" autocomplete="new-password" placeholder="<%= mail.pass || envPass ? '•••••••• (محفوظة، سيبها فاضية لو مش عايز تغيّرها)' : 'اكتب كلمة المرور' %>"></label>
-    <label class="span2">الرسايل توصل على<input name="to" dir="ltr" value="<%= mail.to || '' %>" placeholder="info@nisrelkhaleeg.com"><small>ممكن تكتب أكتر من إيميل بينهم فاصلة، مثلاً: info@nisrelkhaleeg.com, mahmoud-elmearag@nisrelkhaleeg.com</small></label>
+    <label class="span2">الرسايل توصل على<input name="to" dir="ltr" value="<%= mail.to || '' %>" placeholder="info@rocklineg.com"><small>ممكن تكتب أكتر من إيميل بينهم فاصلة، مثلاً: info@rocklineg.com, projects@rocklineg.com</small></label>
     <label>اسم المرسل<input name="fromName" value="<%= mail.fromName || '' %>"></label>
     <span></span>
   </div>

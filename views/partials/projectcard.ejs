@@ -1,0 +1,16 @@
+<article class="pcard reveal">
+  <a class="pc-img<%= (p.images || []).length ? '' : ' ph' %>" href="<%= L('/projects/' + p.id) %>" tabindex="-1" aria-hidden="true">
+    <img src="<%= pimg(p) %>" alt="" loading="lazy">
+    <% if (!(p.images || []).length) { %><span class="pc-ph-ic"><%- icon(catIcon(p.cat)) %></span><% } %>
+    <span class="pc-status st-<%= p.status %>"><%= p.status === 'ongoing' ? t.status_ongoing : t.status_done %></span>
+  </a>
+  <div class="pc-body">
+    <% if (p.cat) { %><span class="pc-cat"><%- icon(catIcon(p.cat)) %> <%= cat(p.cat) %></span><% } %>
+    <h3><a href="<%= L('/projects/' + p.id) %>"><%= tr(p.title) %></a></h3>
+    <ul class="pc-meta">
+      <% if (tr(p.location)) { %><li><%- icon('map') %><%= tr(p.location) %></li><% } %>
+      <% if (p.year) { %><li><%- icon('calendar') %><span dir="ltr"><%= p.year %></span></li><% } %>
+      <% if (p.area) { %><li><%- icon('ruler') %><%= p.area %></li><% } %>
+    </ul>
+  </div>
+</article>

@@ -10,7 +10,7 @@
     <label class="span2">النص (إنجليزي)<textarea name="text_en" dir="ltr" rows="4"><%= b('text','en') %></textarea></label>
     <label>نص الزرار (عربي) - اختياري<input name="btn_ar" value="<%= b('btn','ar') %>" placeholder="مثال: قدّم الآن"></label>
     <label>نص الزرار (إنجليزي)<input name="btn_en" dir="ltr" value="<%= b('btn','en') %>"></label>
-    <label class="span2">لينك الزرار<input name="link" dir="ltr" value="<%= s.link || '' %>" placeholder="/ar/jobs  أو  https://..."></label>
+    <label class="span2">لينك الزرار<input name="link" dir="ltr" value="<%= s.link || '' %>" placeholder="/ar/projects  أو  https://..."></label>
     <label>مكان القسم في الصفحة الرئيسية
       <select name="position"><% POSITIONS.forEach(function(p){ %><option value="<%= p[0] %>"<%= s.position === p[0] ? ' selected' : '' %>><%= p[1] %></option><% }); %></select></label>
     <label>شكل الخلفية

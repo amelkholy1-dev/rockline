@@ -3,52 +3,52 @@
   <div class="ft-sky" aria-hidden="true"></div>
   <div class="wrap ft-grid">
     <div class="ft-brand">
-      <a class="logo light" href="<%= L('') %>"><img src="<%= img('logo') %>" alt="" width="64" height="63" loading="lazy">
-        <span><b><%= tr(site.brand.short) %></b><small><%= tr(site.brand.tagline) %></small></span></a>
+      <a class="ft-logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>"><img src="<%= img('logoLight') %>" alt="<%= tr(site.brand.name) %>" width="190" height="96" loading="lazy"></a>
       <p><%= tr(site.about.p1).split(/[،,.]/).slice(0,2).join('،') %>.</p>
-      <span class="lic-chip"><%- icon('shield') %> <%= t.license %> <%= site.brand.license %></span>
+      <% if (site.brand.license) { %><span class="lic-chip"><%- icon('shield') %> <%= t.member_no %> <%= site.brand.license %><% if (site.brand.grade) { %> · <%= t.grade %> <%= site.brand.grade %><% } %></span><% } %>
       <% if (socials.length) { %><div class="socials"><% socials.forEach(function(s){ %><a href="<%= safeUrl(s.url) %>" target="_blank" rel="noopener" aria-label="<%= s.k %>"><%- brand(s.k) %></a><% }); %></div><% } %>
     </div>
     <div>
       <h4><%= t.quick_links %></h4>
       <a href="<%= L('/about') %>"><%= t.nav_about %></a>
-      <a href="<%= L('/companies') %>"><%= t.nav_companies %></a>
-      <a href="<%= L('/jobs') %>"><%= t.nav_jobs %></a>
-      <a href="<%= L('/apply') %>"><%= t.nav_apply %></a>
-      <a href="<%= L('/guide') %>"><%= t.nav_guide %></a>
-      <a href="<%= L('/partners') %>"><%= t.nav_partners %></a>
+      <a href="<%= L('/services') %>"><%= t.nav_services %></a>
+      <a href="<%= L('/projects') %>"><%= t.nav_projects %></a>
+      <a href="<%= L('/clients') %>"><%= t.nav_clients %></a>
+      <a href="<%= L('/quote') %>"><%= t.cta_quote %></a>
+      <a href="<%= L('/vendors') %>"><%= t.nav_vendors %></a>
       <a href="<%= L('/news') %>"><%= t.nav_news %></a>
       <a href="<%= L('/gallery') %>"><%= t.nav_gallery %></a>
-      <a href="<%= L('/privacy') %>"><%= t.privacy %></a>
     </div>
     <div>
       <h4><%= t.contact_title %></h4>
-      <% if ((site.contact.phonesEG||[]).length) { %><span class="ft-lbl"><%= t.office_eg %></span><% site.contact.phonesEG.forEach(function(p){ %><a href="<%= tel(p) %>" dir="ltr" class="ltr"><%= p %></a><% }); %><% } %>
-      <% if ((site.contact.phonesSA||[]).length) { %><span class="ft-lbl"><%= t.office_sa %></span><% site.contact.phonesSA.forEach(function(p){ %><a href="<%= tel(p) %>" dir="ltr" class="ltr"><%= p %></a><% }); %><% } %>
-      <% if (site.contact.email) { %><a href="mailto:<%= site.contact.email %>" dir="ltr" class="ltr"><%= site.contact.email %></a><% } %>
+      <% (site.contact.phones||[]).concat(site.contact.phones2||[]).forEach(function(p){ %><a href="<%= tel(p) %>" dir="ltr" class="ltr"><%- icon('phone') %> <%= p %></a><% }); %>
+      <% if (site.contact.email) { %><a href="mailto:<%= site.contact.email %>" dir="ltr" class="ltr"><%- icon('mail') %> <%= site.contact.email %></a><% } %>
+      <% if (hasWa) { %><a href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> <%= t.whatsapp %></a><% } %>
+      <a href="<%= L('/contact') %>"><%- icon('send') %> <%= t.contact_title %></a>
     </div>
     <div>
       <h4><%= t.address %></h4>
-      <a href="<%= mapUrl %>" target="_blank" rel="noopener"><%- icon('map') %> <%= tr(site.contact.address) %></a>
+      <% if (tr(site.contact.address)) { %><a href="<%= mapUrl %>" target="_blank" rel="noopener"><%- icon('map') %> <%= tr(site.contact.address) %></a><% } %>
       <% if (tr(site.contact.hours)) { %><p><%- icon('clock') %> <%= tr(site.contact.hours) %></p><% } %>
       <% if (site.profilePdf) { %><a class="btn gold sm" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+      <a class="btn line-light sm" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
     </div>
   </div>
   <div class="ft-bar"><div class="wrap">
     <span><%= tr(site.contact.slogan) || tr(site.brand.tagline) %></span>
-    <span>&copy; <%= new Date().getFullYear() %> <%= tr(site.brand.name) %> &middot; <%= t.rights %> &middot; <a href="<%= L('/privacy') %>"><%= t.privacy %></a></span>
+    <span>&copy; <%= new Date().getFullYear() %> <%= tr(site.brand.name) %> &middot; <%= t.rights %> &middot; <a href="<%= L('/privacy') %>"><%= t.privacy %></a> &middot; <a href="<%= L('/credits') %>"><%= lang === 'ar' ? 'مصادر الصور' : 'Photo credits' %></a></span>
   </div></div>
 </footer>
 
-<a class="wa-float" href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" aria-label="WhatsApp"><%- brand('whatsapp') %></a>
+<% if (hasWa) { %><a class="wa-float" href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" aria-label="WhatsApp"><%- brand('whatsapp') %></a><% } %>
 <button class="to-top" id="toTop" aria-label="top"><%- icon('up') %></button>
 <nav class="mbar" aria-label="quick actions">
-  <a href="<%= tel((site.contact.phonesEG||[''])[0]) %>"><%- icon('phone') %><span><%= t.cta_call %></span></a>
-  <a href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" class="mb-wa"><%- brand('whatsapp') %><span><%= t.whatsapp %></span></a>
-  <a href="<%= L('/jobs') %>"><%- icon('briefcase') %><span><%= t.nav_jobs %></span></a>
-  <a href="<%= L('/companies') %>#request" class="mb-cta"><%- icon('send') %><span><%= t.cta_request %></span></a>
+  <% if (phone1) { %><a href="<%= tel(phone1) %>"><%- icon('phone') %><span><%= t.cta_call %></span></a><% } %>
+  <% if (hasWa) { %><a href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" class="mb-wa"><%- brand('whatsapp') %><span><%= t.whatsapp %></span></a><% } %>
+  <a href="<%= L('/projects') %>"><%- icon('building') %><span><%= t.nav_projects %></span></a>
+  <a href="<%= L('/quote') %>" class="mb-cta"><%- icon('doc') %><span><%= t.cta_quote %></span></a>
 </nav>
 <script>window.NK = <%- JSON.stringify({ lang: lang, t: { sending: t.sending, sent_ok: t.sent_ok, sent_fail: t.sent_fail, required: t.required, wa_note: t.sent_wa_note, too_many: t.too_many } }) %>;</script>
-<script src="/js/main.js?v=8" defer></script>
+<script src="/js/main.js?v=20" defer></script>
 </body>
 </html>

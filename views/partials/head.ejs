@@ -6,7 +6,7 @@
 <% var fullTitle = (title ? title + ' | ' : '') + tr(site.brand.name); var metaDesc = desc || tr(site.hero && site.hero.sub) || tr(site.about.p1); %>
 <title><%= fullTitle %></title>
 <meta name="description" content="<%= metaDesc.slice(0,160) %>">
-<meta name="theme-color" content="#0c2146">
+<meta name="theme-color" content="<%= theme === 'b' ? '#0d0f12' : theme === 'd' ? '#1e252c' : '#13202f' %>">
 <link rel="canonical" href="<%= baseUrl %>/<%= lang %><%= pathNoLang %>">
 <link rel="alternate" hreflang="ar" href="<%= baseUrl %>/ar<%= pathNoLang %>">
 <link rel="alternate" hreflang="en" href="<%= baseUrl %>/en<%= pathNoLang %>">
@@ -20,16 +20,17 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=<%= themeInfo.font %>&display=swap">
+<link rel="stylesheet" href="/css/style.css?v=30">
+<link rel="stylesheet" href="/css/theme-<%= theme %>.css?v=30">
 <style>:root{--banner:url("<%= img('banner') %>")}</style>
 <script type="application/ld+json"><%- JSON.stringify({
-  '@context': 'https://schema.org', '@type': 'EmploymentAgency',
+  '@context': 'https://schema.org', '@type': 'GeneralContractor',
   name: tr(site.brand.name), url: baseUrl, logo: baseUrl + img('logo'),
-  telephone: (site.contact.phonesEG || [])[0] || '', email: site.contact.email || '',
+  telephone: (site.contact.phones || [])[0] || '', email: site.contact.email || '',
   address: { '@type': 'PostalAddress', streetAddress: tr(site.contact.address), addressCountry: 'EG' },
   sameAs: socials.map(function(s){ return s.url; })
 }).replace(/</g,'\\u003c') %></script>
 </head>
-<body class="p-<%= page || 'x' %>">
+<body class="p-<%= page || 'x' %> t-<%= theme %>">
 <a class="skip" href="#main"><%= lang === 'ar' ? 'تخطي للمحتوى' : 'Skip to content' %></a>

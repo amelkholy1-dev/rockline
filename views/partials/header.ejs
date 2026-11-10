@@ -1,7 +1,24 @@
+<% if (typeof ucPreview !== 'undefined' && ucPreview) { %>
+<div class="uc-preview" role="status">
+  🔧 الموقع «تحت التطوير»: إنت شايف الموقع الحقيقي لأنك مسجّل دخول كمدير، والزوار شايفين صفحة «تحت التطوير».
+  <a href="/admin">لوحة التحكم</a>
+</div>
+<% } %>
+<% if (previewTheme) { %>
+<div class="uc-preview pv" role="status">
+  👁️ إنت بتعاين تصميم «<%= themeInfo.label %>» — الزوار لسه شايفين التصميم الحالي.
+  <form method="post" action="/admin/design" style="display:inline"><input type="hidden" name="theme" value="<%= theme %>"><button type="submit">اعتمد التصميم ده</button></form>
+  <a href="/admin/design/preview-off?back=site">الغي المعاينة</a> · <a href="/admin/design">كل التصميمات</a>
+</div>
+<% } %>
 <div class="topbar"><div class="wrap">
-  <span class="tb-lic"><%- icon('shield') %> <%= t.license %> <b><%= site.brand.license %></b></span>
+  <% if (site.brand.license) { %>
+    <span class="tb-lic"><%- icon('shield') %> <%= t.member %> · <%= t.member_no %> <b><%= site.brand.license %></b><% if (site.brand.grade) { %> · <%= t.grade %> <b><%= site.brand.grade %></b><% } %></span>
+  <% } else { %>
+    <span class="tb-lic"><%- icon('hardhat') %> <%= tr(site.brand.tagline) %></span>
+  <% } %>
   <span class="tb-links">
-    <% if ((site.contact.phonesEG||[])[0]) { %><a href="<%= tel(site.contact.phonesEG[0]) %>" dir="ltr"><%- icon('phone') %> <%= site.contact.phonesEG[0] %></a><% } %>
+    <% if (phone1) { %><a href="<%= tel(phone1) %>" dir="ltr"><%- icon('phone') %> <%= phone1 %></a><% } %>
     <% if (site.contact.email) { %><a class="hide-sm" href="mailto:<%= site.contact.email %>" dir="ltr"><%- icon('mail') %> <%= site.contact.email %></a><% } %>
     <% socials.forEach(function(s){ %><a class="soc hide-sm" href="<%= safeUrl(s.url) %>" target="_blank" rel="noopener" aria-label="<%= s.k %>"><%- brand(s.k) %></a><% }); %>
     <a class="lang" href="/<%= other %><%= pathNoLang %>" hreflang="<%= other %>" lang="<%= other %>"><%- icon('languages') %> <%= t.lang_switch %></a>
@@ -9,19 +26,18 @@
 </div></div>
 <header class="hd" id="hd"><div class="wrap">
   <a class="logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>">
-    <img src="<%= img('logo') %>" alt="" width="58" height="57">
-    <span><b><%= tr(site.brand.short) %></b><small><%= lang === 'ar' ? 'لإلحاق العمالة المصرية بالخارج' : 'Egyptian manpower recruitment' %></small></span>
+    <img class="logo-full" src="<%= img(theme === 'd' ? 'logoFull' : 'logoLight') %>" alt="<%= tr(site.brand.name) %>" width="111" height="56">
   </a>
   <nav class="nav" id="nav" aria-label="main">
-    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/companies', 'companies', t.nav_companies], ['/jobs', 'jobs', t.nav_jobs], ['/guide', 'guide', t.nav_guide], ['/news', 'news', t.nav_news], ['/gallery', 'gallery', t.nav_gallery], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
+    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/services', 'services', t.nav_services], ['/projects', 'projects', t.nav_projects], ['/clients', 'clients', t.nav_clients], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
       <a href="<%= L(n[0]) %>"<% if (page === n[1]) { %> class="on" aria-current="page"<% } %>><%= n[2] %></a>
     <% }); %>
     <div class="nav-extra">
-      <a class="btn gold" href="<%= L('/companies') %>#request"><%- icon('briefcase') %> <%= t.cta_request %></a>
-      <a class="btn line" href="<%= L('/apply') %>"><%- icon('user') %> <%= t.nav_apply %></a>
+      <a class="btn gold" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
+      <a class="btn line" href="<%= L('/vendors') %>"><%- icon('package') %> <%= t.nav_vendors %></a>
     </div>
   </nav>
-  <a class="btn gold hd-cta" href="<%= L('/companies') %>#request"><%= t.cta_request %></a>
+  <a class="btn gold hd-cta" href="<%= L('/quote') %>"><%= t.cta_quote %></a>
   <button class="burger" id="burger" aria-label="<%= t.menu %>" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>
 <main id="main">

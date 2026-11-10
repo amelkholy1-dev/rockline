@@ -55,7 +55,7 @@ const totp = (secret, d = 0) => { const st = Math.floor(Date.now() / 30000) + d;
   { let x = await req(jar(), 'POST', '/admin/owner-forgot', { user: 'owner', code: '000000', pass: 'New#Pass9', pass2: 'New#Pass9' }); ok(/الكود غلط|البيانات غلط/.test(x.t) && !/reset=1/.test(x.loc || ''), 'owner-forgot rejects a wrong authenticator code'); }
   // --- صفحة روابط التواصل (باركود) ---
   r = await req(J2, 'GET', '/admin/social'); ok(r.s === 200 && /id="social-form"/.test(r.t), 'owner opens the social-links page');
-  r = await req(J2, 'POST', '/admin/social/save', { title: 'نسر الخليج', tagline: 'تجربة', theme: 'dark', items: JSON.stringify([{ type: 'whatsapp', value: '01000000000', label: '', enabled: true }, { type: 'url', value: 'javascript:alert(1)', label: '</script><b>x', enabled: true }]) }); ok(r.s === 302, 'owner saves the social page');
+  r = await req(J2, 'POST', '/admin/social/save', { title: 'روك لاين', tagline: 'تجربة', theme: 'dark', items: JSON.stringify([{ type: 'whatsapp', value: '01000000000', label: '', enabled: true }, { type: 'url', value: 'javascript:alert(1)', label: '</script><b>x', enabled: true }]) }); ok(r.s === 302, 'owner saves the social page');
   { const pub = await req(jar(), 'GET', '/social'); ok(pub.s === 200 && /data-theme="dark"/.test(pub.t) && /01000000000/.test(pub.t) && !/<\/script><b>x/.test(pub.t) && !/href="javascript:/i.test(pub.t), 'public /social embeds the config safely'); }
   { const S = require('../lib/social');
     ok(S.href({ type: 'phone', value: '01037627774' }, '') === 'tel:+201037627774', 'phone link uses +20 country code (not +0)');

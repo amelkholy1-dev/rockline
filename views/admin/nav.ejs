@@ -20,24 +20,23 @@
         ['dash', '/admin', 'home', 'الرئيسية', ''],
         ['inbox', '/admin/inbox', 'inbox', 'الرسائل', 'inbox'],
         ['stats', '/admin/stats', 'chart', 'الإحصائيات', 'stats'],
-        ['jobs', '/admin/jobs', 'briefcase', 'الوظائف', 'jobs'],
+        ['projects', '/admin/projects', 'building', 'المشروعات', 'projects'],
         ['news', '/admin/news', 'newspaper', 'الأخبار والمنشورات', 'news'],
         ['gallery', '/admin/gallery', 'images', 'معرض الصور', 'gallery'],
+        ['design', '/admin/design', 'sparkles', 'شكل الموقع (التصميم)', 'content'],
         ['content', '/admin/content', 'edit', 'محتوى الموقع', 'content'],
         ['social', '/admin/social', 'link', 'صفحة روابط التواصل (باركود)', 'social'],
         ['images', '/admin/images', 'image', 'صور الموقع', 'images'],
         ['sections', '/admin/sections', 'layers', 'أقسام إضافية', 'sections'],
         ['contact', '/admin/contact', 'phone', 'بيانات الشركة والتواصل', 'contact'],
-        ['mail', '/admin/mail', 'mail', 'إعدادات الإيميل', 'mail'],
-        ['masar', '/admin/masar', 'link', 'ربط مسار والتقديم', 'masar'],
-        ['facebook', '/admin/facebook', 'facebook', 'ربط فيسبوك', 'facebook'],
+        ['mail', '/admin/mail', 'mail', 'الإيميل وطرق الإرسال', 'mail'],
         ['users', '/admin/users', 'users', 'المستخدمين والصلاحيات', 'users'],
         ['security', '/admin/security', 'shield', 'الأمان والأجهزة', 'users'],
         ['audit', '/admin/audit', 'clock', 'سجل العمليات', 'audit'],
         ['hosting', '/admin/hosting', 'clock', 'الاستضافة والتجديد', 'owner'],
         ['account', '/admin/account', 'key', 'حسابي', '']
       ].filter(function(n){ return !n[4] || (n[4] === 'owner' ? (me && me.owner) : can(n[4])); }).forEach(function(n){ %>
-        <a href="<%= n[1] %>" class="<%= section === n[0] ? 'on' : '' %>"><%- n[2] === 'facebook' ? brand('facebook') : icon(n[2]) %><span><%= n[3] %></span><% if (n[0] === 'inbox' && unread) { %><i class="badge"><%= unread %></i><% } %><% if (n[0] === 'security' && pendingDev) { %><i class="badge"><%= pendingDev %></i><% } %><% if (n[0] === 'mail' && !mailReady) { %><i class="badge warn">!</i><% } %></a>
+        <a href="<%= n[1] %>" class="<%= section === n[0] ? 'on' : '' %>"><%- icon(n[2]) %><span><%= n[3] %></span><% if (n[0] === 'inbox' && unread) { %><i class="badge"><%= unread %></i><% } %><% if (n[0] === 'security' && pendingDev) { %><i class="badge"><%= pendingDev %></i><% } %><% if (n[0] === 'mail' && !mailReady) { %><i class="badge warn">!</i><% } %></a>
       <% }); %>
     </nav>
     <div class="side-foot">

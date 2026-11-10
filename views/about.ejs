@@ -1,20 +1,29 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
 <%- include('partials/pagehead', { heading: t.about_title, sub: tr(site.brand.name) }) %>
-
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); var b = site.brand; %>
 <section class="sec">
   <div class="wrap about-grid">
     <div class="about-img reveal">
       <img src="<%= img('about') %>" alt="" width="330" height="400">
-      <div class="about-seal"><img src="<%= img('logo') %>" alt=""><span><%= t.license_short %> <b><%= site.brand.license %></b></span></div>
+      <div class="about-seal"><img src="<%= img('logo') %>" alt=""><span><%= tr(b.short) %><b><%= b.founded ? t.founded + ' ' + b.founded : (lang === 'ar' ? 'جروب' : 'Group') %></b></span></div>
     </div>
     <div class="about-text reveal">
-      <h2><%= tr(site.brand.name) %></h2>
+      <h2><%= tr(b.name) %></h2>
       <span class="rule start"></span>
       <p><%= tr(site.about.p1) %></p>
       <p><%= tr(site.about.p2) %></p>
-      <p class="lic-line"><%- icon('shield') %> <%= t.license %> <b><%= site.brand.license %></b><% if (site.brand.founded) { %> · <%= lang === 'ar' ? 'تأسست' : 'Founded' %> <%= site.brand.founded %><% } %></p>
-      <% if (site.profilePdf) { %><a class="btn gold" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+      <% var ids = [[t.member_no, b.license], [t.grade, b.grade], [t.cr, b.cr], [t.tax, b.tax], [t.founded, b.founded]].filter(function(x){ return x[1]; }); %>
+      <% if (ids.length) { %>
+      <dl class="ids">
+        <% if (b.license) { %><div class="wide"><dt><%- icon('shield') %></dt><dd><%= t.member %></dd></div><% } %>
+        <% ids.forEach(function(x){ %><div><dt><%= x[0] %></dt><dd dir="auto"><%= x[1] %></dd></div><% }); %>
+      </dl>
+      <% } %>
+      <div class="duo-act">
+        <% if (site.profilePdf) { %><a class="btn gold" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+        <a class="btn navy" href="<%= L('/projects') %>"><%= t.cta_projects %> <%- arrow %></a>
+      </div>
     </div>
   </div>
 </section>
@@ -28,6 +37,17 @@
   </div>
 </section>
 
+<% if ((site.milestones || []).length) { %>
+<section class="sec">
+  <div class="wrap narrow">
+    <div class="shead reveal"><h2><%= t.milestones %></h2><span class="rule"></span></div>
+    <ol class="timeline">
+      <% site.milestones.forEach(function(m){ %><li class="reveal"><b dir="ltr"><%= m.year %></b><div><h3><%= tr(m.title) %></h3><% if (tr(m.desc)) { %><p><%= tr(m.desc) %></p><% } %></div></li><% }); %>
+    </ol>
+  </div>
+</section>
+<% } %>
+
 <section class="sec navy why">
   <div class="wrap">
     <div class="shead light reveal"><h2><%= t.why %></h2><span class="rule"></span></div>
@@ -35,19 +55,21 @@
   </div>
 </section>
 
+<% if ((site.hse || []).length || (site.certificates || []).length) { %>
 <section class="sec">
   <div class="wrap">
-    <div class="shead reveal"><h2><%= t.services %></h2><span class="rule"></span><p><%= t.services_sub %></p></div>
-    <div class="svc-grid"><% (site.services || []).forEach(function(s){ %><article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></article><% }); %></div>
+    <div class="shead reveal"><h2><%= t.hse %></h2><span class="rule"></span><p><%= t.hse_sub %></p></div>
+    <div class="hse-grid"><% (site.hse || []).forEach(function(h){ %><article class="hse-it reveal"><span class="b-ic"><%- icon(h.icon) %></span><h3><%= tr(h.title) %></h3><p><%= tr(h.desc) %></p></article><% }); %></div>
+    <%- include('partials/certs') %>
   </div>
 </section>
+<% } %>
 
 <section class="sec sky">
   <div class="wrap">
     <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span></div>
-    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><div class="sector reveal"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></div><% }); %></div>
-    <div class="center"><a class="btn navy" href="<%= L('/partners') %>"><%= t.partners %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a></div>
+    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><a class="sector reveal" href="<%= L('/projects?cat=' + encodeURIComponent(tr(s.name, 'ar') || '')) %>"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></a><% }); %></div>
+    <div class="center"><a class="btn navy" href="<%= L('/services') %>"><%= t.services %> <%- arrow %></a></div>
   </div>
 </section>
-
 <%- include('partials/footer') %>

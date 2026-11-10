@@ -1,0 +1,42 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.services, sub: t.services_sub }) %>
+<section class="sec">
+  <div class="wrap">
+    <div class="svc-grid big">
+      <% (site.services || []).forEach(function(s){ %>
+        <article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p>
+          <a class="more" href="<%= L('/quote') %>"><%= t.cta_quote %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a></article>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<section class="sec sky">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.process %></h2><span class="rule"></span><p><%= t.process_sub %></p></div>
+    <ol class="steps">
+      <% (site.process || []).forEach(function(s, i){ %><li class="reveal"><span class="st-ic"><%- icon(s.icon) %><i><%= i + 1 %></i></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></li><% }); %>
+    </ol>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span><p><%= t.sectors_sub %></p></div>
+    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><a class="sector reveal" href="<%= L('/projects?cat=' + encodeURIComponent(tr(s.name, 'ar') || '')) %>"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></a><% }); %></div>
+  </div>
+</section>
+
+<% if ((site.faq || []).length) { %>
+<section class="sec sky">
+  <div class="wrap narrow">
+    <div class="shead reveal"><h2><%= t.faq %></h2><span class="rule"></span></div>
+    <div class="faq">
+      <% site.faq.forEach(function(f, i){ %><details class="reveal"<%= i === 0 ? ' open' : '' %>><summary><%= tr(f.q) %><%- icon('chevdown') %></summary><p><%= tr(f.a) %></p></details><% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+<%- include('partials/cta') %>
+<%- include('partials/footer') %>

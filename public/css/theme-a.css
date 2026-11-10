@@ -1,0 +1,134 @@
+/* =====================================================================
+   التصميم A — كلاسيكي فاخر: صورة كبيرة بعرض الشاشة، كحلي ورملي، زوايا حادة
+   ===================================================================== */
+:root {
+  --navy: #1c2b3e; --navy-2: #2a3e57; --navy-3: #13202f;
+  --gold: #b7a98e; --gold-2: #d9cfba; --gold-3: #7d6c4f;
+  --sky: #f6f4f0; --sky-2: #ece7de; --line: #e6e0d4; --line-2: #e9e6e0;
+  --ink: #1c2b3e; --text: #4a5566; --muted: #6e7887;
+  --radius: 3px; --radius-sm: 2px;
+  --gold-grad: linear-gradient(#b7a98e, #b7a98e);
+  --font: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --shadow: 0 18px 40px -24px rgba(19, 32, 47, .45);
+}
+body { font-size: 17px; }
+.btn { border-radius: 2px; letter-spacing: .01em; }
+.btn.gold { background: var(--gold); color: var(--navy-3); box-shadow: none; }
+.btn.gold:hover { background: var(--gold-2); box-shadow: none; }
+.btn:hover { transform: none; }
+
+/* الهيدر */
+.topbar { background: var(--navy-3); border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.hd { background: var(--navy-3); border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.hd.scrolled { box-shadow: 0 10px 30px -18px rgba(0, 0, 0, .6); }
+.nav > a { color: #dfe4ea; font-weight: 500; }
+.nav > a:hover { background: rgba(255, 255, 255, .06); }
+.nav > a.on { color: var(--gold-2); }
+.nav > a.on::after { background: var(--gold); height: 2px; }
+.burger { background: transparent; border-color: rgba(255, 255, 255, .25); }
+.burger span { background: #fff; }
+.t-a.p-home .hd { position: absolute; top: auto; inset-inline: 0; background: transparent; border-bottom-color: rgba(255, 255, 255, .14); }
+.t-a.p-home .hd.scrolled { position: fixed; top: 0; background: rgba(19, 32, 47, .97); }
+
+/* الواجهة */
+.hx-a { min-height: 760px; color: #fff; display: flex; align-items: center; padding: 150px 0 190px;
+  background: linear-gradient(270deg, rgba(19, 32, 47, .95) 0%, rgba(19, 32, 47, .8) 42%, rgba(19, 32, 47, .25) 100%), var(--hx) center 60% / cover no-repeat; }
+[dir="ltr"] .hx-a { background: linear-gradient(90deg, rgba(19, 32, 47, .95) 0%, rgba(19, 32, 47, .8) 42%, rgba(19, 32, 47, .25) 100%), var(--hx) center 60% / cover no-repeat; }
+.hx-a .wrap { width: 100%; }
+.hx-in { max-width: 650px; }
+.hx-a .kick { color: var(--gold-2); }
+.hx-a h1 { color: #fff; font-size: clamp(2.3rem, 4.6vw, 3.9rem); font-weight: 700; }
+.hx-a p { color: #d4dbe5; font-size: 1.15rem; }
+.stx-a { position: relative; z-index: 3; margin-top: -92px; }
+.stx-a .stx-g { background: #fff; box-shadow: 0 30px 60px -30px rgba(19, 32, 47, .5); }
+.stx-a .st { padding: 38px 30px; border-inline-start: 1px solid var(--line); }
+.stx-a .st:first-child { border: 0; }
+.stx-a .st b { font-size: 2.8rem; color: var(--navy); }
+.stx-a .st span { color: var(--gold-3); font-weight: 600; font-size: .95rem; }
+
+/* العناوين */
+.shead { text-align: start; margin-inline: 0; max-width: 760px; }
+.shead .rule, .rule { margin-inline: 0; height: 2px; width: 56px; background: var(--gold); }
+.shead.light h2 { color: #fff; }
+.sec { padding: clamp(64px, 9vw, 120px) 0; }
+.sec.sky { background: var(--sky); }
+
+/* من نحن */
+.ab-ph::after { content: ""; position: absolute; inset: 24px -24px -24px 24px; border: 2px solid var(--gold); z-index: -1; }
+[dir="ltr"] .ab-ph::after { inset: 24px 24px -24px -24px; }
+.ab-yrs { background: var(--navy); color: #fff; }
+.ab-yrs b { color: var(--gold-2); }
+
+/* الخدمات: شبكة بحدود */
+.sv-g { gap: 0; border: 1px solid var(--line); background: #fff; }
+.sv { padding: 42px 36px; border-inline-start: 1px solid var(--line); border-top: 1px solid var(--line); transition: background .25s; }
+.sv:nth-child(-n+3) { border-top: 0; }
+.sv:nth-child(3n+1) { border-inline-start: 0; }
+.sv-ic { background: var(--navy); color: var(--gold-2); margin-bottom: 24px; }
+.sv h3 { color: var(--navy); font-size: 1.25rem; transition: color .25s; }
+.sv p { transition: color .25s; }
+.sv:hover { background: var(--navy); }
+.sv:hover h3 { color: #fff; }
+.sv:hover p { color: #c3ccd8; }
+.sv:hover .sv-ic { background: var(--gold); color: var(--navy); }
+
+/* المشروعات: كروت على الصورة */
+.pj-sec { background: var(--navy-3); }
+.pj-sec .shx h2 { color: #fff; }
+.pj-sec .kick { color: var(--gold-2); }
+.pj-sec .btn.line-gold { color: var(--gold-2); }
+.pcard { position: relative; border: 0; border-radius: 0; background: var(--navy); }
+.pcard:hover { transform: none; }
+.pc-img { aspect-ratio: 4 / 3.2; }
+.pc-img::after { background: linear-gradient(180deg, transparent 35%, rgba(10, 18, 28, .94)); }
+.pc-body { position: absolute; inset: auto 0 0 0; z-index: 2; border-top: 0; padding: 24px; background: none; pointer-events: none; }
+.pc-body a { pointer-events: auto; }
+.pc-body h3 a { color: #fff; }
+.pc-cat { color: var(--gold-2); }
+.pc-meta { color: #c7cfda; }
+.pc-meta .ic { color: var(--gold-2); }
+.pc-status { border-radius: 0; background: var(--gold); color: var(--navy-3); }
+.pc-status::before { display: none; }
+.pc-ph-ic { display: none; }
+
+/* أقسام تانية */
+.svc, .sector, .jcard, .ncard, .hse-it, .bcard, .cert, .ctry, .vm > div, .faq details, .form-card, .cc, .quote, .pgroup, .side-card, .empty, .note-card, .trust { border-radius: 2px; }
+.sector span, .b-ic, .vm-ic, .cc-ic, .ctry > span, .duo-ic, .mc-ic, .cert > span { border-radius: 2px; }
+.sector:hover { transform: none; border-color: var(--gold); }
+.st-ic { border-radius: 2px; }
+.why-it span { border-radius: 2px; background: var(--gold); }
+.cta-band { background: var(--gold); color: var(--navy-3); }
+.cta-band::before { display: none; }
+.cta-in h2 { color: var(--navy-3); }
+.cta-in p { color: #3d3424; }
+.cta-band .btn.gold { background: var(--navy); color: #fff; }
+.duo-card { border-radius: 2px; }
+.duo-card.wk { background: var(--sky); }
+
+/* عنوان الصفحات الداخلية */
+.phead { padding: 70px 0 64px; background: linear-gradient(270deg, rgba(19, 32, 47, .96), rgba(19, 32, 47, .78)), var(--banner) center 55% / cover no-repeat; }
+.phead::before { display: none; }
+.phead::after { height: 3px; background: var(--gold); }
+
+/* الفوتر */
+.ft { background: #0e1722; }
+.ft::before { background: var(--gold); }
+.ft-sky { display: none; }
+
+@media (max-width: 1180px) {
+  .nav { background: var(--navy-3); }
+  .nav > a { border-bottom-color: rgba(255, 255, 255, .08); }
+  .nav > a.on { background: rgba(255, 255, 255, .06); }
+}
+@media (max-width: 680px) {
+  .hx-a { min-height: 0; padding: 120px 0 130px; }
+  .stx-a .stx-g { margin: 0; }
+  .stx-a .st { padding: 22px 18px; border-top: 1px solid var(--line); }
+  .stx-a .st b { font-size: 2rem; }
+  .sv { border-inline-start: 0 !important; border-top: 1px solid var(--line) !important; }
+  .sv:first-child { border-top: 0 !important; }
+  .ab-ph::after { display: none; }
+}
+
+.scope-img img, .post-cover, .job-img, .pj-cover, .ph-it, .album, .nc-img img { border-radius: 2px; }
+.globe { border-radius: 2px; }

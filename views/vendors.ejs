@@ -1,0 +1,24 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.vendors_title, sub: t.vendors_sub }) %>
+<section class="sec">
+  <div class="wrap co-grid">
+    <div class="form-card reveal" id="register">
+      <h2><%= t.f_vendor_title %></h2>
+      <%- include('partials/forms', { only: 'vendor' }) %>
+    </div>
+    <div class="co-side reveal">
+      <h2><%= t.vendor_steps %></h2>
+      <span class="rule start"></span>
+      <ol class="vsteps">
+        <% [t.vendor_step1, t.vendor_step2, t.vendor_step3].forEach(function(s, i){ %><li><span><%= i + 1 %></span><div><p><%= s %></p></div></li><% }); %>
+      </ol>
+      <% if ((site.docs || []).length) { %>
+      <h2><%= t.vendor_docs %></h2>
+      <span class="rule start"></span>
+      <ul class="checks"><% site.docs.forEach(function(d){ %><li><%- icon('checkcircle') %><%= tr(d.text) %></li><% }); %></ul>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

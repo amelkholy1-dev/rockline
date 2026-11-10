@@ -1,9 +1,10 @@
 <%- include('nav') %>
 <%
-var PAGE = { home: 'الرئيسية', about: 'من نحن', companies: 'للشركات', jobs: 'الوظائف', job: 'صفحة وظيفة', apply: 'سجّل كعامل', guide: 'دليل العامل', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', partners: 'شركاؤنا', other: 'أخرى' };
+var PAGE = { home: 'الرئيسية', about: 'من نحن', services: 'خدماتنا', projects: 'المشروعات', project: 'صفحة مشروع', clients: 'عملاؤنا', quote: 'اطلب عرض سعر', vendors: 'الموردين ومقاولي الباطن', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', privacy: 'سياسة الخصوصية', other: 'أخرى' };
 var SRC = { direct: 'دخول مباشر أو لينك محفوظ', facebook: 'فيسبوك', google: 'جوجل', instagram: 'إنستجرام', whatsapp: 'واتساب', linkedin: 'لينكدإن', tiktok: 'تيك توك', bing: 'Bing', x: 'X (تويتر)' };
 var T = sum.tot, ev = T.ev;
-var forms = (ev.form_company_email||0) + (ev.form_company_whatsapp||0) + (ev.form_worker_email||0) + (ev.form_worker_whatsapp||0) + (ev.form_contact_email||0) + (ev.form_contact_whatsapp||0);
+var FK = [['quote', 'طلب عرض سعر'], ['vendor', 'مورد / مقاول باطن'], ['contact', 'استفسار']];
+var forms = FK.reduce(function(a, k){ return a + (ev['form_' + k[0] + '_email'] || 0) + (ev['form_' + k[0] + '_whatsapp'] || 0); }, 0);
 var nf = function(x){ return Number(x || 0).toLocaleString('en-US'); };
 var pct = function(a, b){ return b ? Math.round(a * 100 / b) : 0; };
 var maxV = Math.max.apply(null, sum.days.map(function(d){ return d.v; }).concat([1]));
@@ -72,17 +73,9 @@ var fmtD = function(s){ var p = s.split('-'); return Number(p[2]) + '/' + Number
     <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
   </div>
   <div class="card">
-    <h2 class="h3"><%- icon('briefcase') %> أكتر الوظائف مشاهدة</h2>
-    <% var jb = sum.top(T.jobs, 8); %>
-    <% if (jb.length) { %><ul class="hbars"><% jb.forEach(function(r){ %><li><span class="hl"><%= jobName(r[0]) %></span><span class="hb"><i style="width:<%= pct(r[1], jb[0][1]) %>%"></i></span><b><%= r[1] %></b></li><% }); %></ul>
-    <% } else { %><p class="muted">لسه مفيش بيانات.</p><% } %>
-  </div>
-  <div class="card">
     <h2 class="h3"><%- icon('send') %> الفورمات اللي اتبعتت</h2>
     <table class="tbl compact"><thead><tr><th></th><th>واتساب</th><th>إيميل</th></tr></thead><tbody>
-      <tr><td>طلب عمالة (شركات)</td><td><%= ev.form_company_whatsapp || 0 %></td><td><%= ev.form_company_email || 0 %></td></tr>
-      <tr><td>تسجيل عامل</td><td><%= ev.form_worker_whatsapp || 0 %></td><td><%= ev.form_worker_email || 0 %></td></tr>
-      <tr><td>استفسار</td><td><%= ev.form_contact_whatsapp || 0 %></td><td><%= ev.form_contact_email || 0 %></td></tr>
+      <% FK.forEach(function(k){ %><tr><td><%= k[1] %></td><td><%= ev['form_' + k[0] + '_whatsapp'] || 0 %></td><td><%= ev['form_' + k[0] + '_email'] || 0 %></td></tr><% }); %>
     </tbody></table>
     <% var dv = T.dev, dt = (dv.mobile || 0) + (dv.desktop || 0), lg = T.lang, lt = (lg.ar || 0) + (lg.en || 0); %>
     <div class="split">

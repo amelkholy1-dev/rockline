@@ -1,0 +1,8 @@
+<% if ((site.certificates || []).length) { %>
+<div class="certs reveal">
+  <h3 class="certs-h"><%- icon('medal') %> <%= t.certificates %></h3>
+  <div class="cert-grid">
+    <% site.certificates.forEach(function(c){ %><div class="cert"><span><%- icon('award') %></span><div><b><%= tr(c.name) %></b><small><%= tr(c.issuer) %><%= c.year ? ' · ' + c.year : '' %></small></div></div><% }); %>
+  </div>
+</div>
+<% } %>

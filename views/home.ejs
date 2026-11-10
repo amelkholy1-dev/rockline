@@ -1,79 +1,58 @@
 <%- include('partials/head') %>
 <%- include('partials/header') %>
-
-<section class="hero">
-  <div class="hero-bg" aria-hidden="true"></div>
-  <div class="wrap hero-grid">
-    <div class="hero-text">
-      <span class="eyebrow"><%= tr(site.hero.badge) %></span>
-      <h1><%= tr(site.hero.title) %></h1>
-      <span class="rule"></span>
-      <p class="lead"><%= tr(site.hero.sub) %></p>
-      <div class="hero-cta">
-        <a class="btn gold lg" href="<%= L('/companies') %>#request"><%- icon('briefcase') %> <%= t.cta_request %></a>
-        <a class="btn line lg" href="<%= L('/apply') %>"><%- icon('user') %> <%= t.cta_register %></a>
-      </div>
-      <a class="lic-badge" href="<%= L('/about') %>"><%- icon('shield') %><span><%= t.license %> <b><%= site.brand.license %></b></span></a>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-logo"><img src="<%= img('logo') %>" alt="<%= tr(site.brand.name) %>" width="210" height="206"></div>
-      <ul class="hero-points">
-        <% (site.points || []).forEach(function(p){ %><li><span><%- icon(p.icon) %></span><%= tr(p.text) %></li><% }); %>
-      </ul>
-    </div>
-  </div>
-  <div class="hero-people"><img src="<%= img('hero') %>" alt="<%= lang === 'ar' ? 'كوادر مصرية في تخصصات مختلفة' : 'Egyptian professionals from different trades' %>" width="1055" height="422" fetchpriority="high"></div>
-</section>
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
 
 <% var stats = (site.stats || []).filter(function(s){ return s.value; }); %>
-<section class="band">
-  <div class="wrap band-grid">
-    <% stats.forEach(function(s){ %>
-      <div class="stat"><b data-count="<%= s.value %>"><%= s.value %></b><span><%= tr(s.label) %></span></div>
-    <% }); %>
-    <div class="stat sectors-mini">
-      <% (site.sectors || []).slice(0, 6).forEach(function(s){ %><span title="<%= tr(s.name) %>"><%- icon(s.icon) %></span><% }); %>
-    </div>
-  </div>
-</section>
+<%- include('partials/hero/' + theme, { arrow: arrow, stats: stats }) %>
 
 <%- include('partials/customs', { pos: 'after_hero' }) %>
 
-<section class="sec about-sec" id="about">
-  <div class="wrap about-grid">
-    <div class="about-img reveal">
-      <img src="<%= img('about') %>" alt="" loading="lazy" width="330" height="400">
-      <div class="about-seal"><img src="<%= img('logo') %>" alt="" loading="lazy"><span><%= t.license_short %> <b><%= site.brand.license %></b></span></div>
+<section class="sec ab-sec" id="about">
+  <div class="wrap ab-grid">
+    <div class="ab-ph reveal">
+      <img src="<%= img('about') %>" alt="" loading="lazy" width="600" height="480">
+      <% if (stats[0]) { %><div class="ab-yrs"><b><%= stats[0].value %></b><%= tr(stats[0].label) %></div><% } %>
     </div>
-    <div class="about-text reveal">
-      <span class="eyebrow"><%= t.about_title %></span>
+    <div class="ab-tx reveal">
+      <span class="kick"><%= t.about_title %></span>
       <h2><%= tr(site.brand.name) %></h2>
-      <span class="rule start"></span>
       <p><%= tr(site.about.p1) %></p>
       <p><%= tr(site.about.p2) %></p>
-      <div class="vm">
-        <div><span class="vm-ic"><%- icon('eye') %></span><h3><%= t.vision %></h3><p><%= tr(site.about.vision) %></p></div>
-        <div><span class="vm-ic"><%- icon('mission') %></span><h3><%= t.mission %></h3><p><%= tr(site.about.mission) %></p></div>
-      </div>
-      <a class="btn navy" href="<%= L('/about') %>"><%= t.more %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a>
+      <ul class="ab-chk"><% (site.why || []).slice(0, 4).forEach(function(w){ %><li><%- icon('checkcircle') %><%= tr(w.text) %></li><% }); %></ul>
+      <a class="btn navy" href="<%= L('/about') %>"><%= t.more %> <%- arrow %></a>
     </div>
   </div>
 </section>
 
 <%- include('partials/customs', { pos: 'after_about' }) %>
 
-<section class="sec sky" id="services">
+<section class="sec sky sv-sec" id="services">
   <div class="wrap">
-    <div class="shead reveal"><h2><%= t.services %></h2><span class="rule"></span><p><%= t.services_sub %></p></div>
-    <div class="svc-grid">
-      <% (site.services || []).forEach(function(s){ %>
-        <article class="svc reveal"><span class="svc-ic"><%- icon(s.icon) %></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></article>
+    <div class="shx reveal"><div><span class="kick"><%= t.services %></span><h2><%= t.services_sub %></h2></div><a class="btn navy" href="<%= L('/services') %>"><%= t.view_all %> <%- arrow %></a></div>
+    <div class="sv-g">
+      <% (site.services || []).forEach(function(s, i){ %>
+        <article class="sv reveal">
+          <img class="sv-img" src="<%= svcImg(i) %>" alt="" loading="lazy">
+          <span class="sv-n"><%= String(i + 1).padStart(2, '0') %></span>
+          <span class="sv-ic"><%- icon(s.icon) %></span>
+          <div class="sv-tx"><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></div>
+          <a class="sv-ar" href="<%= L('/quote') %>" aria-label="<%= t.cta_quote %>"><%- arrow %></a>
+        </article>
       <% }); %>
     </div>
   </div>
 </section>
 
-<section class="sec" id="process">
+<% if (projects.length) { %>
+<section class="sec pj-sec" id="projects">
+  <div class="wrap">
+    <div class="shx reveal"><div><span class="kick"><%= t.nav_projects %></span><h2><%= t.featured %></h2></div><a class="btn line-gold" href="<%= L('/projects') %>"><%= t.view_all %> (<%= projectsCount %>) <%- arrow %></a></div>
+    <div class="proj-grid"><% projects.forEach(function(p){ %><%- include('partials/projectcard', { p: p }) %><% }); %></div>
+  </div>
+</section>
+<% } %>
+
+<section class="sec sky" id="process">
   <div class="wrap">
     <div class="shead reveal"><h2><%= t.process %></h2><span class="rule"></span><p><%= t.process_sub %></p></div>
     <ol class="steps">
@@ -86,20 +65,14 @@
 
 <%- include('partials/customs', { pos: 'after_services' }) %>
 
-<section class="sec sky" id="sectors">
+<section class="sec" id="sectors">
   <div class="wrap">
     <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span><p><%= t.sectors_sub %></p></div>
     <div class="sec-grid">
       <% (site.sectors || []).forEach(function(s){ %>
-        <div class="sector reveal"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></div>
+        <a class="sector reveal" href="<%= L('/projects?cat=' + encodeURIComponent(tr(s.name, 'ar') || '')) %>"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></a>
       <% }); %>
     </div>
-    <% if (professions.length) { %>
-    <div class="chips reveal">
-      <b><%= t.professions %>:</b>
-      <% professions.slice(0, 18).forEach(function(p){ %><a class="chip" href="<%= L('/jobs?q=' + encodeURIComponent(p)) %>"><%= p %></a><% }); %>
-    </div>
-    <% } %>
   </div>
 </section>
 
@@ -112,50 +85,52 @@
   </div>
 </section>
 
+<% if ((site.hse || []).length) { %>
+<section class="sec" id="hse">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.hse %></h2><span class="rule"></span><p><%= t.hse_sub %></p></div>
+    <div class="hse-grid">
+      <% site.hse.forEach(function(h){ %><article class="hse-it reveal"><span class="b-ic"><%- icon(h.icon) %></span><h3><%= tr(h.title) %></h3><p><%= tr(h.desc) %></p></article><% }); %>
+    </div>
+    <%- include('partials/certs') %>
+  </div>
+</section>
+<% } %>
+
 <%- include('partials/customs', { pos: 'after_sectors' }) %>
 
-<section class="sec scope" id="scope">
+<% if ((site.regions || []).length) { %>
+<section class="sec sky scope" id="scope">
   <div class="wrap scope-grid">
     <div class="reveal">
-      <div class="shead start"><h2><%= t.scope %></h2><span class="rule start"></span><p><%= t.scope_gulf %> <%= t.scope_intl %></p></div>
+      <div class="shead start"><h2><%= t.scope %></h2><span class="rule start"></span><p><%= t.scope_sub %></p></div>
       <div class="countries">
-        <% (site.countries || []).forEach(function(c){ %>
-          <div class="ctry"><span><%- icon('map') %></span><div><b><%= tr(c.name) %></b><small><%= tr(c.note) %></small></div></div>
+        <% site.regions.forEach(function(c){ %>
+          <div class="ctry"><span><%- icon('mapped') %></span><div><b><%= tr(c.name) %></b><small><%= tr(c.note) %></small></div></div>
         <% }); %>
       </div>
     </div>
-    <div class="scope-img reveal"><img src="<%= img('scope') %>" alt="" loading="lazy" width="610" height="295"><span class="globe"><%- icon('globe') %> <%= lang === 'ar' ? 'من مصر إلى العالم' : 'From Egypt to the world' %></span></div>
+    <div class="scope-img reveal"><img src="<%= img('scope') %>" alt="" loading="lazy" width="610" height="295"><span class="globe"><%- icon('road') %> <%= lang === 'ar' ? 'مباني · طرق · بنية تحتية' : 'Buildings · Roads · Infrastructure' %></span></div>
   </div>
 </section>
-
-<section class="sec sky" id="jobs">
-  <div class="wrap">
-    <div class="shead reveal"><h2><%= t.latest_jobs %></h2><span class="rule"></span><p><%= t.jobs_sub %></p></div>
-    <% if (jobs.length) { %>
-      <div class="jobs-grid"><% jobs.forEach(function(j){ %><%- include('partials/jobcard', { j: j }) %><% }); %></div>
-      <div class="center"><a class="btn navy" href="<%= L('/jobs') %>"><%= t.view_all %> <%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></a></div>
-    <% } else { %>
-      <div class="empty reveal"><%- icon('briefcase') %><p><%= t.no_jobs %></p><a class="btn gold" href="<%= L('/apply') %>"><%= t.cta_register %></a></div>
-    <% } %>
-  </div>
-</section>
-
-<%- include('partials/customs', { pos: 'after_jobs' }) %>
+<% } %>
 
 <% var allPartners = []; (site.partners || []).forEach(function(g){ allPartners = allPartners.concat(g.items || []); }); %>
 <% if (allPartners.length) { %>
-<section class="sec partners-sec" id="partners">
+<section class="sec partners-sec" id="clients">
   <div class="wrap">
-    <div class="shead reveal"><h2><%= t.partners %></h2><span class="rule"></span><p><%= t.partners_sub %></p></div>
+    <div class="shead reveal"><h2><%= t.clients %></h2><span class="rule"></span><p><%= t.clients_sub %></p></div>
   </div>
-  <% var half = Math.ceil(allPartners.length / 2); [allPartners.slice(0, half), allPartners.slice(half)].forEach(function(row, r){ %>
+  <% var half = Math.ceil(allPartners.length / 2); [allPartners.slice(0, half), allPartners.slice(half)].filter(function(r){ return r.length; }).forEach(function(row, r){ %>
   <div class="marquee<%= r ? ' rev' : '' %>" aria-hidden="<%= r ? 'true' : 'false' %>"><div class="mq-track">
     <% row.concat(row).forEach(function(p, i){ %><span class="mq-it"<% if (i >= row.length) { %> aria-hidden="true"<% } %>><%- icon('building') %><%= p %></span><% }); %>
   </div></div>
   <% }); %>
-  <div class="center"><a class="btn line-navy" href="<%= L('/partners') %>"><%= t.view_all %> (<%= allPartners.length %>)</a></div>
+  <div class="center"><a class="btn line-navy" href="<%= L('/clients') %>"><%= t.view_all %> (<%= allPartners.length %>)</a></div>
 </section>
 <% } %>
+
+<%- include('partials/customs', { pos: 'after_jobs' }) %>
 
 <% if (news.length) { %>
 <section class="sec sky" id="news">
@@ -164,7 +139,7 @@
     <div class="news-grid">
       <% news.forEach(function(n){ %>
         <article class="ncard reveal">
-          <a class="nc-img" href="<%= L('/news/' + n.id) %>"><% if (n.image) { %><img src="<%= n.image %>" alt="" loading="lazy"><% } else { %><img src="<%= img('logo') %>" alt="" class="ph" loading="lazy"><% } %></a>
+          <a class="nc-img" href="<%= L('/news/' + n.id) %>"><img src="<%= n.image || img('project') %>" alt="" loading="lazy"></a>
           <div class="nc-body"><time><%- icon('calendar') %> <%= fmtDate(n.date) %></time><h3><a href="<%= L('/news/' + n.id) %>"><%= tr(n.title) %></a></h3><p><%= tr(n.text).slice(0, 140) %><%= tr(n.text).length > 140 ? '…' : '' %></p></div>
         </article>
       <% }); %>
@@ -197,24 +172,25 @@
 </section>
 <% } %>
 
+<%- include('partials/cta', { ctaTitle: lang === 'ar' ? 'عندك مشروع؟ خلّينا نبنيه.' : 'Have a project? Let\'s build it.', ctaSub: t.quote_sub }) %>
+
 <section class="sec duo">
   <div class="wrap duo-grid">
     <div class="duo-card co reveal">
       <span class="duo-ic"><%- icon('building') %></span>
-      <h2><%= t.companies_title %></h2>
-      <p><%= t.companies_sub %></p>
+      <h2><%= t.quote_title %></h2>
+      <p><%= t.quote_sub %></p>
       <div class="duo-act">
-        <a class="btn gold" href="<%= L('/companies') %>#request"><%= t.cta_request %></a>
+        <a class="btn gold" href="<%= L('/quote') %>"><%= t.cta_quote %></a>
         <% if (site.profilePdf) { %><a class="btn line" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
       </div>
     </div>
     <div class="duo-card wk reveal">
-      <span class="duo-ic"><%- icon('hardhat') %></span>
-      <h2><%= t.apply_title %></h2>
-      <p><%= t.apply_sub %></p>
+      <span class="duo-ic"><%- icon('package') %></span>
+      <h2><%= t.vendors_title %></h2>
+      <p><%= t.vendors_sub %></p>
       <div class="duo-act">
-        <a class="btn navy" href="<%= L('/apply') %>"><%= t.cta_register %></a>
-        <a class="btn line-navy" href="<%= L('/guide') %>"><%= t.guide %></a>
+        <a class="btn navy" href="<%= L('/vendors') %>"><%= t.cta_vendor %></a>
       </div>
     </div>
   </div>
@@ -227,7 +203,7 @@
     <div class="shead reveal"><h2><%= t.contact_title %></h2><span class="rule"></span><p><%= t.contact_sub %></p></div>
     <div class="contact-grid">
       <%- include('partials/contactcards') %>
-      <div class="form-card reveal"><%- include('partials/forms', { tab: 'company' }) %></div>
+      <div class="form-card reveal"><%- include('partials/forms', { tab: 'quote' }) %></div>
     </div>
   </div>
 </section>

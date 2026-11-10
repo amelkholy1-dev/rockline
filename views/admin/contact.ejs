@@ -5,11 +5,10 @@
   <div class="card">
     <h2 class="h3"><%- icon('phone') %> أرقام التواصل</h2>
     <div class="grid2">
-      <label>أرقام المكتب في مصر<textarea name="phonesEG" dir="ltr" rows="2"><%= (c.phonesEG||[]).join('\n') %></textarea><small>كل رقم في سطر، ومعاه كود الدولة (+20).</small></label>
-      <label>أرقام التواصل في السعودية<textarea name="phonesSA" dir="ltr" rows="2"><%= (c.phonesSA||[]).join('\n') %></textarea><small>سيبها فاضية لو مش عايزها تظهر.</small></label>
-      <label>رقم الواتساب الأساسي<input name="whatsapp" dir="ltr" value="<%= c.whatsapp || '' %>" placeholder="+201069804443"><small>ده اللي بيستقبل رسايل العمال والاستفسارات، وزرار الواتساب العائم.</small></label>
-      <label>رقم واتساب الشركات (اختياري)<input name="whatsappCompanies" dir="ltr" value="<%= c.whatsappCompanies || '' %>" placeholder="+966..."><small>لو حطيته، طلبات العمالة من الشركات هتروح عليه. لو فاضي هتروح على الرقم الأساسي.</small></label>
-      <label class="span2">الإيميل اللي بيظهر على الموقع<input name="email" dir="ltr" value="<%= c.email || '' %>"></label>
+      <label>أرقام الشركة الأساسية<textarea name="phones" dir="ltr" rows="2"><%= (c.phones||[]).join('\n') %></textarea><small>كل رقم في سطر، ومعاه كود الدولة (+20). أول رقم بيظهر فوق في كل الصفحات وفي زرار «اتصل بنا».</small></label>
+      <label>أرقام إضافية (فروع / مواقع / مبيعات)<textarea name="phones2" dir="ltr" rows="2"><%= (c.phones2||[]).join('\n') %></textarea><small>سيبها فاضية لو مش عايزها تظهر.</small></label>
+      <label>رقم الواتساب<input name="whatsapp" dir="ltr" value="<%= c.whatsapp || '' %>" placeholder="+2010xxxxxxxx"><small>بيستقبل طلبات عروض الأسعار والاستفسارات، وزرار الواتساب العائم. لو فاضي، أزرار الواتساب مش هتظهر.</small></label>
+      <label>الإيميل اللي بيظهر على الموقع<input name="email" dir="ltr" value="<%= c.email || '' %>"></label>
     </div>
   </div>
   <div class="card">
@@ -35,13 +34,17 @@
   <div class="card">
     <h2 class="h3"><%- icon('shield') %> بيانات الشركة</h2>
     <div class="grid2">
-      <label>رقم الترخيص<input name="license" value="<%= site.brand.license || '' %>"></label>
+      <label>رقم القيد بالاتحاد المصري لمقاولي التشييد والبناء<input name="license" value="<%= site.brand.license || '' %>"><small>لو اتكتب، بيظهر فوق في كل الصفحات وفي «من نحن».</small></label>
+      <label>الفئة في الاتحاد<input name="grade" value="<%= site.brand.grade || '' %>" placeholder="مثال: الأولى — أعمال عامة"></label>
+      <label>رقم السجل التجاري (اختياري)<input name="cr" value="<%= site.brand.cr || '' %>"></label>
+      <label>رقم البطاقة الضريبية (اختياري)<input name="tax" value="<%= site.brand.tax || '' %>"></label>
       <label>سنة التأسيس (اختياري)<input name="founded" value="<%= site.brand.founded || '' %>"></label>
+      <span></span>
       <label>الشعار تحت الموقع (عربي)<input name="slogan_ar" value="<%= b(c.slogan,'ar') %>"></label>
       <label>الشعار (إنجليزي)<input name="slogan_en" dir="ltr" value="<%= b(c.slogan,'en') %>"></label>
       <div class="span2">
         <span class="lbl">الملف التعريفي (PDF)</span>
-        <p class="muted">الحالي: <a href="<%= site.profilePdf %>" target="_blank"><%= site.profilePdf %></a>. الزوار بيحمّلوه من زرار "حمّل الملف التعريفي".</p>
+        <p class="muted"><% if (site.profilePdf) { %>الحالي: <a href="<%= site.profilePdf %>" target="_blank"><%= site.profilePdf %></a>. الزوار بيحمّلوه من زرار "حمّل الملف التعريفي".<% } else { %>لسه مفيش ملف — زرار "حمّل الملف التعريفي" مش ظاهر على الموقع.<% } %></p>
         <label class="drop"><%- icon('filedown') %><span>ارفع ملف PDF جديد لو عايز تغيّره</span><input type="file" name="profile" accept="application/pdf"></label>
       </div>
     </div>

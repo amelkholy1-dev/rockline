@@ -8,25 +8,24 @@
 </div>
 <div class="filters">
   <a href="/admin/inbox" class="<%= !kind ? 'on' : '' %>">الكل</a>
-  <% Object.keys(KIND_LABEL).forEach(function(k){ %><a href="/admin/inbox?kind=<%= k %>" class="<%= kind === k ? 'on' : '' %>"><%= KIND_LABEL[k] %></a><% }); %>
+  <% Object.keys(FORMS).forEach(function(k){ %><a href="/admin/inbox?kind=<%= k %>" class="<%= kind === k ? 'on' : '' %>"><%= KIND_LABEL[k] %></a><% }); %>
 </div>
 <% if (list.length) { %>
 <div class="msgs">
   <% list.forEach(function(m){ var f = m.fields || {}; var def = FORMS[m.kind] || FORMS.contact; %>
   <details class="msg<%= m.read ? '' : ' unread' %>" id="m-<%= m.id %>">
     <summary>
-      <span class="tag k-<%= m.kind %>"><%= KIND_LABEL[m.kind] %></span>
-      <b><%= f.company || f.name || '-' %></b>
-      <span class="muted hide-sm"><%= f.trades || f.profession || (f.message || '').slice(0, 70) %></span>
-      <span class="tag c-<%= m.channel %>"><%= CHANNEL_LABEL[m.channel] %><% if (m.channel === 'email' && !m.mailed) { %> (لم يصل)<% } %></span><% if (m.masar) { %> <span class="tag <%= m.masar === 'ok' ? 'c-whatsapp' : 'c-email' %>" title="الوارد في نظام مسار HR"><%= m.masar === 'ok' ? 'في مسار ✓' : m.masar === 'pending' ? 'مسار: بيتحاول' : 'مسار: فشل' %></span><% } %>
+      <span class="tag k-<%= m.kind %>"><%= KIND_LABEL[m.kind] || m.kind %></span>
+      <b><%= msgTitle(f) %></b>
+      <span class="muted hide-sm"><%= msgLine(f) %></span>
+      <span class="tag c-<%= m.channel %>"><%= CHANNEL_LABEL[m.channel] %><% if (m.channel === 'email' && !m.mailed) { %> (لم يصل)<% } %></span>
       <time><%= fmtTime(m.at) %></time>
     </summary>
     <div class="msg-body">
       <dl>
-        <% def.fields.forEach(function(x){ if (f[x.k]) { %><div><dt><%= labels[x.l] %></dt><dd><%= f[x.k] %></dd></div><% } }); %>
-        <% if (m.cv || m.cvUrl) { %><div><dt>السيرة الذاتية</dt><dd><a href="/admin/inbox/<%= m.id %>/cv"><%- icon('download') %> تحميل الملف</a></dd></div><% } %>
+        <% (FORMS[m.kind] ? def.fields : Object.keys(f).map(function(k){ return { k: k, l: 'f_' + k }; })).forEach(function(x){ if (f[x.k]) { %><div><dt><%= labels[x.l] || x.k %></dt><dd><%= f[x.k] %></dd></div><% } }); %>
+        <% if (m.cv || m.cvUrl) { %><div><dt><%= m.kind === 'career' ? 'السيرة الذاتية' : m.kind === 'quote' ? 'الرسومات / المقايسة' : 'المرفق' %></dt><dd><a href="/admin/inbox/<%= m.id %>/cv"><%- icon('download') %> تحميل الملف<%= m.cvName ? ' (' + m.cvName + ')' : '' %></a></dd></div><% } %>
         <% if (m.consent) { %><div><dt>الموافقة</dt><dd>وافق على سياسة الخصوصية</dd></div><% } %>
-        <% if (m.masar && m.masar !== 'ok') { %><div><dt>إرسال لمسار</dt><dd class="err-text"><%= m.masarError || 'لسه' %></dd></div><% } %>
         <% if (m.mailError) { %><div><dt>سبب فشل الإيميل</dt><dd class="err-text"><%= m.mailError %></dd></div><% } %>
       </dl>
       <div class="msg-acts">
@@ -36,7 +35,6 @@
         <% } %>
         <% if (f.email) { %><a class="btn sm ghost" href="mailto:<%= f.email %>"><%- icon('mail') %> رد بالإيميل</a><% } %>
         <form method="post" action="/admin/inbox/<%= m.id %>/read"><input type="hidden" name="read" value="<%= m.read ? '0' : '1' %>"><button class="btn sm ghost"><%- icon(m.read ? 'eyeoff' : 'check') %> <%= m.read ? 'علّمها غير مقروءة' : 'تم التعامل' %></button></form>
-        <% if (m.masar && m.masar !== 'ok') { %><form method="post" action="/admin/inbox/<%= m.id %>/masar"><button class="btn sm ghost"><%- icon('send') %> إعادة الإرسال لمسار</button></form><% } %>
         <form method="post" action="/admin/inbox/<%= m.id %>/delete" data-confirm="متأكد إنك عايز تحذف الرسالة دي؟"><button class="btn sm danger"><%- icon('trash') %> حذف</button></form>
       </div>
     </div>
