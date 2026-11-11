@@ -75,6 +75,7 @@
   });
   // بعد ما الفورم يتبعت بنجاح بيتعمله reset: نفضّي القايمة
   document.addEventListener('reset', function (e) { if (e.target.matches && e.target.matches('form.nform[data-kind="quote"]')) setTimeout(function () { RL.clear(); }, 0); }, true);
+  document.addEventListener('nk:sent', function (e) { if (e.target.matches && e.target.matches('form.nform[data-kind="quote"]')) RL.clear(); });
   window.addEventListener('storage', render);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render); else render();
 })();

@@ -135,6 +135,7 @@
         else fetch(form.action, { method: 'POST', body: body, keepalive: true });
       } catch (e) {}
       status(form, T.wa_note, 'ok');
+      try { form.dispatchEvent(new CustomEvent('nk:sent', { bubbles: true })); } catch (e) {}
     });
 
     // إيميل: إرسال للسيرفر من غير ما الصفحة تتحمل تاني
