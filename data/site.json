@@ -496,5 +496,18 @@
    "email": "info@rocklineg.com"
   }
  ],
- "contentVersion": "3.0.3"
+ "contentVersion": "3.1.0",
+ "calc": {
+  "diameters": "8,10,12,14,16,18,20,22,25,28,32",
+  "barLength": "12",
+  "bagKg": "50"
+ },
+ "prices": [],
+ "pricesinfo": {
+  "updated": "",
+  "note": {
+   "ar": "",
+   "en": ""
+  }
+ }
 }

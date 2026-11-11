@@ -29,7 +29,14 @@
       <div class="side-card">
         <h3><%= t.p_cta %></h3>
         <p class="muted"><%= t.p_cta_sub %></p>
+        <div class="bbox" data-basket-box>
+          <div class="bbox-row"><label><%= t.qty %><input type="number" min="0" step="any" value="1" data-bq></label>
+            <select data-bu aria-label="unit"><option><%= t.unit_ton %></option><option><%= t.unit_bag %></option><option><%= t.unit_bar %></option></select></div>
+          <button type="button" class="btn navy wide" data-add-basket data-name="<%= tr(p.title) %>"><%- icon('plus') %> <%= t.add_to_list %></button>
+          <span class="bmsg" data-bmsg></span>
+        </div>
         <a class="btn gold wide" href="<%= L('/quote?type=' + encodeURIComponent(cat(p.cat))) %>"><%- icon('doc') %> <%= t.cta_quote %></a>
+        <% if (p.datasheet) { %><a class="btn line-navy wide" href="<%= p.datasheet %>" download><%- icon('download') %> <%= t.p_datasheet %></a><% } %>
         <button class="btn line-navy wide" type="button" data-share data-title="<%= tr(p.title) %>"><%- icon('copy') %> <%= t.share %></button>
       </div>
     </aside>

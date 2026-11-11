@@ -32,6 +32,12 @@
       <label class="drop"><%- icon('image') %><span>اختار صورة أو أكتر</span><input type="file" name="images" accept="image/*" multiple data-preview></label>
       <div class="preview"></div>
     </div>
+    <div class="span2">
+      <span class="lbl">ورقة البيانات الفنية (PDF) — اختياري</span>
+      <p class="muted small" style="margin:0 0 8px">بتظهر على صفحة المنتج كزرار «حمّل ورقة البيانات الفنية». PDF لحد 25 ميجا.</p>
+      <% if (p.datasheet) { %><p><a href="<%= p.datasheet %>" target="_blank">الورقة الحالية</a> · <label class="check" style="display:inline"><input type="checkbox" name="remove_datasheet"> حذفها</label></p><% } %>
+      <input type="file" name="datasheet" accept="application/pdf,.pdf">
+    </div>
     <label class="check"><input type="checkbox" name="featured"<%= p.featured ? ' checked' : '' %>> ⭐ يظهر في «منتجاتنا» في الصفحة الرئيسية</label>
     <label class="check"><input type="checkbox" name="visible"<%= !item || p.visible !== false ? ' checked' : '' %>> يظهر على الموقع</label>
   </div>

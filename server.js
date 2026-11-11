@@ -31,6 +31,7 @@ const security = require('./lib/security');
 const users = require('./lib/users');
 users.emergencyReset();
 const analytics = require('./lib/analytics');
+const uitexts = require('./lib/uitexts');
 const privacyDefault = require('./lib/privacy-default');
 
 // ترقية لمرة واحدة: لو البيانات المحفوظة على السيرفر لسه بتاعة النسخة القديمة (نسر الخليج)، نبدأ بمحتوى روك لاين الافتراضي.
@@ -91,7 +92,7 @@ app.use(express.text({ limit: '64kb' }));
 // الصور المرفوعة بس هي اللي بتتعرض للزوار. أي ملف تاني (زي السير الذاتية القديمة) مقفول.
 app.use('/uploads', (req, res, next) => {
   if (!/\.(jpe?g|png|webp|gif|pdf)$/i.test(req.path)) return res.status(404).end();
-  if (/\.pdf$/i.test(req.path) && !/^\/profile-/.test(req.path)) return res.status(404).end();
+  if (/\.pdf$/i.test(req.path) && !/^\/(profile|datasheet)-/.test(req.path)) return res.status(404).end();
   next();
 }, express.static(UPLOAD_DIR, { maxAge: '30d' }));
 /* أي طلب لـ uploads وصل هنا (مثلاً //uploads/x.docx) مقفول — كان بيعدّي على static بتاع public ويتخطى الفلتر */
@@ -159,6 +160,18 @@ const diskPdf = multer({
   limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => cb(null, /\.pdf$/i.test(file.originalname))
 });
+// نموذج المنتج: صور + ورقة بيانات فنية PDF (بتتعرض للعامة)
+const diskProduct = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+    filename: (req, file, cb) => cb(null, file.fieldname === 'datasheet'
+      ? 'datasheet-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.pdf'
+      : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + path.extname(file.originalname).toLowerCase())
+  }),
+  limits: { fileSize: 25 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => cb(null, file.fieldname === 'datasheet' ? /\.pdf$/i.test(file.originalname) : /\.(jpe?g|png|webp|gif)$/i.test(file.originalname))
+});
+const unlinkUpload = x => { if (/^\/uploads\//.test(x || '')) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } };
 // مرفقات الفورمات (رسومات / مقايسة / ملف تعريفي / سيرة ذاتية) — بتتحفظ في data/cv ومش متاحة للعامة
 const memFile = multer({
   storage: multer.memoryStorage(),
@@ -199,12 +212,18 @@ const IMAGE_SLOTS = [
   { k: 'scope', label: 'صورة "نطاق عملنا" (غير مستخدمة حالياً)', hint: 'مش ظاهرة في الموقع الحالي.', def: '/img/photos/51.jpg' },
   { k: 'banner', label: 'خلفية عناوين الصفحات', hint: 'بتظهر ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1920×700).', def: '/img/photos/50.jpg' },
   { k: 'project', label: 'صورة المنتج الافتراضية', hint: 'بتظهر لأي منتج لسه مرفعتلوش صور.', def: '/img/project.svg' },
+  { k: 'favicon', label: 'أيقونة المتصفح (favicon)', hint: 'الأيقونة الصغيرة في تبويب المتصفح. PNG مربعة (مثلاً 256×256).', def: '/img/favicon.png' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
+// صور كروت الخدمات (واحدة لكل خدمة) بتظهر في التصميم البرتقالي
+function imageSlots() {
+  const svc = (store.get('site').services || []).map((s, i) => ({ k: 'svc' + i, label: 'صورة خدمة: ' + (tr(s.title, 'ar') || (i + 1)), hint: 'بتظهر على كارت الخدمة في التصميم البرتقالي (D).', def: SVC_IMG[i % SVC_IMG.length] }));
+  return IMAGE_SLOTS.concat(svc);
+}
 function siteImg(site, slot, theme) {
   if (site.images && site.images[slot]) return site.images[slot];
   if (slot === 'hero') return THEMES[theme || themeKey(site)].hero;
-  return (IMAGE_SLOTS.find(x => x.k === slot) || {}).def || '';
+  return (imageSlots().find(x => x.k === slot) || {}).def || '';
 }
 
 // ---------- تصميمات الموقع (بتتغير من لوحة التحكم ← شكل الموقع) ----------
@@ -224,6 +243,9 @@ function themeOf(req) {
 const SVC_IMG = ['/img/photos/02.jpg', '/img/products/cement-bag.svg', '/img/products/cement-bulk.svg', '/img/photos/04.jpg', '/img/products/warehouse.svg', '/img/photos/03.jpg'];
 const photoCredits = require('./lib/photo-credits.json');
 
+// نصوص الواجهة بعد ما نطبّق عليها تعديلات لوحة التحكم (site.ui)
+const UI = lang => uitexts.merged(lang, store.get('site'));
+
 function customSections(pos) {
   return (store.get('site').sections || []).filter(s => s.visible !== false && s.position === pos);
 }
@@ -236,13 +258,44 @@ function activeProjects() { return (store.get('projects') || []).filter(p => p.v
 function catName(site, cat, lang) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? tr(s.name, lang) : (cat || ''); }
 function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? s.icon : 'building'; }
 
+// أقسام الصفحة الرئيسية (الترتيب والإظهار بيتغيروا من لوحة التحكم ← ترتيب الصفحة الرئيسية)
+const HOME_SECTIONS = [
+  { id: 'about', label: 'من نحن', on: true }, { id: 'services', label: 'الخدمات', on: true }, { id: 'products', label: 'المنتجات', on: true },
+  { id: 'process', label: 'طريقة الطلب', on: true }, { id: 'warehouses', label: 'المخازن والمقر', on: true }, { id: 'why', label: 'لماذا روك لاين', on: true },
+  { id: 'calc', label: 'حاسبة الكميات', on: true }, { id: 'prices', label: 'أسعار اليوم (اختياري)', on: false }, { id: 'news', label: 'الأخبار', on: true },
+  { id: 'gallery', label: 'معرض الصور', on: true }, { id: 'quotes', label: 'آراء العملاء', on: true }, { id: 'cta', label: 'شريط «اطلب السعر»', on: true },
+  { id: 'duo', label: 'كارتين: عرض سعر + المخازن', on: true }, { id: 'contact', label: 'تواصل معنا (الفورم)', on: true }
+];
+function homeLayout(site) {
+  const known = Object.fromEntries(HOME_SECTIONS.map(s => [s.id, s]));
+  const out = [], seen = new Set();
+  (Array.isArray(site.homeLayout) ? site.homeLayout : []).forEach(x => {
+    if (x && known[x.id] && !seen.has(x.id)) { seen.add(x.id); out.push({ id: x.id, label: known[x.id].label, visible: x.visible !== false }); }
+  });
+  HOME_SECTIONS.forEach(s => { if (!seen.has(s.id)) out.push({ id: s.id, label: s.label, visible: s.on }); });
+  return out;
+}
+// ألوان الموقع (اختيارية من لوحة التحكم ← شكل الموقع)
+const hexOk = c => /^#[0-9a-f]{6}$/i.test(String(c || ''));
+function mixHex(a, b, p) { // p = نسبة b
+  const n = x => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16));
+  const A = n(a), B = n(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * p).toString(16).padStart(2, '0')).join('');
+}
+function colorCss(site, theme) {
+  const c = site.colors || {}; let css = '';
+  if (hexOk(c.accent)) css += `--gold:${c.accent};--gold-2:${mixHex(c.accent, '#ffffff', .45)};--gold-3:${mixHex(c.accent, '#000000', .28)};--gold-grad:linear-gradient(135deg,${mixHex(c.accent, '#ffffff', .3)},${c.accent});`;
+  if (hexOk(c.primary) && theme !== 'b') css += `--navy:${c.primary};--navy-2:${mixHex(c.primary, '#ffffff', .14)};--navy-3:${mixHex(c.primary, '#000000', .3)};`;
+  return css ? ':root{' + css + '}' : '';
+}
+
 function base(req, extra) {
   const lang = langOf(req);
   const site = store.get('site');
   const theme = themeOf(req);
   const pv = req.session && req.session.previewTheme && theme === req.session.previewTheme && theme !== themeKey(site) ? theme : '';
   const c = site.contact || {};
-  const t = dict[lang];
+  const t = UI(lang);
   const pathNoLang = req.path === '/' ? '' : req.path;
   return Object.assign({
     lang, t, site, icon, brand, ver: pkgVersion,
@@ -262,7 +315,8 @@ function base(req, extra) {
     mapUrl: /^https?:\/\//i.test(String(c.mapLink || '').trim()) ? String(c.mapLink).trim() : ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(tr(c.address, 'ar') || tr(site.brand.name, 'ar'))),
     customs: customSections,
     img: slot => siteImg(site, slot, theme),
-    theme, themeInfo: THEMES[theme], previewTheme: pv, svcImg: i => SVC_IMG[i % SVC_IMG.length],
+    theme, themeInfo: THEMES[theme], previewTheme: pv, colorCss: colorCss(site, theme),
+    svcImg: i => (site.images && site.images['svc' + i]) || SVC_IMG[i % SVC_IMG.length],
     baseUrl: siteUrl(req),
     mailReady: mailer.ready(),
     chans: channels(),
@@ -281,7 +335,7 @@ const FORMS = {
   quote: { subject: 'طلب عرض سعر جديد', file: true, fields: [
     { k: 'name', req: 1, l: 'f_name' }, { k: 'company', l: 'f_company' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'ptype', req: 1, l: 'f_ptype' }, { k: 'location', l: 'f_location' }, { k: 'area', l: 'f_area' }, { k: 'start', l: 'f_start' },
-    { k: 'details', req: 1, l: 'f_details' }] },
+    { k: 'items', l: 'f_items' }, { k: 'details', req: 1, l: 'f_details' }] },
   vendor: { subject: 'تسجيل مورد / مصنع', file: true, fields: [
     { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
     { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
@@ -294,13 +348,15 @@ const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مصنع
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
 // عنوان مختصر للرسالة في لوحة التحكم
 const msgTitle = f => f.company || f.name || '-';
-const msgLine = f => f.ptype || f.vtype || f.position || (f.message || f.details || '').slice(0, 60);
+const msgLine = f => f.ptype || f.vtype || f.position || (f.items || f.message || f.details || '').slice(0, 60);
 
 function readForm(kind, body) {
   const def = FORMS[kind];
   const fields = {};
   def.fields.forEach(f => { fields[f.k] = clean(body[f.k], 3000); });
-  const missing = def.fields.filter(f => f.req && !fields[f.k]).map(f => f.k);
+  let missing = def.fields.filter(f => f.req && !fields[f.k]).map(f => f.k);
+  // لو الزبون ضاف أصناف من قائمة الطلب، الصنف والتفاصيل يبقوا اختياريين
+  if (kind === 'quote' && fields.items) missing = missing.filter(k => k !== 'ptype' && k !== 'details');
   return { fields, missing };
 }
 
@@ -357,7 +413,7 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/services', '/products', '/warehouses', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
+  const pages = ['', '/about', '/services', '/products', '/warehouses', '/calculator', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
@@ -400,7 +456,7 @@ pub.get('/', (req, res) => {
   const all = activeProjects();
   const featured = all.filter(p => p.featured);
   res.render('home', base(req, {
-    page: 'home',
+    page: 'home', layout: homeLayout(store.get('site')),
     projects: (featured.length ? featured : all).slice(0, 6), // المنتجات المختارة (⭐) لو موجودة، وإلا أول 6
     projectsCount: all.length,
     news: store.get('news').slice(0, 3),
@@ -408,10 +464,11 @@ pub.get('/', (req, res) => {
   }));
 });
 
-const T = req => dict[langOf(req)];
+const T = req => UI(langOf(req));
 pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: T(req).about_title })));
 pub.get('/services', (req, res) => res.render('services', base(req, { page: 'services', title: T(req).services })));
 pub.get('/clients', (req, res) => res.redirect(301, '/' + langOf(req) + '/about'));
+pub.get('/calculator', (req, res) => res.render('calculator', base(req, { page: 'calc', title: UI(langOf(req)).calc_title })));
 pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', title: T(req).quote_title, ptype: clean(req.query.type, 100) })));
 pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
 pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: T(req).contact_title, tab: Object.prototype.hasOwnProperty.call(FORMS, req.query.tab) ? req.query.tab : 'quote' })));
@@ -429,7 +486,7 @@ pub.get('/products', (req, res) => {
   const used = new Set(all.map(p => p.cat));
   const cats = (site.sectors || []).map(s => tr(s.name, 'ar')).filter(c => used.has(c));
   all.forEach(p => { if (p.cat && !cats.includes(p.cat)) cats.push(p.cat); });
-  res.render('products', base(req, { page: 'products', title: dict[lang].products, list, cats, catQ, total: all.length }));
+  res.render('products', base(req, { page: 'products', title: UI(lang).products, list, cats, catQ, total: all.length }));
 });
 pub.get('/products/:id', (req, res) => {
   const p = activeProjects().find(x => x.id === req.params.id);
@@ -439,7 +496,7 @@ pub.get('/products/:id', (req, res) => {
   const related = others.filter(x => x.cat === p.cat).concat(others.filter(x => x.cat !== p.cat)).slice(0, 3);
   res.render('product', base(req, { page: 'products', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
 });
-pub.get('/warehouses', (req, res) => res.render('warehouses', base(req, { page: 'warehouses', title: dict[langOf(req)].warehouses })));
+pub.get('/warehouses', (req, res) => res.render('warehouses', base(req, { page: 'warehouses', title: UI(langOf(req)).warehouses })));
 
 pub.get('/credits', (req, res) => res.render('credits', base(req, { page: 'credits', title: langOf(req) === 'ar' ? 'مصادر الصور' : 'Photo credits', credits: photoCredits })));
 
@@ -462,10 +519,10 @@ pub.get('/privacy', (req, res) => {
       if (last && last.ul) last.ul.push(l.replace(/^[-•]\s+/, '')); else blocks.push({ ul: [l.replace(/^[-•]\s+/, '')] });
     } else blocks.push({ p: l });
   });
-  res.render('privacy', base(req, { page: 'privacy', title: dict[lang].privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
+  res.render('privacy', base(req, { page: 'privacy', title: UI(lang).privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
 });
 
-pub.get('/news', (req, res) => res.render('news', base(req, { page: 'news', title: dict[langOf(req)].news, news: store.get('news') })));
+pub.get('/news', (req, res) => res.render('news', base(req, { page: 'news', title: UI(langOf(req)).news, news: store.get('news') })));
 pub.get('/news/:id', (req, res) => {
   const item = store.get('news').find(n => n.id === req.params.id);
   if (!item) return notFound(req, res);
@@ -480,7 +537,7 @@ pub.get('/gallery', (req, res) => {
     const cover = items.find(i => i.id === a.cover) || items[0];
     return Object.assign({}, a, { count: items.length, coverFile: cover ? cover.file : '' });
   }).filter(a => a.count);
-  res.render('gallery', base(req, { page: 'gallery', title: dict[langOf(req)].gallery, albums, album: null, items: [] }));
+  res.render('gallery', base(req, { page: 'gallery', title: UI(langOf(req)).gallery, albums, album: null, items: [] }));
 });
 pub.get('/gallery/:album', (req, res) => {
   const g = store.get('gallery');
@@ -493,7 +550,7 @@ pub.get('/gallery/:album', (req, res) => {
 pub.post('/send', (req, res) => {
   memFile.single('file')(req, res, async upErr => {
     const lang = langOf(req);
-    const t = dict[lang];
+    const t = UI(lang);
     const wantsJson = req.xhr || /json/.test(req.get('accept') || '');
     const reply = (ok, msg, code) => wantsJson
       ? res.status(code || (ok ? 200 : 400)).json({ ok, msg })
@@ -556,7 +613,7 @@ pub.post('/send', (req, res) => {
 function notFound(req, res) {
   const lang = (req.originalUrl.match(/^\/(ar|en)\b/) || [])[1] || 'ar';
   req.params = Object.assign({}, req.params, { lang });
-  res.status(404).render('404', base(req, { title: dict[lang].notfound }));
+  res.status(404).render('404', base(req, { title: UI(lang).notfound }));
 }
 
 // ---------- admin ----------
@@ -599,7 +656,7 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', texts: 'content', layout: 'content', bot: 'content', prices: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
@@ -890,7 +947,7 @@ admin.get('/projects/:id/edit', (req, res) => {
   res.render('admin/projectform', adminView(req, { section: 'projects', item, cats: sectorNames() }));
 });
 admin.post('/projects/save', (req, res) => {
-  diskImages.array('images', 20)(req, res, err => {
+  diskProduct.fields([{ name: 'images', maxCount: 20 }, { name: 'datasheet', maxCount: 1 }])(req, res, err => {
     const b = req.body || {};
     const list = projList();
     const old = list.find(p => p.id === clean(b.id));
@@ -900,13 +957,17 @@ admin.post('/projects/save', (req, res) => {
     images = images.filter(x => !remove.includes(x));
     // صورة الغلاف = أول صورة
     if (b.cover && images.includes(b.cover)) images = [b.cover].concat(images.filter(x => x !== b.cover));
-    (req.files || []).forEach(f => images.push('/uploads/' + f.filename));
+    ((req.files || {}).images || []).forEach(f => images.push('/uploads/' + f.filename));
+    let datasheet = old ? (old.datasheet || '') : '';
+    const newSheet = ((req.files || {}).datasheet || [])[0];
+    if (newSheet) { unlinkUpload(datasheet); datasheet = '/uploads/' + newSheet.filename; }
+    else if (b.remove_datasheet === 'on' && datasheet) { unlinkUpload(datasheet); datasheet = ''; }
     const rec = {
       id: old ? old.id : uid(),
       title: bi(b, 'title'), cat: clean(b.cat, 100),
       pack: bi(b, 'pack'),
       scope: bi(b, 'scope'), desc: bi(b, 'desc'),
-      images: images.slice(0, 40),
+      images: images.slice(0, 40), datasheet,
       featured: b.featured === 'on', visible: b.visible === 'on',
       at: old ? old.at : now(), updated: now()
     };
@@ -935,7 +996,7 @@ admin.post('/projects/:id/move', (req, res) => {
 });
 admin.post('/projects/:id/delete', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); // صور الموقع الأصلية (/img/...) متتمسحش
+  if (p) { (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); unlinkUpload(p.datasheet); } // صور الموقع الأصلية (/img/...) متتمسحش
   store.set('projects', list.filter(x => x.id !== req.params.id));
   flash(req, 'تم حذف المنتج');
   res.redirect('/admin/projects');
@@ -954,7 +1015,7 @@ admin.post('/apply-defaults', (req, res) => {
     fs.writeFileSync(path.join(dir, 'products-' + stamp + '.json'), JSON.stringify(store.get('projects') || [], null, 1));
   } catch (e) { /* النسخة الاحتياطية مش شرط لإتمام التحديث */ }
   const next = Object.assign({}, sSite);
-  ['theme', 'images', 'channels', 'hosting', 'profilePdf'].forEach(k => { if (cur[k] !== undefined) next[k] = cur[k]; });
+  ['theme', 'colors', 'ui', 'homeLayout', 'images', 'channels', 'hosting', 'profilePdf'].forEach(k => { if (cur[k] !== undefined) next[k] = cur[k]; });
   store.set('site', next);
   store.set('projects', sProd);
   flash(req, 'تم تطبيق المحتوى الجديد على الموقع. لو الموقع لسه بيظهر قديم عندك، اعمل تحديث للصفحة (Ctrl+F5).');
@@ -1295,8 +1356,52 @@ admin.get('/stats', (req, res) => {
   res.render('admin/stats', adminView(req, { section: 'stats', n, sum }));
 });
 
+// ----- نصوص الواجهة (عناوين الأقسام والأزرار وأسماء القوايم) -----
+admin.get('/texts', (req, res) => res.render('admin/texts', adminView(req, { section: 'texts', groups: uitexts.groups(), dict, ui: store.get('site').ui || {} })));
+admin.post('/texts', (req, res) => {
+  const b = req.body || {}; const ui = { ar: {}, en: {} };
+  uitexts.allKeys().forEach(k => ['ar', 'en'].forEach(l => {
+    const v = clean(b['t_' + l + '_' + k], 400);
+    if (v && v !== dict[l][k]) ui[l][k] = v; // اللي زي الافتراضي مبنخزنوش
+  }));
+  const site = store.get('site'); site.ui = ui; store.set('site', site);
+  flash(req, 'تم حفظ نصوص الواجهة');
+  res.redirect('/admin/texts');
+});
+admin.post('/texts/reset', (req, res) => {
+  const site = store.get('site'); delete site.ui; store.set('site', site);
+  flash(req, 'رجعت كل نصوص الواجهة للأصلية');
+  res.redirect('/admin/texts');
+});
+
+// ----- ترتيب أقسام الصفحة الرئيسية -----
+admin.get('/layout', (req, res) => res.render('admin/layout', adminView(req, { section: 'layout', list: homeLayout(store.get('site')) })));
+function saveLayout(list) { const site = store.get('site'); site.homeLayout = list.map(x => ({ id: x.id, visible: x.visible })); store.set('site', site); }
+admin.post('/layout/reset', (req, res) => { const site = store.get('site'); delete site.homeLayout; store.set('site', site); flash(req, 'رجّعت الترتيب الأصلي'); res.redirect('/admin/layout'); });
+admin.post('/layout/:id/move', (req, res) => {
+  const list = homeLayout(store.get('site')); const i = list.findIndex(x => x.id === req.params.id);
+  const j = i + (req.body && req.body.dir === 'up' ? -1 : 1);
+  if (i >= 0 && j >= 0 && j < list.length) { [list[i], list[j]] = [list[j], list[i]]; saveLayout(list); }
+  res.redirect('/admin/layout');
+});
+admin.post('/layout/:id/toggle', (req, res) => {
+  const list = homeLayout(store.get('site')); const x = list.find(y => y.id === req.params.id);
+  if (x) { x.visible = !x.visible; saveLayout(list); flash(req, (x.visible ? 'ظهر' : 'اتخفى') + ' قسم «' + x.label + '» في الصفحة الرئيسية'); }
+  res.redirect('/admin/layout');
+});
+
+// ----- ألوان الموقع -----
+admin.post('/design/colors', (req, res) => {
+  const b = req.body || {}; const site = store.get('site');
+  if (b.reset === '1') delete site.colors;
+  else site.colors = { primary: hexOk(b.primary) && b.use_primary === 'on' ? b.primary : '', accent: hexOk(b.accent) && b.use_accent === 'on' ? b.accent : '' };
+  store.set('site', site);
+  flash(req, b.reset === '1' ? 'رجعت ألوان التصميم الأصلية' : 'تم حفظ ألوان الموقع');
+  res.redirect('/admin/design');
+});
+
 // ----- شكل الموقع (اختيار التصميم + معاينة) -----
-admin.get('/design', (req, res) => res.render('admin/design', adminView(req, { section: 'design', THEMES, current: themeKey(store.get('site')), preview: req.session.previewTheme || '' })));
+admin.get('/design', (req, res) => res.render('admin/design', adminView(req, { section: 'design', THEMES, colors: store.get('site').colors || {}, current: themeKey(store.get('site')), preview: req.session.previewTheme || '' })));
 admin.post('/design', (req, res) => {
   const t = (req.body || {}).theme;
   if (!Object.prototype.hasOwnProperty.call(THEMES, t)) { flash(req, 'اختار تصميم من القايمة', 'err'); return res.redirect('/admin/design'); }
@@ -1312,9 +1417,9 @@ admin.get('/design/preview/:t', (req, res) => {
 admin.get('/design/preview-off', (req, res) => { delete req.session.previewTheme; res.redirect(String(req.query.back || '') === 'site' ? '/ar' : '/admin/design'); });
 
 // ----- site images -----
-admin.get('/images', (req, res) => res.render('admin/images', adminView(req, { section: 'images', slots: IMAGE_SLOTS })));
+admin.get('/images', (req, res) => res.render('admin/images', adminView(req, { section: 'images', slots: imageSlots() })));
 admin.post('/images/:slot', (req, res) => {
-  const slot = IMAGE_SLOTS.find(x => x.k === req.params.slot);
+  const slot = imageSlots().find(x => x.k === req.params.slot);
   if (!slot) return res.redirect('/admin/images');
   diskImages.single('image')(req, res, err => {
     const site = store.get('site');

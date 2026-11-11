@@ -33,6 +33,7 @@
       <a class="btn line" href="<%= L('/vendors') %>"><%- icon('package') %> <%= t.nav_vendors %></a>
     </div>
   </nav>
+  <a class="basket-btn" id="basketBtn" href="<%= L('/quote#list') %>" hidden><%- icon('doc') %> <span><%= t.list_title %></span> <i id="basketCount">0</i></a>
   <a class="btn gold hd-cta" href="<%= L('/quote') %>"><%= t.cta_quote %></a>
   <button class="burger" id="burger" aria-label="<%= t.menu %>" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>

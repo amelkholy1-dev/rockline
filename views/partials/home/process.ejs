@@ -1,0 +1,11 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec sky" id="process">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.process %></h2><span class="rule"></span><p><%= t.process_sub %></p></div>
+    <ol class="steps">
+      <% (site.process || []).forEach(function(s, i){ %>
+        <li class="reveal"><span class="st-ic"><%- icon(s.icon) %><i><%= i + 1 %></i></span><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></li>
+      <% }); %>
+    </ol>
+  </div>
+</section>

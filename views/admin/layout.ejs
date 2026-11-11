@@ -1,0 +1,22 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">ترتيب الصفحة الرئيسية</h1><p class="sub">رتّب أقسام الصفحة الرئيسية بالأسهم، وخبّي أو أظهر أي قسم. الواجهة الكبيرة في أول الصفحة ثابتة. الأقسام الإضافية (من «أقسام إضافية») بتفضل جنب القسم اللي معمولة بعده.</p></div>
+  <form method="post" action="/admin/layout/reset" data-confirm="ترجّع الترتيب الأصلي؟"><button class="btn ghost" type="submit">رجّع الترتيب الأصلي</button></form>
+</div>
+<div class="table-wrap"><table class="tbl">
+  <thead><tr><th>#</th><th>القسم</th><th>الظهور</th><th></th></tr></thead>
+  <tbody>
+  <% list.forEach(function(s, i){ %>
+    <tr>
+      <td><%= i + 1 %></td>
+      <td><b><%= s.label %></b></td>
+      <td><form method="post" action="/admin/layout/<%= s.id %>/toggle"><button class="pill <%= s.visible ? 'on' : 'off' %>" title="اضغط للتغيير"><%= s.visible ? 'ظاهر' : 'مخفي' %></button></form></td>
+      <td class="acts">
+        <% if (i > 0) { %><form method="post" action="/admin/layout/<%= s.id %>/move"><input type="hidden" name="dir" value="up"><button class="icon-btn" title="لفوق"><%- icon('up') %></button></form><% } %>
+        <% if (i < list.length - 1) { %><form method="post" action="/admin/layout/<%= s.id %>/move"><input type="hidden" name="dir" value="down"><button class="icon-btn" title="لتحت"><%- icon('chevdown') %></button></form><% } %>
+      </td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table></div>
+<%- include('foot') %>

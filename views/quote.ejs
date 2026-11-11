@@ -4,6 +4,7 @@
 <section class="sec">
   <div class="wrap co-grid">
     <div class="form-card reveal" id="request">
+      <div class="blist" id="list"><h3><%- icon('doc') %> <%= t.list_title %></h3><div id="basketList"></div></div>
       <h2><%= t.f_quote_title %></h2>
       <%- include('partials/forms', { only: 'quote', ptype: ptype }) %>
     </div>

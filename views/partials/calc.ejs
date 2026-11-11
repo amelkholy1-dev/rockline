@@ -1,0 +1,29 @@
+<% var cc = site.calc || {}; var _d = (cc.diameters || '8,10,12,14,16,18,20,22,25,28,32'); %>
+<div class="calc reveal" data-calc data-dias="<%= _d %>" data-len="<%= cc.barLength || 12 %>" data-bag="<%= cc.bagKg || 50 %>"
+  data-l-dia="<%= t.calc_dia %>" data-l-len="<%= t.calc_len %>" data-l-count="<%= t.calc_count %>" data-l-per="<%= t.calc_per_bar %>"
+  data-l-steel="<%= t.calc_steel %>" data-l-cement="<%= t.calc_cement %>" data-l-ton="<%= t.unit_ton %>" data-l-bag="<%= t.unit_bag %>"
+  data-l-mm="<%= lang === 'ar' ? 'مم' : 'mm' %>" data-l-m="<%= lang === 'ar' ? 'م' : 'm' %>">
+  <div class="calc-tabs" role="tablist">
+    <button type="button" class="on" data-ct="steel"><%- icon('beam') %> <%= t.calc_steel %></button>
+    <button type="button" data-ct="cement"><%- icon('package') %> <%= t.calc_cement %></button>
+  </div>
+  <div class="calc-pane" data-pane="steel">
+    <div class="calc-rows" data-rows></div>
+    <button type="button" class="btn line-navy sm" data-addrow><%- icon('plus') %> <%= t.calc_add_row %></button>
+    <div class="calc-res"><span><%= t.calc_total_weight %></span> <b data-kg>0</b> kg &nbsp;=&nbsp; <b data-t>0</b> <%= t.unit_ton %></div>
+    <button type="button" class="btn gold" data-addlist><%- icon('doc') %> <%= t.calc_add_list %></button>
+    <span class="bmsg" data-cmsg></span>
+  </div>
+  <div class="calc-pane" data-pane="cement" hidden>
+    <div class="crow">
+      <label><%= t.calc_bag_kg %><input type="number" min="1" step="any" value="<%= cc.bagKg || 50 %>" data-bagkg></label>
+      <label><%= t.calc_bags %><input type="number" min="0" step="1" placeholder="0" data-bags></label>
+      <label><%= t.calc_tons %> (<%= lang === 'ar' ? 'اكتب الطن وهنحسب الأكياس' : 'enter tonnes to get bags' %>)<input type="number" min="0" step="any" placeholder="0" data-tons-in></label>
+      <div class="cres"><small><%= t.calc_tons %></small><b data-bags-t>0</b> <%= t.unit_ton %></div>
+    </div>
+    <button type="button" class="btn gold" data-addlist><%- icon('doc') %> <%= t.calc_add_list %></button>
+    <span class="bmsg" data-cmsg></span>
+  </div>
+  <p class="calc-note"><%- icon('info') %> <%= t.calc_note %></p>
+</div>
+<script src="/js/calc.js?v=<%= ver %>" defer></script>

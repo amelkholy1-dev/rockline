@@ -1,0 +1,11 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<% if ((site.quotes || []).length) { %>
+<section class="sec sky" id="quotes">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.quotes %></h2><span class="rule"></span></div>
+    <div class="quotes">
+      <% site.quotes.forEach(function(q){ %><figure class="quote reveal"><blockquote><%= tr(q.text) %></blockquote><figcaption><b><%= q.name %></b><span><%= tr(q.role) %></span><% if (/^https?:\/\//.test(q.video || '')) { %><a class="q-video" href="<%= q.video %>" target="_blank" rel="noopener"><%- icon('video') %> <%= lang === 'ar' ? 'شاهد الفيديو' : 'Watch video' %></a><% } %></figcaption></figure><% }); %>
+    </div>
+  </div>
+</section>
+<% } %>

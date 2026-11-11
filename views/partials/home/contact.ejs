@@ -1,0 +1,10 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec sky contact-sec" id="contact">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.contact_title %></h2><span class="rule"></span><p><%= t.contact_sub %></p></div>
+    <div class="contact-grid">
+      <%- include('../contactcards') %>
+      <div class="form-card reveal"><%- include('../forms', { tab: 'quote' }) %></div>
+    </div>
+  </div>
+</section>

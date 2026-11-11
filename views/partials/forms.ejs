@@ -61,6 +61,7 @@ var show = function(k){ return tabsOn || only === k; };
       <%- fld({ name: 'location', label: t.f_location }) %>
       <%- fld({ name: 'area', label: t.f_area, ph: lang === 'ar' ? 'مثال: 25 طن أو 500 كيس' : 'e.g. 25 tonnes or 500 bags' }) %>
       <%- fld({ name: 'start', label: t.f_start, ph: lang === 'ar' ? 'مثال: خلال أسبوع' : 'e.g. within a week' }) %>
+      <%- fld({ name: 'items', label: t.f_items, wide: 1, type: 'textarea', rows: 3 }) %>
       <%- fld({ name: 'details', label: t.f_details, req: 1, wide: 1, type: 'textarea', rows: 3, ph: lang === 'ar' ? 'مثال: حديد 12 مم و16 مم، أسمنت معبأ، التسليم في كفر الشيخ' : 'e.g. 12 mm and 16 mm rebar, bagged cement, delivery to Kafr El-Sheikh' }) %>
       <%- file(t.f_file_quote) %>
     </div>

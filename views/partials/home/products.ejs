@@ -1,0 +1,9 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<% if (projects.length) { %>
+<section class="sec pj-sec" id="products">
+  <div class="wrap">
+    <div class="shx reveal"><div><span class="kick"><%= t.nav_products %></span><h2><%= t.featured_products %></h2></div><a class="btn line-gold" href="<%= L('/products') %>"><%= t.view_all %> (<%= projectsCount %>) <%- arrow %></a></div>
+    <div class="proj-grid"><% projects.forEach(function(p){ %><%- include('../productcard', { p: p }) %><% }); %></div>
+  </div>
+</section>
+<% } %>

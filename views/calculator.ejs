@@ -1,0 +1,11 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.calc_title, sub: t.calc_sub }) %>
+<section class="sec">
+  <div class="wrap narrow">
+    <%- include('partials/calc') %>
+    <p class="center" style="margin-top:22px"><a class="btn navy" href="<%= L('/quote#list') %>"><%- icon('doc') %> <%= t.list_title %></a></p>
+  </div>
+</section>
+<%- include('partials/cta', { ctaTitle: t.quote_cta_title }) %>
+<%- include('partials/footer') %>
