@@ -4,7 +4,7 @@
   <div class="wrap ft-grid">
     <div class="ft-brand">
       <a class="ft-logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>"><img src="<%= img('logoLight') %>" alt="<%= tr(site.brand.name) %>" width="190" height="96" loading="lazy"></a>
-      <p><%= tr(site.about.p1).split(/[،,.]/).slice(0,2).join('،') %>.</p>
+      <p><%= tr(site.about.p1).split(/[،,.]/).slice(0,2).join(lang === 'ar' ? '،' : ',') %>.</p>
       <% if (socials.length) { %><div class="socials"><% socials.forEach(function(s){ %><a href="<%= safeUrl(s.url) %>" target="_blank" rel="noopener" aria-label="<%= s.k %>"><%- brand(s.k) %></a><% }); %></div><% } %>
     </div>
     <div>

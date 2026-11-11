@@ -354,5 +354,10 @@ details.card.adv summary { cursor: pointer; font-weight: 700; color: var(--muted
 .trow label { font-size: .82rem; color: var(--muted, #687384); }
 .trow input { width: 100%; }
 .trow input::placeholder { color: #9aa3ad; opacity: 1; }
-input[type="color"] { width: 46px; height: 32px; padding: 0; border: 1px solid #d5dbe3; border-radius: 6px; vertical-align: middle; margin-inline-start: 8px; }
+input[type="color"] { width: 46px !important; height: 34px !important; flex: none; padding: 0 !important; cursor: pointer; border: 1px solid #d5dbe3; border-radius: 6px; vertical-align: middle; margin-inline-start: 8px; }
 @media (max-width: 700px) { .trow { grid-template-columns: 1fr; } }
+
+.opt { display: flex !important; flex-direction: row; align-items: flex-start; gap: 12px; padding: 12px 14px; margin: 8px 0; border: 1px solid #dfe4ea; border-radius: 12px; background: #fff; cursor: pointer; font-weight: 400; }
+.opt input { width: auto !important; margin-top: 6px; flex: none; }
+.opt span { line-height: 1.7; }
+.opt:has(input:checked) { border-color: var(--navy, #203145); background: #f6f8fb; }

@@ -19,8 +19,8 @@
 
     <div class="span2">
       <span class="lbl">طريقة الرد</span>
-      <label class="check"><input type="radio" name="mode" value="ai"<%= bot.mode !== 'site' ? ' checked' : '' %>> <b>ذكاء اصطناعي (Gemini)</b> — ردود أذكى وأطبع. محتاج مفتاح API. لو المفتاح مش موجود أو وقف، بيرد من محتوى الموقع لوحده.</label>
-      <label class="check"><input type="radio" name="mode" value="site"<%= bot.mode === 'site' ? ' checked' : '' %>> <b>محتوى الموقع بس</b> — من غير أي API ولا تكلفة. بيرد من بيانات الموقع (المنتجات، التوصيل، المخازن، المواعيد، الأسئلة الشائعة...) بالكلمات المفتاحية.</label>
+      <label class="opt"><input type="radio" name="mode" value="ai"<%= bot.mode !== 'site' ? ' checked' : '' %>><span><b>ذكاء اصطناعي (Gemini)</b><br>ردود أذكى وأطبع. محتاج مفتاح API. لو المفتاح مش موجود أو وقف، بيرد من محتوى الموقع لوحده.</span></label>
+      <label class="opt"><input type="radio" name="mode" value="site"<%= bot.mode === 'site' ? ' checked' : '' %>><span><b>محتوى الموقع بس</b><br>من غير أي API ولا تكلفة. بيرد من بيانات الموقع (المنتجات، التوصيل، المخازن، المواعيد، الأسئلة الشائعة...) بالكلمات المفتاحية.</span></label>
     </div>
 
     <label class="span2">مفتاح Gemini API
