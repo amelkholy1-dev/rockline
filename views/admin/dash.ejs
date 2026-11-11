@@ -18,6 +18,16 @@
 </div>
 <% } %>
 
+<% if (me.owner) { %>
+<div class="card nudge" style="border-inline-start:4px solid <%= newContent ? '#d08a1e' : '#2e8b57' %>">
+  <h2 class="h3"><%- icon('sparkles') %> <%= newContent ? 'فيه محتوى جديد جاهز مع النسخة دي — لسه مطبّقتوش' : 'تحديث المحتوى من النسخة الجديدة' %></h2>
+  <p class="muted" style="margin:0 0 10px">لو رفعت نسخة جديدة من الموقع ولسه بيظهر المحتوى القديم، ده عشان بيانات الموقع (النصوص والمنتجات) محفوظة لوحدها ومبتتغيرش مع رفع الكود. الزرار ده بيطبّق نصوص ومنتجات النسخة الجديدة على الموقع. بيحتفظ بالتصميم المختار والصور اللي رفعتها وإعدادات الإيميل، وبيحفظ نسخة من المحتوى القديم في فولدر <code>backups</code> جوه فولدر البيانات. <b>أي تعديل عملته على النصوص والمنتجات هيتبدل.</b></p>
+  <form method="post" action="/admin/apply-defaults" data-confirm="هيتبدل محتوى الموقع (النصوص والمنتجات والمخازن) بالمحتوى الجديد اللي جاي مع النسخة. هيتحفظ نسخة من القديم. متأكد؟">
+    <button class="btn <%= newContent ? 'navy' : 'ghost' %>" type="submit"><%- icon('check') %> طبّق المحتوى الجديد على الموقع</button>
+  </form>
+</div>
+<% } %>
+
 <% if (me.owner && (samples.site || samples.projects)) { %>
 <div class="card nudge">
   <h2 class="h3"><%- icon('info') %> فيه محتوى نموذجي لازم تراجعه قبل ما تفتح الموقع للعامة</h2>

@@ -245,7 +245,7 @@ function base(req, extra) {
   const t = dict[lang];
   const pathNoLang = req.path === '/' ? '' : req.path;
   return Object.assign({
-    lang, t, site, icon, brand,
+    lang, t, site, icon, brand, ver: pkgVersion,
     dir: lang === 'ar' ? 'rtl' : 'ltr',
     other: lang === 'ar' ? 'en' : 'ar',
     tr: o => tr(o, lang),
@@ -607,7 +607,7 @@ function guard(req, res, next) {
   const perm = Object.prototype.hasOwnProperty.call(PERM_OF, seg) ? PERM_OF[seg] : null;
   if (!perm && (seg === '' || seg === 'account')) return next();
   if (seg === 'hosting' && req.me && req.me.owner) return next();
-  if ((seg === 'under-construction' || seg === 'samples') && req.me && req.me.owner) return next();
+  if ((seg === 'under-construction' || seg === 'samples' || seg === 'apply-defaults') && req.me && req.me.owner) return next();
   if (perm && users.has(req.me, perm)) return next();
   res.status(403).render('admin/denied', adminView(req, {}));
 }
@@ -792,6 +792,10 @@ function auditMw(req, res, next) {
 const admin = express.Router({ caseSensitive: true });
 app.use('/admin', auth, guard, auditMw, admin);
 
+// المحتوى الجاهز اللي جاي مع النسخة (فولدر data جنب الكود). على الاستضافة البيانات الحية في DATA_DIR ومبتتغيرش لوحدها لما ترفع نسخة جديدة.
+const shippedFile = name => path.join(__dirname, 'data', name + '.json');
+function shippedSite() { try { return JSON.parse(fs.readFileSync(shippedFile('site'), 'utf8')); } catch (e) { return null; } }
+function shippedProducts() { try { const v = JSON.parse(fs.readFileSync(shippedFile('projects'), 'utf8')); return Array.isArray(v) ? v : null; } catch (e) { return null; } }
 admin.get('/', (req, res) => {
   const inbox = store.get('inbox');
   res.render('admin/dash', adminView(req, {
@@ -807,6 +811,7 @@ admin.get('/', (req, res) => {
     missingStats: (store.get('site').stats || []).filter(s => !s.value).map(s => tr(s.label, 'ar')),
     quotesCount: (store.get('site').quotes || []).length,
     noEmail: !req.me.email,
+    newContent: Boolean(shippedSite() && shippedSite().contentVersion && shippedSite().contentVersion !== (store.get('site').contentVersion || '')),
     samples: {
       site: store.get('site').sample === true,
       projects: (store.get('projects') || []).filter(p => p.sample).length
@@ -934,6 +939,26 @@ admin.post('/projects/:id/delete', (req, res) => {
   store.set('projects', list.filter(x => x.id !== req.params.id));
   flash(req, 'تم حذف المنتج');
   res.redirect('/admin/projects');
+});
+// تطبيق المحتوى الجديد اللي جاي مع النسخة على الموقع (للمدير الأساسي بس). بيحتفظ بنسخة من القديم، وبيسيب التصميم والصور اللي رفعتها والإعدادات.
+admin.post('/apply-defaults', (req, res) => {
+  if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
+  const sSite = shippedSite(), sProd = shippedProducts();
+  if (!sSite || !sProd) { flash(req, 'مش لاقي المحتوى الجاهز اللي جاي مع النسخة (فولدر data)', 'err'); return res.redirect('/admin'); }
+  const cur = store.get('site');
+  const dir = path.join(store.DIR, 'backups');
+  const stamp = now().replace(/[:.]/g, '-');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'site-' + stamp + '.json'), JSON.stringify(cur, null, 1));
+    fs.writeFileSync(path.join(dir, 'products-' + stamp + '.json'), JSON.stringify(store.get('projects') || [], null, 1));
+  } catch (e) { /* النسخة الاحتياطية مش شرط لإتمام التحديث */ }
+  const next = Object.assign({}, sSite);
+  ['theme', 'images', 'channels', 'hosting', 'profilePdf'].forEach(k => { if (cur[k] !== undefined) next[k] = cur[k]; });
+  store.set('site', next);
+  store.set('projects', sProd);
+  flash(req, 'تم تطبيق المحتوى الجديد على الموقع. لو الموقع لسه بيظهر قديم عندك، اعمل تحديث للصفحة (Ctrl+F5).');
+  res.redirect('/admin');
 });
 admin.post('/samples/clear', (req, res) => {
   if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }

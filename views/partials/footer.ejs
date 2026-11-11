@@ -49,6 +49,6 @@
   <a href="<%= L('/quote') %>" class="mb-cta"><%- icon('doc') %><span><%= t.cta_quote %></span></a>
 </nav>
 <script>window.NK = <%- JSON.stringify({ lang: lang, t: { sending: t.sending, sent_ok: t.sent_ok, sent_fail: t.sent_fail, required: t.required, wa_note: t.sent_wa_note, too_many: t.too_many } }) %>;</script>
-<script src="/js/main.js?v=20" defer></script>
+<script src="/js/main.js?v=<%= ver %>" defer></script>
 </body>
 </html>

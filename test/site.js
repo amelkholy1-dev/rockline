@@ -75,6 +75,15 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   // مسح النماذج
   await req(A, 'POST', '/admin/samples/clear', { what: 'projects' });
   ok(JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')).filter(p => p.sample).length === 0, 'sample products cleared');
+  // تطبيق المحتوى الجديد: نعدّل نص الواجهة ونختار تصميم، وبعدها الزرار يرجّع المحتوى الجاهز ويحتفظ بالتصميم ونسخة احتياطية
+  await req(A, 'POST', '/admin/content/hero', { json: JSON.stringify({ badge: { ar: 'قديم' }, title: { ar: 'عنوان قديم ومعدّل' }, sub: { ar: 'x' } }) });
+  await req(A, 'POST', '/admin/design', { theme: 'b' });
+  r = await req(V, 'GET', '/ar'); ok(/عنوان قديم ومعدّل/.test(r.t), 'edited hero shown before apply');
+  r = await req(A, 'GET', '/admin'); ok(/طبّق المحتوى الجديد على الموقع/.test(r.t), 'dashboard has the apply-new-content button');
+  r = await req(A, 'POST', '/admin/apply-defaults', {}); ok(r.s === 302 && r.loc === '/admin', 'apply-defaults ok');
+  r = await req(V, 'GET', '/ar'); ok(!/عنوان قديم ومعدّل/.test(r.t) && /نورّد لك الحديد والأسمنت/.test(r.t) && /t-b/.test(r.t), 'shipped content restored, chosen theme kept');
+  ok(fs.existsSync(path.join(DATA, 'backups')) && fs.readdirSync(path.join(DATA, 'backups')).length >= 2, 'backup of old content saved');
+  await req(A, 'POST', '/admin/design', { theme: 'a' });
   // بيانات التواصل بتظهر للزوار
   await req(A, 'POST', '/admin/contact', { phones: '+20 100 000 0000', whatsapp: '+201000000000', email: 'info@rocklineg.com', license: '12345', grade: 'الأولى' });
   r = await req(V, 'GET', '/ar'); ok(/wa\.me\/201000000000/.test(r.t) && /info@rocklineg\.com/.test(r.t), 'contact + whatsapp shown');
