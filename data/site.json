@@ -1,8 +1,8 @@
 {
  "brand": {
   "name": {
-   "ar": "روك لاين للتوريدات العامة وتجارة الحديد والأسمنت",
-   "en": "Rock Line for General Supplies & Steel and Cement Trading"
+   "ar": "روك لاين جروب للتوريدات العامة وتجارة الحديد والأسمنت",
+   "en": "Rock Line Group for General Supplies & Steel and Cement Trading"
   },
   "short": {
    "ar": "روك لاين",
@@ -28,8 +28,8 @@
    "en": "Steel and cement, delivered to your site"
   },
   "sub": {
-   "ar": "روك لاين بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
-   "en": "Rock Line supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
+   "ar": "روك لاين جروب بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
+   "en": "Rock Line Group supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
   }
  },
  "points": [
@@ -65,8 +65,8 @@
  "stats": [],
  "about": {
   "p1": {
-   "ar": "روك لاين شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
-   "en": "Rock Line specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
+   "ar": "روك لاين جروب شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
+   "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
   },
   "p2": {
    "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه.",
@@ -416,7 +416,7 @@
    "+201018862831"
   ],
   "phones2": [],
-  "whatsapp": "",
+  "whatsapp": "+201016013020",
   "email": "info@rocklineg.com",
   "address": {
    "ar": "شارع الضرائب، قسم أول كفر الشيخ، محافظة كفر الشيخ",
