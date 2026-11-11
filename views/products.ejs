@@ -1,0 +1,23 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: t.products, sub: t.products_sub }) %>
+<% function q(c) { return L('/products' + (c ? '?cat=' + encodeURIComponent(c) : '')); } %>
+<section class="sec">
+  <div class="wrap">
+    <% if (cats.length > 1) { %>
+    <div class="pfilter" role="navigation" aria-label="<%= t.p_cat %>">
+      <div class="chips">
+        <a class="chip<%= !catQ ? ' on' : '' %>" href="<%= q('') %>"><%= t.all_cats %> <i><%= total %></i></a>
+        <% cats.forEach(function(c){ %><a class="chip<%= c === catQ ? ' on' : '' %>" href="<%= q(c) %>"><%- icon(catIcon(c)) %> <%= cat(c) %></a><% }); %>
+      </div>
+    </div>
+    <% } %>
+    <% if (list.length) { %>
+      <div class="proj-grid"><% list.forEach(function(p){ %><%- include('partials/productcard', { p: p }) %><% }); %></div>
+    <% } else { %>
+      <div class="empty"><%- icon('package') %><p><%= t.no_products %></p><a class="btn line-navy" href="<%= L('/products') %>"><%= t.clear %></a></div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/cta', { ctaTitle: t.quote_cta_title }) %>
+<%- include('partials/footer') %>

@@ -1,0 +1,17 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec ab-sec" id="about">
+  <div class="wrap ab-grid">
+    <div class="ab-ph reveal">
+      <img src="<%= img('about') %>" alt="" loading="lazy" width="600" height="480">
+      <% if (stats[0]) { %><div class="ab-yrs"><b><%= stats[0].value %></b><%= tr(stats[0].label) %></div><% } %>
+    </div>
+    <div class="ab-tx reveal">
+      <span class="kick"><%= t.about_title %></span>
+      <h2><%= tr(site.brand.name) %></h2>
+      <p><%= tr(site.about.p1) %></p>
+      <p><%= tr(site.about.p2) %></p>
+      <ul class="ab-chk"><% (site.why || []).slice(0, 4).forEach(function(w){ %><li><%- icon('checkcircle') %><%= tr(w.text) %></li><% }); %></ul>
+      <a class="btn navy" href="<%= L('/about') %>"><%= t.more %> <%- arrow %></a>
+    </div>
+  </div>
+</section>

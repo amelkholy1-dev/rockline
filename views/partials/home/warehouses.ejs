@@ -1,0 +1,8 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec" id="warehouses">
+  <div class="wrap">
+    <div class="shx reveal"><div><span class="kick"><%= t.nav_warehouses %></span><h2><%= t.warehouses_sub %></h2></div><a class="btn navy" href="<%= L('/warehouses') %>"><%= t.view_all %> <%- arrow %></a></div>
+    <%- include('../whinfo') %>
+    <p class="wh-note reveal"><%- icon('truck') %> <%= t.deliver_all %></p>
+  </div>
+</section>

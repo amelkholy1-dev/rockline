@@ -21,13 +21,6 @@
   </div>
 </section>
 
-<section class="sec">
-  <div class="wrap">
-    <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span><p><%= t.sectors_sub %></p></div>
-    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><a class="sector reveal" href="<%= L('/projects?cat=' + encodeURIComponent(tr(s.name, 'ar') || '')) %>"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></a><% }); %></div>
-  </div>
-</section>
-
 <% if ((site.faq || []).length) { %>
 <section class="sec sky">
   <div class="wrap narrow">

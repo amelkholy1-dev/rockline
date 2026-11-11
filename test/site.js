@@ -24,14 +24,19 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   for (let i = 0; i < 40; i++) { try { await fetch(B + '/admin/login'); break; } catch (e) { await new Promise(r => setTimeout(r, 250)); } }
   const V = jar();
   // الصفحات
-  for (const p of ['/ar', '/en', '/ar/about', '/ar/services', '/ar/projects', '/ar/projects/p1', '/ar/clients', '/ar/quote', '/ar/vendors', '/ar/contact', '/ar/news', '/ar/gallery', '/ar/privacy', '/en/projects?status=ongoing']) {
+  for (const p of ['/ar', '/en', '/ar/about', '/ar/services', '/ar/products', '/ar/products/p-rebar-ribbed', '/ar/warehouses', '/ar/quote', '/ar/vendors', '/ar/contact', '/ar/news', '/ar/gallery', '/ar/privacy', '/en/products?cat=' + encodeURIComponent('الأسمنت')]) {
     const r = await req(V, 'GET', p); ok(r.s === 200, 'page ' + p + ' ' + r.s);
   }
   let r = await req(V, 'GET', '/ar');
   ok(/روك لاين/.test(r.t) && !/نسر الخليج|Nasr|nisrelkhaleeg/i.test(r.t), 'home is Rock Line, no old brand');
-  ok(/class="pcard/.test(r.t) && /data-kind="quote"/.test(r.t), 'home has project cards + quote form');
-  r = await req(V, 'GET', '/ar/projects?status=ongoing'); ok(r.s === 200 && (r.t.match(/class="pcard/g) || []).length === 2, 'status filter: 2 ongoing samples');
+  ok(/class="pcard/.test(r.t) && /data-kind="quote"/.test(r.t), 'home has product cards + quote form');
+  ok(/حديد/.test(r.t) && /أسمنت|الأسمنت/.test(r.t) && !/مقاولات عامة|للمقاولات/.test(r.t), 'home is steel & cement supply, not general contracting');
+  ok(/مخازن في أنحاء الجمهورية/.test(r.t) && /شارع الضرائب/.test(r.t) && /maps\.app\.goo\.gl\/seQsg9rinhwQwUm46/.test(r.t), 'home shows nationwide warehouses + company address and map');
+  r = await req(V, 'GET', '/ar/products?cat=' + encodeURIComponent('الأسمنت')); ok(r.s === 200 && (r.t.match(/class="pcard/g) || []).length === 2, 'category filter: 2 cement products');
+  r = await req(V, 'GET', '/ar/projects'); ok(r.s === 301 && r.loc === '/ar/products', 'old /projects → /products');
+  r = await req(V, 'GET', '/ar/clients'); ok(r.s === 301 && r.loc === '/ar/about', 'old /clients → /about');
   r = await req(V, 'GET', '/ar/companies'); ok(r.s === 301 && r.loc === '/ar/quote', 'old /companies → /quote');
+  r = await req(V, 'GET', '/ar/contact'); ok(/Gm@rocklineg\.com/.test(r.t) && /\+201018862831/.test(r.t) && /السبت/.test(r.t), 'contact page shows team emails, phones and hours');
   // اللي اتشال: مسار وفيسبوك
   for (const p of ['/apply/abcdefghijklmnopqrstu', '/track', '/agent', '/me', '/x-api/track/info']) { const x = await req(V, 'GET', p); ok(x.s === 404, 'removed ' + p + ' ' + x.s); }
   r = await fetch(B + '/api/masar-notify', { method: 'POST' }); ok(r.status === 404, 'removed /api/masar-notify');
@@ -53,26 +58,36 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   for (const p of ['/admin/masar', '/admin/facebook', '/admin/jobs']) { const x = await req(A, 'GET', p); ok(x.s === 403 || x.s === 404, 'admin ' + p + ' gone ' + x.s); }
   r = await req(A, 'GET', '/admin/inbox?kind=quote'); ok(/فيلا دورين|أحمد/.test(r.t) && /طلب عرض سعر/.test(r.t), 'quote in inbox');
   r = await req(A, 'GET', '/admin/inbox'); ok(/مورد مواد بناء/.test(r.t), 'vendor in inbox');
-  for (const p of ['/admin/projects', '/admin/projects/new', '/admin/projects/p1/edit', '/admin/news', '/admin/gallery', '/admin/content/hero', '/admin/content/sectors', '/admin/content/certificates', '/admin/images', '/admin/contact', '/admin/mail', '/admin/stats', '/admin/hosting', '/admin/users', '/admin/sections']) {
+  for (const p of ['/admin/projects', '/admin/projects/new', '/admin/projects/p-rebar-ribbed/edit', '/admin/news', '/admin/gallery', '/admin/content/hero', '/admin/content/sectors', '/admin/content/warehouses', '/admin/content/team', '/admin/content/certificates', '/admin/images', '/admin/contact', '/admin/mail', '/admin/stats', '/admin/hosting', '/admin/users', '/admin/sections']) {
     const x = await req(A, 'GET', p); ok(x.s === 200, 'admin page ' + p + ' ' + x.s);
   }
   // مشروع جديد
-  r = await req(A, 'POST', '/admin/projects/save', { title_ar: 'برج اختبار', cat: 'سكني', status: 'ongoing', location_ar: 'أكتوبر', year: '2026', visible: 'on', featured: 'on' });
-  ok(r.s === 302 && r.loc === '/admin/projects', 'project saved');
-  const projects = JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')); const np = projects.find(p => p.title.ar === 'برج اختبار');
-  ok(np && np.status === 'ongoing' && !np.sample, 'project stored');
-  r = await req(V, 'GET', '/ar/projects/' + np.id); ok(r.s === 200 && /برج اختبار/.test(r.t), 'new project public page');
-  r = await req(V, 'GET', '/ar'); ok(/برج اختبار/.test(r.t), 'featured project on home');
+  r = await req(A, 'POST', '/admin/projects/save', { title_ar: 'منتج اختبار', cat: 'حديد التسليح', pack_ar: 'بالطن', visible: 'on', featured: 'on' });
+  ok(r.s === 302 && r.loc === '/admin/projects', 'product saved');
+  const projects = JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')); const np = projects.find(p => p.title.ar === 'منتج اختبار');
+  ok(np && np.pack.ar === 'بالطن' && !np.sample, 'product stored');
+  r = await req(V, 'GET', '/ar/products/' + np.id); ok(r.s === 200 && /منتج اختبار/.test(r.t), 'new product public page');
+  r = await req(V, 'GET', '/ar'); ok(/منتج اختبار/.test(r.t), 'featured product on home');
   await req(A, 'POST', '/admin/projects/' + np.id + '/toggle', {});
-  r = await req(V, 'GET', '/ar/projects/' + np.id); ok(r.s === 404, 'hidden project → 404');
+  r = await req(V, 'GET', '/ar/products/' + np.id); ok(r.s === 404, 'hidden product → 404');
   await req(A, 'POST', '/admin/projects/' + np.id + '/delete', {});
-  ok(!JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')).some(p => p.id === np.id), 'project deleted');
+  ok(!JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')).some(p => p.id === np.id), 'product deleted');
   // مسح النماذج
   await req(A, 'POST', '/admin/samples/clear', { what: 'projects' });
-  ok(JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')).filter(p => p.sample).length === 0, 'sample projects cleared');
+  ok(JSON.parse(fs.readFileSync(path.join(DATA, 'projects.json'), 'utf8')).filter(p => p.sample).length === 0, 'sample products cleared');
+  // تطبيق المحتوى الجديد: نعدّل نص الواجهة ونختار تصميم، وبعدها الزرار يرجّع المحتوى الجاهز ويحتفظ بالتصميم ونسخة احتياطية
+  await req(A, 'POST', '/admin/content/hero', { json: JSON.stringify({ badge: { ar: 'قديم' }, title: { ar: 'عنوان قديم ومعدّل' }, sub: { ar: 'x' } }) });
+  await req(A, 'POST', '/admin/design', { theme: 'b' });
+  r = await req(V, 'GET', '/ar'); ok(/عنوان قديم ومعدّل/.test(r.t), 'edited hero shown before apply');
+  r = await req(A, 'GET', '/admin'); ok(/طبّق المحتوى الجديد على الموقع/.test(r.t), 'dashboard has the apply-new-content button');
+  r = await req(A, 'POST', '/admin/apply-defaults', {}); ok(r.s === 302 && r.loc === '/admin', 'apply-defaults ok');
+  r = await req(V, 'GET', '/ar'); ok(!/عنوان قديم ومعدّل/.test(r.t) && /نورّد لك الحديد والأسمنت/.test(r.t) && /t-b/.test(r.t), 'shipped content restored, chosen theme kept');
+  ok(fs.existsSync(path.join(DATA, 'backups')) && fs.readdirSync(path.join(DATA, 'backups')).length >= 2, 'backup of old content saved');
+  await req(A, 'POST', '/admin/design', { theme: 'a' });
   // بيانات التواصل بتظهر للزوار
   await req(A, 'POST', '/admin/contact', { phones: '+20 100 000 0000', whatsapp: '+201000000000', email: 'info@rocklineg.com', license: '12345', grade: 'الأولى' });
-  r = await req(V, 'GET', '/ar'); ok(/wa\.me\/201000000000/.test(r.t) && /12345/.test(r.t) && /info@rocklineg\.com/.test(r.t), 'contact + federation number shown');
+  r = await req(V, 'GET', '/ar'); ok(/wa\.me\/201000000000/.test(r.t) && /info@rocklineg\.com/.test(r.t), 'contact + whatsapp shown');
+  r = await req(V, 'GET', '/ar/about'); ok(/12345/.test(r.t), 'license number shown on about');
   // التصميمات: الافتراضي A، المعاينة للمدير بس، والاعتماد بيغيّر للزوار
   r = await req(V, 'GET', '/ar'); ok(/class="p-home t-a"/.test(r.t) && /theme-a\.css/.test(r.t) && /hx-a/.test(r.t), 'default theme A for visitors');
   for (const c of ['a', 'b', 'd']) { const x = await fetch(B + '/css/theme-' + c + '.css'); ok(x.status === 200, 'theme css ' + c); }
@@ -85,7 +100,7 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   r = await req(A, 'POST', '/admin/design', { theme: 'd' }); ok(r.s === 302, 'apply theme D');
   r = await req(V, 'GET', '/ar'); ok(/t-d/.test(r.t) && /hx-d/.test(r.t), 'visitor sees D after applying');
   r = await req(A, 'GET', '/ar'); ok(/t-d/.test(r.t) && !/بتعاين/.test(r.t), 'preview cleared after applying');
-  r = await req(V, 'GET', '/en/projects'); ok(r.s === 200 && /t-d/.test(r.t), 'inner page uses theme D');
+  r = await req(V, 'GET', '/en/products'); ok(r.s === 200 && /t-d/.test(r.t), 'inner page uses theme D');
   await req(A, 'POST', '/admin/design', { theme: 'b' }); r = await req(V, 'GET', '/en'); ok(/t-b/.test(r.t) && /hx-b/.test(r.t), 'theme B (English)');
   r = await req(V, 'GET', '/ar/credits'); ok(r.s === 200 && /Wikimedia|ويكيميديا/.test(r.t) && /CC BY-SA/.test(r.t), 'photo credits page');
   await req(A, 'POST', '/admin/design', { theme: 'a' });

@@ -12,11 +12,7 @@
 </div>
 <% } %>
 <div class="topbar"><div class="wrap">
-  <% if (site.brand.license) { %>
-    <span class="tb-lic"><%- icon('shield') %> <%= t.member %> · <%= t.member_no %> <b><%= site.brand.license %></b><% if (site.brand.grade) { %> · <%= t.grade %> <b><%= site.brand.grade %></b><% } %></span>
-  <% } else { %>
-    <span class="tb-lic"><%- icon('hardhat') %> <%= tr(site.brand.tagline) %></span>
-  <% } %>
+  <span class="tb-lic"><%- icon('truck') %> <%= t.deliver_all %><% if (tr(site.contact.hours)) { %> · <%= tr(site.contact.hours) %><% } %></span>
   <span class="tb-links">
     <% if (phone1) { %><a href="<%= tel(phone1) %>" dir="ltr"><%- icon('phone') %> <%= phone1 %></a><% } %>
     <% if (site.contact.email) { %><a class="hide-sm" href="mailto:<%= site.contact.email %>" dir="ltr"><%- icon('mail') %> <%= site.contact.email %></a><% } %>
@@ -29,7 +25,7 @@
     <img class="logo-full" src="<%= img(theme === 'd' ? 'logoFull' : 'logoLight') %>" alt="<%= tr(site.brand.name) %>" width="111" height="56">
   </a>
   <nav class="nav" id="nav" aria-label="main">
-    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/services', 'services', t.nav_services], ['/projects', 'projects', t.nav_projects], ['/clients', 'clients', t.nav_clients], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
+    <% [['', 'home', t.nav_home], ['/about', 'about', t.nav_about], ['/products', 'products', t.nav_products], ['/services', 'services', t.nav_services], ['/warehouses', 'warehouses', t.nav_warehouses], ['/news', 'news', t.nav_news], ['/contact', 'contact', t.nav_contact]].forEach(function(n){ %>
       <a href="<%= L(n[0]) %>"<% if (page === n[1]) { %> class="on" aria-current="page"<% } %>><%= n[2] %></a>
     <% }); %>
     <div class="nav-extra">
@@ -37,6 +33,7 @@
       <a class="btn line" href="<%= L('/vendors') %>"><%- icon('package') %> <%= t.nav_vendors %></a>
     </div>
   </nav>
+  <a class="basket-btn" id="basketBtn" href="<%= L('/quote#list') %>" hidden><%- icon('doc') %> <span><%= t.list_title %></span> <i id="basketCount">0</i></a>
   <a class="btn gold hd-cta" href="<%= L('/quote') %>"><%= t.cta_quote %></a>
   <button class="burger" id="burger" aria-label="<%= t.menu %>" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
 </div></header>

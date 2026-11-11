@@ -1,0 +1,17 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<% if (news.length) { %>
+<section class="sec sky" id="news">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.news %></h2><span class="rule"></span><p><%= t.news_sub %></p></div>
+    <div class="news-grid">
+      <% news.forEach(function(n){ %>
+        <article class="ncard reveal">
+          <a class="nc-img" href="<%= L('/news/' + n.id) %>"><img src="<%= n.image || img('project') %>" alt="" loading="lazy"></a>
+          <div class="nc-body"><time><%- icon('calendar') %> <%= fmtDate(n.date) %></time><h3><a href="<%= L('/news/' + n.id) %>"><%= tr(n.title) %></a></h3><p><%= tr(n.text).slice(0, 140) %><%= tr(n.text).length > 140 ? '…' : '' %></p></div>
+        </article>
+      <% }); %>
+    </div>
+    <div class="center"><a class="btn navy" href="<%= L('/news') %>"><%= t.view_all %></a></div>
+  </div>
+</section>
+<% } %>

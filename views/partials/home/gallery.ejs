@@ -1,0 +1,12 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<% if (photos.length) { %>
+<section class="sec" id="gallery">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.gallery %></h2><span class="rule"></span><p><%= t.gallery_sub %></p></div>
+    <div class="pgrid" data-lightbox>
+      <% photos.forEach(function(p){ %><a class="ph-it reveal" href="<%= p.file %>" data-cap="<%= tr(p.caption) %>"><img src="<%= p.file %>" alt="<%= tr(p.caption) %>" loading="lazy"></a><% }); %>
+    </div>
+    <div class="center"><a class="btn navy" href="<%= L('/gallery') %>"><%= t.view_all %></a></div>
+  </div>
+</section>
+<% } %>

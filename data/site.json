@@ -1,16 +1,16 @@
 {
  "brand": {
   "name": {
-   "ar": "روك لاين جروب للمقاولات العامة",
-   "en": "Rock Line Group for General Contracting"
+   "ar": "روك لاين جروب للتوريدات العامة وتجارة الحديد والأسمنت",
+   "en": "Rock Line Group for General Supplies & Steel and Cement Trading"
   },
   "short": {
    "ar": "روك لاين",
    "en": "Rock Line"
   },
   "tagline": {
-   "ar": "نبني بثقة .. ونسلّم بإتقان",
-   "en": "Built on trust, delivered with precision"
+   "ar": "حديد وأسمنت بجودة مضمونة .. وتوصيل لكل المحافظات",
+   "en": "Quality steel & cement, delivered to every governorate"
   },
   "license": "",
   "grade": "",
@@ -20,116 +20,80 @@
  },
  "hero": {
   "badge": {
-   "ar": "مقاولات عامة · إنشاءات · تشطيبات · بنية تحتية",
-   "en": "General contracting · Construction · Finishing · Infrastructure"
+   "ar": "توريد حديد التسليح · الأسمنت المعبأ والسائب",
+   "en": "Steel rebar · Bagged & bulk cement"
   },
   "title": {
-   "ar": "نبني مشروعك من الأساس حتى التسليم",
-   "en": "We build your project from foundation to handover"
+   "ar": "نورّد لك الحديد والأسمنت لحد موقعك",
+   "en": "Steel and cement, delivered to your site"
   },
   "sub": {
-   "ar": "روك لاين جروب شركة مقاولات عامة بتنفّذ المشروعات السكنية والتجارية والإدارية والصناعية وأعمال البنية التحتية، بفريق هندسي متخصص والتزام كامل بالجودة والسلامة والجدول الزمني.",
-   "en": "Rock Line Group is a general contractor delivering residential, commercial, administrative and industrial buildings and infrastructure works, with a specialised engineering team and full commitment to quality, safety and schedule."
+   "ar": "روك لاين جروب بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
+   "en": "Rock Line Group supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
   }
  },
  "points": [
   {
    "icon": "award",
    "text": {
-    "ar": "جودة",
-    "en": "Quality"
+    "ar": "جودة مضمونة",
+    "en": "Guaranteed quality"
    }
   },
   {
-   "icon": "shield",
+   "icon": "truck",
    "text": {
-    "ar": "سلامة",
-    "en": "Safety"
+    "ar": "توصيل لكل المحافظات",
+    "en": "Delivery nationwide"
+   }
+  },
+  {
+   "icon": "package",
+   "text": {
+    "ar": "كميات كبيرة فوراً",
+    "en": "Large quantities on demand"
    }
   },
   {
    "icon": "timer",
    "text": {
-    "ar": "التزام بالمواعيد",
-    "en": "On time"
-   }
-  },
-  {
-   "icon": "handshake",
-   "text": {
-    "ar": "شفافية",
-    "en": "Transparency"
+    "ar": "عرض سعر سريع",
+    "en": "Fast quotes"
    }
   }
  ],
- "stats": [
-  {
-   "value": "15+",
-   "label": {
-    "ar": "سنة خبرة",
-    "en": "Years of experience"
-   }
-  },
-  {
-   "value": "120+",
-   "label": {
-    "ar": "مشروع منفّذ",
-    "en": "Projects delivered"
-   }
-  },
-  {
-   "value": "350+",
-   "label": {
-    "ar": "مهندس وفني",
-    "en": "Engineers & technicians"
-   }
-  },
-  {
-   "value": "80+",
-   "label": {
-    "ar": "معدة وآلة",
-    "en": "Machines & equipment"
-   }
-  }
- ],
+ "stats": [],
  "about": {
   "p1": {
-   "ar": "روك لاين جروب شركة مقاولات عامة متخصصة في تنفيذ الأعمال الإنشائية والتشطيبات والأعمال الكهروميكانيكية وأعمال البنية التحتية، للقطاع الخاص والجهات الحكومية.",
-   "en": "Rock Line Group is a general contracting company specialised in structural works, finishing, MEP and infrastructure, serving private clients and public entities."
+   "ar": "روك لاين جروب شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
+   "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
   },
   "p2": {
-   "ar": "بنشتغل بمنهجية واضحة من أول دراسة المشروع والمقايسة، مروراً بالتنفيذ والإشراف الهندسي اليومي، لحد التسليم وخدمة ما بعد التسليم — بأسعار تنافسية وجودة مطابقة للمواصفات.",
-   "en": "We follow a clear method from study and bill of quantities, through execution and daily engineering supervision, to handover and after-sales service — at competitive prices and to specification."
+   "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه.",
+   "en": "We keep it simple: you send the item, quantity and delivery location, we reply with a clear quote, prepare the order from our warehouse and deliver to your site on the agreed date."
   },
   "vision": {
-   "ar": "أن نكون من الشركات الرائدة في قطاع المقاولات في مصر والمنطقة، والاختيار الأول لعملائنا في الجودة والالتزام.",
-   "en": "To be a leading contractor in Egypt and the region, and our clients' first choice for quality and commitment."
+   "ar": "أن نكون الاختيار الأول في توريد الحديد والأسمنت بالجودة والالتزام والسعر العادل.",
+   "en": "To be the first choice for steel and cement supply through quality, commitment and fair pricing."
   },
   "mission": {
-   "ar": "تنفيذ مشروعات آمنة ومستدامة بأعلى جودة وفي الوقت المحدد، من خلال فريق محترف وإدارة دقيقة للتكلفة والموارد.",
-   "en": "Delivering safe, sustainable projects to the highest quality and on schedule, through a professional team and careful cost and resource management."
+   "ar": "توفير حديد وأسمنت مطابقين للمواصفات بكميات كافية وفي المواعيد، مع تعامل واضح وشفاف مع كل عميل.",
+   "en": "Providing steel and cement to specification, in sufficient quantities and on time, with clear and transparent dealing with every client."
   }
  },
  "values": [
   {
    "icon": "award",
    "text": {
-    "ar": "الجودة والإتقان",
-    "en": "Quality & craftsmanship"
-   }
-  },
-  {
-   "icon": "shield",
-   "text": {
-    "ar": "السلامة أولاً",
-    "en": "Safety first"
+    "ar": "الجودة المضمونة",
+    "en": "Guaranteed quality"
    }
   },
   {
    "icon": "handshake",
    "text": {
-    "ar": "النزاهة والشفافية",
-    "en": "Integrity & transparency"
+    "ar": "الأمانة والشفافية",
+    "en": "Honesty & transparency"
    }
   },
   {
@@ -140,395 +104,222 @@
    }
   },
   {
-   "icon": "leaf",
+   "icon": "truck",
    "text": {
-    "ar": "الاستدامة",
-    "en": "Sustainability"
+    "ar": "سرعة التوريد",
+    "en": "Fast supply"
+   }
+  },
+  {
+   "icon": "headset",
+   "text": {
+    "ar": "خدمة عملاء قريبة",
+    "en": "Responsive customer service"
    }
   }
  ],
  "services": [
   {
-   "icon": "building",
-   "title": {
-    "ar": "المقاولات العامة",
-    "en": "General contracting"
-   },
-   "desc": {
-    "ar": "تنفيذ المشروعات بالكامل من الحفر والأساسات حتى التسليم النهائي.",
-    "en": "Full project delivery from excavation and foundations to final handover."
-   }
-  },
-  {
-   "icon": "layers",
-   "title": {
-    "ar": "الأعمال الإنشائية والخرسانية",
-    "en": "Structural & concrete works"
-   },
-   "desc": {
-    "ar": "الأساسات والهياكل الخرسانية والمباني بأحدث طرق التنفيذ والشدات.",
-    "en": "Foundations, reinforced-concrete frames and masonry with modern formwork methods."
-   }
-  },
-  {
-   "icon": "paintroller",
-   "title": {
-    "ar": "التشطيبات والديكور",
-    "en": "Finishing & fit-out"
-   },
-   "desc": {
-    "ar": "تشطيبات داخلية وخارجية، واجهات، أرضيات، ونجارة ومعادن بمواصفات راقية.",
-    "en": "Interior and exterior finishing, façades, flooring, joinery and metalwork to high standards."
-   }
-  },
-  {
-   "icon": "zap",
-   "title": {
-    "ar": "الأعمال الكهروميكانيكية",
-    "en": "MEP works"
-   },
-   "desc": {
-    "ar": "كهرباء وتيار خفيف، صحي وحريق، تكييف وتهوية، بتنسيق كامل مع باقي الأعمال.",
-    "en": "Electrical and low-current, plumbing and fire fighting, HVAC — fully coordinated with all trades."
-   }
-  },
-  {
-   "icon": "road",
-   "title": {
-    "ar": "البنية التحتية والطرق",
-    "en": "Infrastructure & roads"
-   },
-   "desc": {
-    "ar": "طرق ورصف، شبكات مياه وصرف، وأعمال الموقع العام وتنسيق المواقع.",
-    "en": "Roads and paving, water and sewage networks, site works and landscaping."
-   }
-  },
-  {
    "icon": "beam",
    "title": {
-    "ar": "الهياكل المعدنية",
-    "en": "Steel structures"
+    "ar": "توريد حديد التسليح",
+    "en": "Steel rebar supply"
    },
    "desc": {
-    "ar": "تصنيع وتركيب الهناجر والمخازن والمنشآت المعدنية.",
-    "en": "Fabrication and erection of hangars, warehouses and steel buildings."
+    "ar": "حديد تسليح بالأقطار والرتب المطلوبة للمباني والمشروعات، بكميات صغيرة أو كبيرة.",
+    "en": "Steel rebar in the diameters and grades you need for buildings and projects, in small or large quantities."
    }
   },
   {
-   "icon": "ruler",
+   "icon": "package",
    "title": {
-    "ar": "التصميم والتنفيذ",
-    "en": "Design & build"
+    "ar": "الأسمنت المعبأ",
+    "en": "Bagged cement"
    },
    "desc": {
-    "ar": "حل متكامل من التصميم الهندسي والرسومات التنفيذية حتى التسليم.",
-    "en": "An integrated solution from engineering design and shop drawings to handover."
+    "ar": "أسمنت معبأ في أكياس للأفراد والمقاولين وتجار التجزئة.",
+    "en": "Bagged cement for individuals, contractors and retailers."
    }
   },
   {
-   "icon": "clipboard",
+   "icon": "factory",
    "title": {
-    "ar": "إدارة المشروعات",
-    "en": "Project management"
+    "ar": "الأسمنت السائب",
+    "en": "Bulk cement"
    },
    "desc": {
-    "ar": "تخطيط ومتابعة وضبط التكلفة والجودة بتقارير دورية للعميل.",
-    "en": "Planning, monitoring, cost and quality control with regular client reporting."
+    "ar": "توريد الأسمنت السائب بالصهاريج لمحطات الخرسانة الجاهزة والمشروعات الكبيرة والمصانع.",
+    "en": "Bulk cement by tanker for ready-mix plants, large projects and factories."
    }
   },
   {
-   "icon": "wrench",
+   "icon": "truck",
    "title": {
-    "ar": "الترميم والصيانة",
-    "en": "Restoration & maintenance"
+    "ar": "التوصيل لكل المحافظات",
+    "en": "Delivery to every governorate"
    },
    "desc": {
-    "ar": "تدعيم وترميم المباني القائمة وعقود الصيانة الدورية.",
-    "en": "Strengthening and restoring existing buildings and periodic maintenance contracts."
-   }
-  }
- ],
- "process": [
-  {
-   "icon": "search",
-   "title": {
-    "ar": "المعاينة ودراسة الطلب",
-    "en": "Site visit & study"
-   },
-   "desc": {
-    "ar": "بنزور الموقع ونفهم احتياجك والرسومات المتاحة.",
-    "en": "We visit the site and study your needs and available drawings."
+    "ar": "بنوصّل طلبك لحد موقع المشروع في أي محافظة وفي الميعاد المتفق عليه.",
+    "en": "We deliver your order to the project site in any governorate on the agreed date."
    }
   },
   {
-   "icon": "ruler",
+   "icon": "store",
    "title": {
-    "ar": "المقايسة والتصميم",
-    "en": "BOQ & design"
+    "ar": "الكميات الكبيرة والتوريد الدوري",
+    "en": "Large quantities & regular supply"
    },
    "desc": {
-    "ar": "حصر الكميات وتجهيز الرسومات والمواصفات.",
-    "en": "Quantity take-off, drawings and specifications."
+    "ar": "توفير الكميات الكبيرة وتوريد دوري للشركات والمصانع والمشروعات المستمرة.",
+    "en": "Large quantities and regular supply for companies, factories and ongoing projects."
    }
   },
   {
    "icon": "doc",
    "title": {
-    "ar": "العرض والتعاقد",
-    "en": "Offer & contract"
+    "ar": "عروض الأسعار والاستشارة",
+    "en": "Quotes & advice"
    },
    "desc": {
-    "ar": "عرض سعر مفصّل وجدول زمني واضح قبل التعاقد.",
-    "en": "A detailed priced offer and a clear schedule before signing."
+    "ar": "عرض سعر سريع وواضح، ومساعدة في اختيار الصنف والكمية المناسبة لشغلك.",
+    "en": "A fast, clear quote and help choosing the right item and quantity for your job."
+   }
+  }
+ ],
+ "process": [
+  {
+   "icon": "doc",
+   "title": {
+    "ar": "اطلب عرض سعر",
+    "en": "Request a quote"
+   },
+   "desc": {
+    "ar": "ابعتلنا الصنف والكمية وموقع التسليم من الفورم أو واتساب أو بالتليفون.",
+    "en": "Send the item, quantity and delivery location by form, WhatsApp or phone."
    }
   },
   {
-   "icon": "hardhat",
+   "icon": "chart",
    "title": {
-    "ar": "التنفيذ والإشراف",
-    "en": "Execution & supervision"
+    "ar": "نرد بعرض السعر",
+    "en": "We send the quote"
    },
    "desc": {
-    "ar": "تنفيذ بإشراف هندسي يومي وتقارير تقدّم منتظمة.",
-    "en": "Execution under daily engineering supervision with regular progress reports."
+    "ar": "بنرد عليك بالسعر وميعاد التوريد. أسعار الحديد والأسمنت بتتغير مع السوق، فالسعر بيتحدد وقت الطلب.",
+    "en": "We reply with the price and delivery date. Steel and cement prices move with the market, so the price is set at the time of order."
    }
   },
   {
-   "icon": "checkcircle",
+   "icon": "clipboard",
    "title": {
-    "ar": "الاستلام والتسليم",
-    "en": "Handover"
+    "ar": "تأكيد الطلب والتجهيز",
+    "en": "Confirm & prepare"
    },
    "desc": {
-    "ar": "اختبارات واستلام نهائي ومتابعة فترة الضمان.",
-    "en": "Testing, final acceptance and follow-up through the warranty period."
+    "ar": "بنأكد الطلب ونجهّز الكمية من المخزن.",
+    "en": "We confirm the order and prepare the quantity from the warehouse."
+   }
+  },
+  {
+   "icon": "truck",
+   "title": {
+    "ar": "التوصيل والاستلام",
+    "en": "Delivery & receipt"
+   },
+   "desc": {
+    "ar": "بنوصّل لحد الموقع وتستلم وتراجع الكمية.",
+    "en": "We deliver to your site and you receive and check the quantity."
    }
   }
  ],
  "sectors": [
   {
-   "icon": "home",
+   "icon": "beam",
    "name": {
-    "ar": "سكني",
-    "en": "Residential"
+    "ar": "حديد التسليح",
+    "en": "Steel rebar"
    }
   },
   {
-   "icon": "building",
+   "icon": "package",
    "name": {
-    "ar": "إداري وتجاري",
-    "en": "Administrative & commercial"
-   }
-  },
-  {
-   "icon": "factory",
-   "name": {
-    "ar": "صناعي ومخازن",
-    "en": "Industrial & warehouses"
-   }
-  },
-  {
-   "icon": "graduation",
-   "name": {
-    "ar": "تعليمي",
-    "en": "Educational"
-   }
-  },
-  {
-   "icon": "stethoscope",
-   "name": {
-    "ar": "صحي",
-    "en": "Healthcare"
-   }
-  },
-  {
-   "icon": "hotel",
-   "name": {
-    "ar": "سياحي وفندقي",
-    "en": "Hospitality"
-   }
-  },
-  {
-   "icon": "road",
-   "name": {
-    "ar": "بنية تحتية",
-    "en": "Infrastructure"
-   }
-  },
-  {
-   "icon": "landmark",
-   "name": {
-    "ar": "حكومي",
-    "en": "Government"
+    "ar": "الأسمنت",
+    "en": "Cement"
    }
   }
  ],
  "why": [
   {
-   "icon": "users",
-   "text": {
-    "ar": "فريق هندسي متخصص في كل التخصصات",
-    "en": "A specialised engineering team across all disciplines"
-   }
-  },
-  {
-   "icon": "timer",
-   "text": {
-    "ar": "التزام بالجدول الزمني وتقارير تقدّم دورية",
-    "en": "Committed schedules and regular progress reports"
-   }
-  },
-  {
    "icon": "award",
    "text": {
-    "ar": "جودة مطابقة للمواصفات والكود المصري",
-    "en": "Quality to specification and the Egyptian code"
-   }
-  },
-  {
-   "icon": "shield",
-   "text": {
-    "ar": "نظام صارم للسلامة والصحة المهنية في المواقع",
-    "en": "A strict site health & safety system"
-   }
-  },
-  {
-   "icon": "chart",
-   "text": {
-    "ar": "أسعار تنافسية وشفافية كاملة في التكلفة",
-    "en": "Competitive prices and full cost transparency"
+    "ar": "جودة مضمونة ومطابقة للمواصفات",
+    "en": "Guaranteed quality to specification"
    }
   },
   {
    "icon": "truck",
    "text": {
-    "ar": "معدات حديثة وسلاسل توريد موثوقة",
-    "en": "Modern equipment and reliable supply chains"
-   }
-  }
- ],
- "hse": [
-  {
-   "icon": "shield",
-   "title": {
-    "ar": "السلامة والصحة المهنية",
-    "en": "Health & safety"
-   },
-   "desc": {
-    "ar": "مسؤول سلامة في كل موقع، وتدريب مستمر، ومهمات وقاية لكل العاملين.",
-    "en": "A safety officer on every site, ongoing training and PPE for every worker."
+    "ar": "توصيل لكل المحافظات",
+    "en": "Delivery to every governorate"
    }
   },
   {
-   "icon": "award",
-   "title": {
-    "ar": "ضبط الجودة",
-    "en": "Quality control"
-   },
-   "desc": {
-    "ar": "اختبارات للمواد واستلامات مرحلية موثّقة لكل بند قبل اللي بعده.",
-    "en": "Material testing and documented stage inspections for every item."
+   "icon": "package",
+   "text": {
+    "ar": "توفير الكميات الكبيرة فوراً",
+    "en": "Large quantities available promptly"
    }
   },
   {
-   "icon": "leaf",
-   "title": {
-    "ar": "البيئة",
-    "en": "Environment"
-   },
-   "desc": {
-    "ar": "تقليل المخلفات وإدارتها، والحفاظ على نظافة الموقع والمحيط.",
-    "en": "Reducing and managing waste, keeping the site and its surroundings clean."
+   "icon": "chart",
+   "text": {
+    "ar": "عرض سعر سريع وواضح",
+    "en": "Fast, clear quotes"
+   }
+  },
+  {
+   "icon": "store",
+   "text": {
+    "ar": "مخازن جاهزة للتجهيز والتسليم",
+    "en": "Warehouses ready to prepare and ship"
+   }
+  },
+  {
+   "icon": "users",
+   "text": {
+    "ar": "بنتعامل مع الأفراد والمقاولين والشركات والمصانع",
+    "en": "We serve individuals, contractors, companies and factories"
    }
   }
  ],
  "certificates": [],
  "milestones": [],
- "regions": [
-  {
-   "name": {
-    "ar": "القاهرة الكبرى",
-    "en": "Greater Cairo"
-   },
-   "note": {
-    "ar": "القاهرة الجديدة · الشيخ زايد · 6 أكتوبر",
-    "en": "New Cairo · Sheikh Zayed · 6th of October"
-   }
-  },
-  {
-   "name": {
-    "ar": "العاصمة الإدارية الجديدة",
-    "en": "New Administrative Capital"
-   },
-   "note": {
-    "ar": "مشروعات إدارية وسكنية",
-    "en": "Administrative & residential projects"
-   }
-  },
-  {
-   "name": {
-    "ar": "الإسكندرية والساحل الشمالي",
-    "en": "Alexandria & North Coast"
-   },
-   "note": {
-    "ar": "سكني وسياحي",
-    "en": "Residential & hospitality"
-   }
-  },
-  {
-   "name": {
-    "ar": "مدن القناة والعين السخنة",
-    "en": "Canal cities & Ain Sokhna"
-   },
-   "note": {
-    "ar": "صناعي ومخازن",
-    "en": "Industrial & warehouses"
-   }
-  },
-  {
-   "name": {
-    "ar": "الصعيد ومحافظات الدلتا",
-    "en": "Upper Egypt & Delta"
-   },
-   "note": {
-    "ar": "بنية تحتية ومشروعات حكومية",
-    "en": "Infrastructure & public projects"
-   }
-  }
- ],
  "vtypes": [
   {
    "text": {
-    "ar": "مقاول باطن",
-    "en": "Subcontractor"
+    "ar": "مصنع حديد",
+    "en": "Steel mill"
    }
   },
   {
    "text": {
-    "ar": "مورد مواد بناء",
-    "en": "Building-materials supplier"
+    "ar": "مصنع أسمنت",
+    "en": "Cement plant"
    }
   },
   {
    "text": {
-    "ar": "تأجير معدات",
-    "en": "Equipment rental"
+    "ar": "شركة نقل",
+    "en": "Transport company"
    }
   },
   {
    "text": {
-    "ar": "مكتب استشاري / تصميم",
-    "en": "Consultant / design office"
-   }
-  },
-  {
-   "text": {
-    "ar": "مورد خدمات",
-    "en": "Service provider"
+    "ar": "مورد آخر",
+    "en": "Other supplier"
    }
   }
  ],
- "partners": [],
  "quotes": [],
  "docs": [
   {
@@ -545,90 +336,101 @@
   },
   {
    "text": {
-    "ar": "شهادة القيد بالاتحاد المصري لمقاولي التشييد والبناء (لمقاولي الباطن)",
-    "en": "Egyptian Federation for Construction & Building Contractors registration (subcontractors)"
+    "ar": "الملف التعريفي",
+    "en": "Company profile"
    }
   },
   {
    "text": {
-    "ar": "الملف التعريفي وسابقة الأعمال",
-    "en": "Company profile and track record"
-   }
-  },
-  {
-   "text": {
-    "ar": "قائمة المعدات والعمالة المتاحة",
-    "en": "List of available equipment and labour"
-   }
-  },
-  {
-   "text": {
-    "ar": "بيانات الحساب البنكي",
-    "en": "Bank account details"
+    "ar": "قائمة المنتجات والأسعار",
+    "en": "Product and price list"
    }
   }
  ],
  "faq": [
   {
    "q": {
-    "ar": "إزاي أطلب عرض سعر لمشروعي؟",
-    "en": "How do I request a quotation?"
+    "ar": "إزاي أطلب عرض سعر؟",
+    "en": "How do I request a quote?"
    },
    "a": {
-    "ar": "املأ فورم «اطلب عرض سعر» وارفق الرسومات أو المقايسة لو متاحة، وفريقنا هيتواصل معاك لتحديد معاينة.",
-    "en": "Fill in the quotation form and attach drawings or a BOQ if available. Our team will contact you to arrange a site visit."
+    "ar": "املأ فورم «اطلب عرض سعر» أو كلمنا تليفون/واتساب، واكتب الصنف والكمية وموقع التسليم، وهنرد عليك بالسعر وميعاد التوريد.",
+    "en": "Fill in the quote form or call/WhatsApp us with the item, quantity and delivery location. We will reply with the price and delivery date."
    }
   },
   {
    "q": {
-    "ar": "هل بتنفذوا مشروعات صغيرة؟",
-    "en": "Do you take on small projects?"
+    "ar": "بتوصّلوا لأنهي مناطق؟",
+    "en": "Where do you deliver?"
    },
    "a": {
-    "ar": "أيوه، بننفّذ مشروعات بأحجام مختلفة من التشطيبات والترميم لحد المشروعات المتكاملة.",
-    "en": "Yes. We deliver projects of different sizes, from finishing and restoration to complete developments."
+    "ar": "بنوصّل لكل المحافظات.",
+    "en": "We deliver to every governorate."
    }
   },
   {
    "q": {
-    "ar": "هل بتقدموا ضمان على الأعمال؟",
-    "en": "Do you offer a warranty?"
+    "ar": "بتورّدوا للأفراد ولا للشركات بس؟",
+    "en": "Do you supply individuals or only companies?"
    },
    "a": {
-    "ar": "أيوه، كل عقد بيحدد فترة ضمان للأعمال المنفّذة وبنتابع أي ملاحظات خلالها.",
-    "en": "Yes. Every contract defines a warranty period and we follow up on any snags during it."
+    "ar": "بنورّد للأفراد والمقاولين والشركات والمصانع.",
+    "en": "We supply individuals, contractors, companies and factories."
    }
   },
   {
    "q": {
-    "ar": "إزاي أسجّل شركتي كمورد أو مقاول باطن؟",
-    "en": "How do I register as a supplier or subcontractor?"
+    "ar": "الأسعار ثابتة؟",
+    "en": "Are prices fixed?"
    },
    "a": {
-    "ar": "من صفحة «الموردين ومقاولي الباطن» املأ البيانات وارفق الملف التعريفي، وهنراجعها ونتواصل معاك.",
-    "en": "Use the Suppliers & Subcontractors page, fill in your details and attach your profile. We will review and contact you."
+    "ar": "أسعار الحديد والأسمنت بتتغير مع السوق، علشان كده بنرد بعرض سعر محدّث وقت الطلب.",
+    "en": "Steel and cement prices move with the market, so we reply with an updated quote at the time of the order."
+   }
+  },
+  {
+   "q": {
+    "ar": "إيه الفرق بين الأسمنت المعبأ والسائب؟",
+    "en": "What is the difference between bagged and bulk cement?"
+   },
+   "a": {
+    "ar": "المعبأ بيتباع في أكياس ومناسب للاستخدام العادي والكميات المتوسطة، والسائب بيتنقل في صهاريج ومناسب لمحطات الخرسانة والمشروعات الكبيرة.",
+    "en": "Bagged cement is sold in bags for everyday use and medium quantities; bulk cement is moved by tanker for concrete plants and large projects."
+   }
+  },
+  {
+   "q": {
+    "ar": "مواعيد العمل إيه؟",
+    "en": "What are your working hours?"
+   },
+   "a": {
+    "ar": "من السبت للخميس، من 9 صباحاً لـ 9 مساءً.",
+    "en": "Saturday to Thursday, 9 AM to 9 PM."
    }
   }
  ],
  "sections": [],
  "contact": {
-  "phones": [],
+  "phones": [
+   "+201016013020",
+   "+201018862831"
+  ],
   "phones2": [],
-  "whatsapp": "",
-  "email": "",
+  "whatsapp": "+201016013020",
+  "email": "info@rocklineg.com",
   "address": {
-   "ar": "",
-   "en": ""
+   "ar": "شارع الضرائب، قسم أول كفر الشيخ، محافظة كفر الشيخ",
+   "en": "Al-Daraeb Street, First District, Kafr El-Sheikh, Kafr El-Sheikh Governorate"
   },
   "hours": {
-   "ar": "",
-   "en": ""
+   "ar": "من السبت إلى الخميس، من 9 صباحاً إلى 9 مساءً",
+   "en": "Saturday to Thursday, 9 AM – 9 PM"
   },
   "slogan": {
-   "ar": "",
-   "en": ""
+   "ar": "حديد وأسمنت بجودة مضمونة .. وتوصيل لكل المحافظات",
+   "en": "Quality steel & cement, delivered to every governorate"
   },
-  "mapLink": "",
+  "mapLink": "https://maps.app.goo.gl/seQsg9rinhwQwUm46",
   "facebook": "",
   "instagram": "",
   "tiktok": "",
@@ -642,5 +444,70 @@
   "whatsapp": true,
   "email": true
  },
- "sample": true
+ "sample": true,
+ "warehouses": [],
+ "team": [
+  {
+   "name": {
+    "ar": "المهندس يوسف المعراج",
+    "en": "Eng. Youssef El-Maraag"
+   },
+   "role": {
+    "ar": "الرئيس التنفيذي",
+    "en": "Chief Executive Officer"
+   },
+   "phone": "+201016013020",
+   "email": "Gm@rocklineg.com"
+  },
+  {
+   "name": {
+    "ar": "المهندس محمد الفقي",
+    "en": "Eng. Mohamed El-Fiky"
+   },
+   "role": {
+    "ar": "المدير التنفيذي",
+    "en": "Executive Manager"
+   },
+   "phone": "+201018862831",
+   "email": "Ed@rocklineg.com"
+  },
+  {
+   "name": {
+    "ar": "الإدارة المالية",
+    "en": "Accounts"
+   },
+   "role": {
+    "ar": "الحسابات والمدفوعات",
+    "en": "Accounts & payments"
+   },
+   "phone": "",
+   "email": "accounts@rocklineg.com"
+  },
+  {
+   "name": {
+    "ar": "خدمة العملاء",
+    "en": "Customer service"
+   },
+   "role": {
+    "ar": "الاستفسارات وطلبات العروض",
+    "en": "Enquiries & quote requests"
+   },
+   "phone": "",
+   "email": "info@rocklineg.com"
+  }
+ ],
+ "contentVersion": "3.0.3",
+ "calc": {
+  "diameters": "8,10,12,14,16,18,20,22,25,28,32",
+  "barLength": "12",
+  "bagKg": "50"
+ },
+ "prices": [],
+ "pricesinfo": {
+  "updated": "",
+  "note": {
+   "ar": "",
+   "en": ""
+  }
+ }
 }

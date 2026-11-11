@@ -1,0 +1,9 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec navy why" id="why">
+  <div class="wrap">
+    <div class="shead light reveal"><h2><%= t.why %></h2><span class="rule"></span></div>
+    <div class="why-grid">
+      <% (site.why || []).forEach(function(w){ %><div class="why-it reveal"><span><%- icon(w.icon) %></span><p><%= tr(w.text) %></p></div><% }); %>
+    </div>
+  </div>
+</section>

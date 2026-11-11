@@ -1,0 +1,14 @@
+<% var _pr = (site.prices || []).filter(function(x){ return tr(x.name) && x.price; }); var _pi = site.pricesinfo || {}; %>
+<% if (_pr.length) { %>
+<section class="sec" id="prices">
+  <div class="wrap narrow">
+    <div class="shead reveal"><h2><%= t.prices_title %></h2><span class="rule"></span><p><%= tr(_pi.note) || t.prices_sub %></p></div>
+    <div class="table-wrap reveal"><table class="ptable">
+      <thead><tr><th><%= t.products %></th><th><%= t.prices_unit %></th><th><%= t.prices_price %></th></tr></thead>
+      <tbody><% _pr.forEach(function(x){ %><tr><td><b><%= tr(x.name) %></b></td><td><%= tr(x.unit) %></td><td dir="auto"><b><%= x.price %></b></td></tr><% }); %></tbody>
+    </table></div>
+    <% if (_pi.updated) { %><p class="muted center"><%- icon('clock') %> <%= t.prices_updated %>: <span dir="auto"><%= _pi.updated %></span></p><% } %>
+    <div class="center"><a class="btn gold" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a></div>
+  </div>
+</section>
+<% } %>

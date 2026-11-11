@@ -22,7 +22,7 @@
       <% } %>
       <div class="duo-act">
         <% if (site.profilePdf) { %><a class="btn gold" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
-        <a class="btn navy" href="<%= L('/projects') %>"><%= t.cta_projects %> <%- arrow %></a>
+        <a class="btn navy" href="<%= L('/products') %>"><%= t.cta_products %> <%- arrow %></a>
       </div>
     </div>
   </div>
@@ -55,21 +55,10 @@
   </div>
 </section>
 
-<% if ((site.hse || []).length || (site.certificates || []).length) { %>
-<section class="sec">
-  <div class="wrap">
-    <div class="shead reveal"><h2><%= t.hse %></h2><span class="rule"></span><p><%= t.hse_sub %></p></div>
-    <div class="hse-grid"><% (site.hse || []).forEach(function(h){ %><article class="hse-it reveal"><span class="b-ic"><%- icon(h.icon) %></span><h3><%= tr(h.title) %></h3><p><%= tr(h.desc) %></p></article><% }); %></div>
-    <%- include('partials/certs') %>
-  </div>
+<% if ((site.certificates || []).length) { %>
+<section class="sec sky">
+  <div class="wrap"><%- include('partials/certs') %></div>
 </section>
 <% } %>
-
-<section class="sec sky">
-  <div class="wrap">
-    <div class="shead reveal"><h2><%= t.sectors %></h2><span class="rule"></span></div>
-    <div class="sec-grid"><% (site.sectors || []).forEach(function(s){ %><a class="sector reveal" href="<%= L('/projects?cat=' + encodeURIComponent(tr(s.name, 'ar') || '')) %>"><span><%- icon(s.icon) %></span><h3><%= tr(s.name) %></h3></a><% }); %></div>
-    <div class="center"><a class="btn navy" href="<%= L('/services') %>"><%= t.services %> <%- arrow %></a></div>
-  </div>
-</section>
+<%- include('partials/cta', { ctaTitle: t.quote_cta_title }) %>
 <%- include('partials/footer') %>

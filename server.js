@@ -1,5 +1,5 @@
 /**
- * موقع شركة روك لاين جروب للمقاولات العامة (Rock Line Group)
+ * موقع شركة روك لاين جروب للتوريدات العامة وتجارة الحديد والأسمنت (Rock Line Group)
  * Node.js + Express + EJS، والبيانات في ملفات JSON (مفيش قاعدة بيانات).
  * التشغيل:  npm install  ثم  npm start
  */
@@ -31,6 +31,8 @@ const security = require('./lib/security');
 const users = require('./lib/users');
 users.emergencyReset();
 const analytics = require('./lib/analytics');
+const uitexts = require('./lib/uitexts');
+const chat = require('./lib/chat');
 const privacyDefault = require('./lib/privacy-default');
 
 // ترقية لمرة واحدة: لو البيانات المحفوظة على السيرفر لسه بتاعة النسخة القديمة (نسر الخليج)، نبدأ بمحتوى روك لاين الافتراضي.
@@ -71,6 +73,7 @@ app.disable('x-powered-by');
 process.on('unhandledRejection', e => console.error('[unhandledRejection]', e && e.message));
 
 app.use((req, res, next) => {
+  res.locals.nonce = require('crypto').randomBytes(16).toString('base64'); // nonce للسكربتات الـ inline في الصفحات العامة (وصفحة الخطأ لو اتعرضت جوه /admin)
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -82,16 +85,21 @@ app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
   }
+  else {
+    // الصفحات العامة: السكربتات من الموقع نفسه أو بـ nonce (مفيش inline سكربت من غير nonce)، ومفيش اتصال لأي دومين تاني
+    const nonce = res.locals.nonce;
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'nonce-" + nonce + "'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
+  }
   next();
 });
 app.use(express.urlencoded({ extended: true, limit: '4mb' }));
-app.use(express.json({ limit: '4mb' }));
+app.use(express.json({ limit: '256kb' }));
 app.use(express.text({ limit: '64kb' }));
 
 // الصور المرفوعة بس هي اللي بتتعرض للزوار. أي ملف تاني (زي السير الذاتية القديمة) مقفول.
 app.use('/uploads', (req, res, next) => {
   if (!/\.(jpe?g|png|webp|gif|pdf)$/i.test(req.path)) return res.status(404).end();
-  if (/\.pdf$/i.test(req.path) && !/^\/profile-/.test(req.path)) return res.status(404).end();
+  if (/\.pdf$/i.test(req.path) && !/^\/(profile|datasheet)-/.test(req.path)) return res.status(404).end();
   next();
 }, express.static(UPLOAD_DIR, { maxAge: '30d' }));
 /* أي طلب لـ uploads وصل هنا (مثلاً //uploads/x.docx) مقفول — كان بيعدّي على static بتاع public ويتخطى الفلتر */
@@ -159,6 +167,18 @@ const diskPdf = multer({
   limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => cb(null, /\.pdf$/i.test(file.originalname))
 });
+// نموذج المنتج: صور + ورقة بيانات فنية PDF (بتتعرض للعامة)
+const diskProduct = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+    filename: (req, file, cb) => cb(null, file.fieldname === 'datasheet'
+      ? 'datasheet-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.pdf'
+      : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + path.extname(file.originalname).toLowerCase())
+  }),
+  limits: { fileSize: 25 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => cb(null, file.fieldname === 'datasheet' ? /\.pdf$/i.test(file.originalname) : /\.(jpe?g|png|webp|gif)$/i.test(file.originalname))
+});
+const unlinkUpload = x => { if (/^\/uploads\//.test(x || '')) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } };
 // مرفقات الفورمات (رسومات / مقايسة / ملف تعريفي / سيرة ذاتية) — بتتحفظ في data/cv ومش متاحة للعامة
 const memFile = multer({
   storage: multer.memoryStorage(),
@@ -196,22 +216,27 @@ const IMAGE_SLOTS = [
   { k: 'logoLight', label: 'الشعار الكامل (على خلفية كحلي)', hint: 'نفس الشعار بالكتابة الفاتحة — بيظهر في الفوتر. PNG شفاف.', def: '/img/logo-full-light.png' },
   { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة الكبيرة في أول الصفحة الرئيسية — يفضل صورة لمشروع أو موقع عمل، عرضية وعالية الجودة (مثلاً 1920×1080). لو سبتها فاضية كل تصميم بيستخدم صورته الافتراضية.', def: '' },
   { k: 'about', label: 'صورة "من نحن"', hint: 'صورة لفريق العمل أو موقع (مثلاً 1200×960).', def: '/img/photos/05.jpg' },
-  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة المناطق (مثلاً 1220×590).', def: '/img/photos/51.jpg' },
   { k: 'banner', label: 'خلفية عناوين الصفحات', hint: 'بتظهر ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1920×700).', def: '/img/photos/50.jpg' },
-  { k: 'project', label: 'صورة المشروع الافتراضية', hint: 'بتظهر لأي مشروع لسه مرفعتلوش صور.', def: '/img/project.svg' },
+  { k: 'project', label: 'صورة المنتج الافتراضية', hint: 'بتظهر لأي منتج لسه مرفعتلوش صور.', def: '/img/project.svg' },
+  { k: 'favicon', label: 'أيقونة المتصفح (favicon)', hint: 'الأيقونة الصغيرة في تبويب المتصفح. PNG مربعة (مثلاً 256×256).', def: '/img/favicon.png' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
+// صور كروت الخدمات (واحدة لكل خدمة) بتظهر في التصميم البرتقالي
+function imageSlots() {
+  const svc = (store.get('site').services || []).map((s, i) => ({ k: 'svc' + i, label: 'صورة خدمة: ' + (tr(s.title, 'ar') || (i + 1)), hint: 'بتظهر على كارت الخدمة في التصميم البرتقالي (D).', def: SVC_IMG[i % SVC_IMG.length] }));
+  return IMAGE_SLOTS.concat(svc);
+}
 function siteImg(site, slot, theme) {
   if (site.images && site.images[slot]) return site.images[slot];
   if (slot === 'hero') return THEMES[theme || themeKey(site)].hero;
-  return (IMAGE_SLOTS.find(x => x.k === slot) || {}).def || '';
+  return (imageSlots().find(x => x.k === slot) || {}).def || '';
 }
 
 // ---------- تصميمات الموقع (بتتغير من لوحة التحكم ← شكل الموقع) ----------
 const THEMES = {
-  a: { label: 'كلاسيكي فاخر', desc: 'صورة كبيرة بعرض الشاشة، كحلي ورملي زي الشعار، وشكل رسمي هادي.', font: 'IBM+Plex+Sans+Arabic:wght@300;400;500;600;700', hero: '/img/photos/50.jpg', color: '#1c2b3e' },
-  b: { label: 'داكن جريء', desc: 'خلفية غامقة وخط كبير وصورة مقصوصة بزاوية زي حرف R في الشعار.', font: 'Cairo:wght@400;600;700;800;900', hero: '/img/photos/04.jpg', color: '#0d0f12' },
-  d: { label: 'حديث بلمسة برتقالي', desc: 'أبيض ورمادي غامق مع برتقالي مواقع العمل، وكروت بصور.', font: 'Tajawal:wght@400;500;700;800', hero: '/img/photos/33.jpg', color: '#f0661c' }
+  a: { label: 'كلاسيكي فاخر', desc: 'صورة كبيرة بعرض الشاشة، كحلي ورملي زي الشعار، وشكل رسمي هادي.', font: 'IBM+Plex+Sans+Arabic:wght@300;400;500;600;700', hero: '/img/photos/05.jpg', color: '#1c2b3e' },
+  b: { label: 'داكن جريء', desc: 'خلفية غامقة وخط كبير وصورة مقصوصة بزاوية زي حرف R في الشعار.', font: 'Cairo:wght@400;600;700;800;900', hero: '/img/photos/02.jpg', color: '#0d0f12' },
+  d: { label: 'حديث بلمسة برتقالي', desc: 'أبيض ورمادي غامق مع برتقالي مواقع العمل، وكروت بصور.', font: 'Tajawal:wght@400;500;700;800', hero: '/img/photos/03.jpg', color: '#f0661c' }
 };
 const themeKey = site => (Object.prototype.hasOwnProperty.call(THEMES, site && site.theme) ? site.theme : 'a');
 // المدير المسجّل دخوله يقدر يعاين أي تصميم قبل ما يعتمده (المعاينة محفوظة في جلسته بس)
@@ -221,8 +246,11 @@ function themeOf(req) {
   return themeKey(store.get('site'));
 }
 // صور افتراضية للخدمات (بتظهر في التصميم البرتقالي) بالترتيب
-const SVC_IMG = ['/img/photos/04.jpg', '/img/photos/02.jpg', '/img/photos/14.jpg', '/img/photos/22.jpg', '/img/photos/30.jpg', '/img/photos/03.jpg', '/img/photos/39.jpg', '/img/photos/05.jpg', '/img/photos/35.jpg'];
+const SVC_IMG = ['/img/photos/02.jpg', '/img/products/cement-bag.svg', '/img/products/cement-bulk.svg', '/img/photos/04.jpg', '/img/products/warehouse.svg', '/img/photos/03.jpg'];
 const photoCredits = require('./lib/photo-credits.json');
+
+// نصوص الواجهة بعد ما نطبّق عليها تعديلات لوحة التحكم (site.ui)
+const UI = lang => uitexts.merged(lang, store.get('site'));
 
 function customSections(pos) {
   return (store.get('site').sections || []).filter(s => s.visible !== false && s.position === pos);
@@ -231,11 +259,41 @@ function customSections(pos) {
 function channels() { const c = store.get('site').channels || {}; return { whatsapp: c.whatsapp !== false, email: c.email !== false }; }
 
 // ---------- المشروعات ----------
-const STATUS = ['done', 'ongoing'];
 function activeProjects() { return (store.get('projects') || []).filter(p => p.visible !== false); }
 // اسم القطاع بلغة الزائر (المشروع بيتخزن عليه اسم القطاع بالعربي)
 function catName(site, cat, lang) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? tr(s.name, lang) : (cat || ''); }
 function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? s.icon : 'building'; }
+
+// أقسام الصفحة الرئيسية (الترتيب والإظهار بيتغيروا من لوحة التحكم ← ترتيب الصفحة الرئيسية)
+const HOME_SECTIONS = [
+  { id: 'about', label: 'من نحن', on: true }, { id: 'services', label: 'الخدمات', on: true }, { id: 'products', label: 'المنتجات', on: true },
+  { id: 'process', label: 'طريقة الطلب', on: true }, { id: 'warehouses', label: 'المخازن والمقر', on: true }, { id: 'why', label: 'لماذا روك لاين', on: true },
+  { id: 'calc', label: 'حاسبة الكميات', on: true }, { id: 'prices', label: 'أسعار اليوم (اختياري)', on: false }, { id: 'news', label: 'الأخبار', on: true },
+  { id: 'gallery', label: 'معرض الصور', on: true }, { id: 'quotes', label: 'آراء العملاء', on: true }, { id: 'cta', label: 'شريط «اطلب السعر»', on: true },
+  { id: 'duo', label: 'كارتين: عرض سعر + المخازن', on: true }, { id: 'contact', label: 'تواصل معنا (الفورم)', on: true }
+];
+function homeLayout(site) {
+  const known = Object.fromEntries(HOME_SECTIONS.map(s => [s.id, s]));
+  const out = [], seen = new Set();
+  (Array.isArray(site.homeLayout) ? site.homeLayout : []).forEach(x => {
+    if (x && known[x.id] && !seen.has(x.id)) { seen.add(x.id); out.push({ id: x.id, label: known[x.id].label, visible: x.visible !== false }); }
+  });
+  HOME_SECTIONS.forEach(s => { if (!seen.has(s.id)) out.push({ id: s.id, label: s.label, visible: s.on }); });
+  return out;
+}
+// ألوان الموقع (اختيارية من لوحة التحكم ← شكل الموقع)
+const hexOk = c => /^#[0-9a-f]{6}$/i.test(String(c || ''));
+function mixHex(a, b, p) { // p = نسبة b
+  const n = x => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16));
+  const A = n(a), B = n(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * p).toString(16).padStart(2, '0')).join('');
+}
+function colorCss(site, theme) {
+  const c = site.colors || {}; let css = '';
+  if (hexOk(c.accent)) css += `--gold:${c.accent};--gold-2:${mixHex(c.accent, '#ffffff', .45)};--gold-3:${mixHex(c.accent, '#000000', .28)};--gold-grad:linear-gradient(135deg,${mixHex(c.accent, '#ffffff', .3)},${c.accent});`;
+  if (hexOk(c.primary) && theme !== 'b') css += `--navy:${c.primary};--navy-2:${mixHex(c.primary, '#ffffff', .14)};--navy-3:${mixHex(c.primary, '#000000', .3)};`;
+  return css ? ':root{' + css + '}' : '';
+}
 
 function base(req, extra) {
   const lang = langOf(req);
@@ -243,10 +301,10 @@ function base(req, extra) {
   const theme = themeOf(req);
   const pv = req.session && req.session.previewTheme && theme === req.session.previewTheme && theme !== themeKey(site) ? theme : '';
   const c = site.contact || {};
-  const t = dict[lang];
+  const t = UI(lang);
   const pathNoLang = req.path === '/' ? '' : req.path;
   return Object.assign({
-    lang, t, site, icon, brand,
+    lang, t, site, icon, brand, ver: pkgVersion,
     dir: lang === 'ar' ? 'rtl' : 'ltr',
     other: lang === 'ar' ? 'en' : 'ar',
     tr: o => tr(o, lang),
@@ -263,9 +321,10 @@ function base(req, extra) {
     mapUrl: /^https?:\/\//i.test(String(c.mapLink || '').trim()) ? String(c.mapLink).trim() : ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(tr(c.address, 'ar') || tr(site.brand.name, 'ar'))),
     customs: customSections,
     img: slot => siteImg(site, slot, theme),
-    theme, themeInfo: THEMES[theme], previewTheme: pv, svcImg: i => SVC_IMG[i % SVC_IMG.length],
+    theme, themeInfo: THEMES[theme], previewTheme: pv, colorCss: colorCss(site, theme),
+    svcImg: i => (site.images && site.images['svc' + i]) || SVC_IMG[i % SVC_IMG.length],
     baseUrl: siteUrl(req),
-    mailReady: mailer.ready(),
+    mailReady: mailer.ready(), chatOn: chat.isOn(),
     chans: channels(),
     cat: x => catName(site, x, lang),
     catIcon: x => catIcon(site, x),
@@ -282,8 +341,8 @@ const FORMS = {
   quote: { subject: 'طلب عرض سعر جديد', file: true, fields: [
     { k: 'name', req: 1, l: 'f_name' }, { k: 'company', l: 'f_company' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'ptype', req: 1, l: 'f_ptype' }, { k: 'location', l: 'f_location' }, { k: 'area', l: 'f_area' }, { k: 'start', l: 'f_start' },
-    { k: 'details', req: 1, l: 'f_details' }] },
-  vendor: { subject: 'تسجيل مورد / مقاول باطن', file: true, fields: [
+    { k: 'items', l: 'f_items' }, { k: 'details', req: 1, l: 'f_details' }] },
+  vendor: { subject: 'تسجيل مورد / مصنع', file: true, fields: [
     { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
     { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'grade', l: 'f_grade' }, { k: 'city', l: 'f_city' }, { k: 'notes', l: 'f_notes' }] },
@@ -291,17 +350,19 @@ const FORMS = {
     { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'message', req: 1, l: 'f_message' }] }
 };
-const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مقاول باطن', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
+const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مصنع', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
 // عنوان مختصر للرسالة في لوحة التحكم
 const msgTitle = f => f.company || f.name || '-';
-const msgLine = f => f.ptype || f.vtype || f.position || (f.message || f.details || '').slice(0, 60);
+const msgLine = f => f.ptype || f.vtype || f.position || (f.items || f.message || f.details || '').slice(0, 60);
 
 function readForm(kind, body) {
   const def = FORMS[kind];
   const fields = {};
   def.fields.forEach(f => { fields[f.k] = clean(body[f.k], 3000); });
-  const missing = def.fields.filter(f => f.req && !fields[f.k]).map(f => f.k);
+  let missing = def.fields.filter(f => f.req && !fields[f.k]).map(f => f.k);
+  // لو الزبون ضاف أصناف من قائمة الطلب، الصنف والتفاصيل يبقوا اختياريين
+  if (kind === 'quote' && fields.items) missing = missing.filter(k => k !== 'ptype' && k !== 'details');
   return { fields, missing };
 }
 
@@ -358,11 +419,11 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
+  const pages = ['', '/about', '/services', '/products', '/warehouses', '/calculator', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
-    activeProjects().forEach(p => urls.push(`${b}/${l}/projects/${p.id}`));
+    activeProjects().forEach(p => urls.push(`${b}/${l}/products/${p.id}`));
     store.get('news').forEach(n => urls.push(`${b}/${l}/news/${n.id}`));
   });
   res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
@@ -379,7 +440,7 @@ app.use('/:lang(ar|en)', (req, res, next) => {
       if (res.statusCode !== 200) return;
       let page = parts[0] || 'home';
       const job = '';
-      if (parts[0] === 'projects' && parts[1]) page = 'project';
+      if (parts[0] === 'products' && parts[1]) page = 'product';
       else if (parts[0] === 'news' && parts[1]) page = 'post';
       else if (parts[0] === 'gallery' && parts[1]) page = 'album';
       analytics.pageview(req, res, { page, job, lang });
@@ -401,48 +462,68 @@ pub.get('/', (req, res) => {
   const all = activeProjects();
   const featured = all.filter(p => p.featured);
   res.render('home', base(req, {
-    page: 'home',
-    projects: featured.concat(all.filter(p => !p.featured)).slice(0, 6), // المختارة الأول، وبعدها الباقي لحد 6
+    page: 'home', layout: homeLayout(store.get('site')),
+    projects: (featured.length ? featured : all).slice(0, 6), // المنتجات المختارة (⭐) لو موجودة، وإلا أول 6
     projectsCount: all.length,
     news: store.get('news').slice(0, 3),
     photos: g.items.slice(0, 8)
   }));
 });
 
-const T = req => dict[langOf(req)];
+const T = req => UI(langOf(req));
 pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: T(req).about_title })));
 pub.get('/services', (req, res) => res.render('services', base(req, { page: 'services', title: T(req).services })));
-pub.get('/clients', (req, res) => res.render('clients', base(req, { page: 'clients', title: T(req).clients })));
+pub.get('/clients', (req, res) => res.redirect(301, '/' + langOf(req) + '/about'));
+// ---------- المساعد (الشات) ----------
+function chatCtx(lang) {
+  const site = store.get('site');
+  const priceOn = (homeLayout(site).find(x => x.id === 'prices') || {}).visible;
+  return { lang, site, products: activeProjects(), t: UI(lang), prices: priceOn ? (site.prices || []).filter(x => tr(x.name, 'ar') && x.price) : [] };
+}
+pub.post('/chat', async (req, res) => {
+  if (!chat.isOn()) return res.status(404).json({ ok: false });
+  const pageLang = langOf(req);
+  // حد لكل زائر (25 رسالة / 10 دقايق) وحد عام (120 / دقيقة) عشان محدش يستنزف الحصة أو يكتب على الديسك
+  if (tooMany('chat:' + (req.ip || ''), 25, 10 * 60 * 1000) || tooMany('chat:all', 120, 60 * 1000)) return res.status(429).json({ ok: false, reply: UI(pageLang).too_many });
+  const b = req.body && typeof req.body === 'object' ? req.body : {};
+  const msg = typeof b.message === 'string' ? clean(b.message, 500) : '';
+  if (!msg) return res.status(400).json({ ok: false });
+  const lang = chat.hasArabic(msg) ? 'ar' : (/[a-z]/i.test(msg) ? 'en' : pageLang);
+  const history = (Array.isArray(b.history) ? b.history : []).slice(-8).map(h => ({ role: h && h.role === 'user' ? 'user' : 'bot', text: clean(h && h.text, 600) })).filter(h => h.text);
+  try {
+    const out = await chat.respond(msg, history, chatCtx(lang));
+    res.json({ ok: true, reply: out.reply, actions: out.actions || [], via: out.via });
+  } catch (e) { console.error('chat error:', e && e.message); res.status(500).json({ ok: false, reply: UI(pageLang).chat_error }); }
+});
+pub.get('/calculator', (req, res) => res.render('calculator', base(req, { page: 'calc', title: UI(langOf(req)).calc_title })));
 pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', title: T(req).quote_title, ptype: clean(req.query.type, 100) })));
 pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
 pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: T(req).contact_title, tab: Object.prototype.hasOwnProperty.call(FORMS, req.query.tab) ? req.query.tab : 'quote' })));
 // روابط الموقع القديم
-[['companies', '/quote'], ['partners', '/clients'], ['guide', '/vendors'], ['jobs', ''], ['apply', '']].forEach(([from, to]) => pub.get(['/' + from, '/' + from + '/*'], (req, res) => res.redirect(301, '/' + langOf(req) + to)));
+[['companies', '/quote'], ['partners', '/about'], ['guide', '/vendors'], ['jobs', ''], ['apply', '']].forEach(([from, to]) => pub.get(['/' + from, '/' + from + '/*'], (req, res) => res.redirect(301, '/' + langOf(req) + to)));
 
-pub.get('/projects', (req, res) => {
+pub.get(['/projects', '/projects/:id'], (req, res) => res.redirect(301, '/' + langOf(req) + '/products' + (req.params.id ? '/' + encodeURIComponent(req.params.id) : '')));
+pub.get('/products', (req, res) => {
   const lang = langOf(req);
   const site = store.get('site');
   const all = activeProjects();
   const catQ = clean(req.query.cat, 100);
-  const status = STATUS.includes(req.query.status) ? req.query.status : '';
-  let list = all;
-  if (catQ) list = list.filter(p => p.cat === catQ);
-  if (status) list = list.filter(p => p.status === status);
-  // التصنيفات اللي فيها مشروعات بس، بنفس ترتيب القطاعات
+  const list = catQ ? all.filter(p => p.cat === catQ) : all;
+  // التصنيفات اللي فيها منتجات بس، بنفس ترتيب التصنيفات
   const used = new Set(all.map(p => p.cat));
   const cats = (site.sectors || []).map(s => tr(s.name, 'ar')).filter(c => used.has(c));
   all.forEach(p => { if (p.cat && !cats.includes(p.cat)) cats.push(p.cat); });
-  res.render('projects', base(req, { page: 'projects', title: dict[lang].projects, list, cats, catQ, status, total: all.length,
-    counts: { done: all.filter(p => p.status === 'done').length, ongoing: all.filter(p => p.status === 'ongoing').length } }));
+  res.render('products', base(req, { page: 'products', title: UI(lang).products, list, cats, catQ, total: all.length }));
 });
-pub.get('/projects/:id', (req, res) => {
+pub.get('/products/:id', (req, res) => {
   const p = activeProjects().find(x => x.id === req.params.id);
   if (!p) return notFound(req, res);
   const lang = langOf(req);
   const others = activeProjects().filter(x => x.id !== p.id);
   const related = others.filter(x => x.cat === p.cat).concat(others.filter(x => x.cat !== p.cat)).slice(0, 3);
-  res.render('project', base(req, { page: 'projects', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
+  res.render('product', base(req, { page: 'products', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
 });
+pub.get('/warehouses', (req, res) => res.render('warehouses', base(req, { page: 'warehouses', title: UI(langOf(req)).warehouses })));
 
 pub.get('/credits', (req, res) => res.render('credits', base(req, { page: 'credits', title: langOf(req) === 'ar' ? 'مصادر الصور' : 'Photo credits', credits: photoCredits })));
 
@@ -465,10 +546,10 @@ pub.get('/privacy', (req, res) => {
       if (last && last.ul) last.ul.push(l.replace(/^[-•]\s+/, '')); else blocks.push({ ul: [l.replace(/^[-•]\s+/, '')] });
     } else blocks.push({ p: l });
   });
-  res.render('privacy', base(req, { page: 'privacy', title: dict[lang].privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
+  res.render('privacy', base(req, { page: 'privacy', title: UI(lang).privacy, blocks, updated: p.updated ? '⁦' + p.updated + '⁩' : '' }));
 });
 
-pub.get('/news', (req, res) => res.render('news', base(req, { page: 'news', title: dict[langOf(req)].news, news: store.get('news') })));
+pub.get('/news', (req, res) => res.render('news', base(req, { page: 'news', title: UI(langOf(req)).news, news: store.get('news') })));
 pub.get('/news/:id', (req, res) => {
   const item = store.get('news').find(n => n.id === req.params.id);
   if (!item) return notFound(req, res);
@@ -483,7 +564,7 @@ pub.get('/gallery', (req, res) => {
     const cover = items.find(i => i.id === a.cover) || items[0];
     return Object.assign({}, a, { count: items.length, coverFile: cover ? cover.file : '' });
   }).filter(a => a.count);
-  res.render('gallery', base(req, { page: 'gallery', title: dict[langOf(req)].gallery, albums, album: null, items: [] }));
+  res.render('gallery', base(req, { page: 'gallery', title: UI(langOf(req)).gallery, albums, album: null, items: [] }));
 });
 pub.get('/gallery/:album', (req, res) => {
   const g = store.get('gallery');
@@ -496,7 +577,7 @@ pub.get('/gallery/:album', (req, res) => {
 pub.post('/send', (req, res) => {
   memFile.single('file')(req, res, async upErr => {
     const lang = langOf(req);
-    const t = dict[lang];
+    const t = UI(lang);
     const wantsJson = req.xhr || /json/.test(req.get('accept') || '');
     const reply = (ok, msg, code) => wantsJson
       ? res.status(code || (ok ? 200 : 400)).json({ ok, msg })
@@ -506,7 +587,7 @@ pub.post('/send', (req, res) => {
     const kind = (typeof b.kind === 'string' && Object.prototype.hasOwnProperty.call(FORMS, b.kind)) ? b.kind : 'contact'; /* hasOwn: kind=__proto__ كان بيوقّع السيرفر كله */
     if (clean(b.website)) return reply(true, t.sent_ok); // فخ للبرامج الآلية
     const ip = req.ip || '';
-    if (tooMany(ip, 8, 10 * 60 * 1000)) return reply(false, t.too_many, 429);
+    if (tooMany(ip, 8, 10 * 60 * 1000) || tooMany('send:all', 60, 60 * 1000)) return reply(false, t.too_many, 429); // حد لكل زائر + حد عام (حماية الرسائل من الإغراق)
 
     const { fields, missing } = readForm(kind, b);
     if (missing.length) return reply(false, t.required);
@@ -532,7 +613,7 @@ pub.post('/send', (req, res) => {
         await mailer.send(rows, {
           subject: FORMS[kind].subject + ' - ' + (fields.company || fields.name || ''),
           title: FORMS[kind].subject,
-          replyTo: /\S+@\S+\.\S+/.test(fields.email || '') ? fields.email : undefined,
+          replyTo: /^[^\s<>;,"'()\\]+@[^\s<>;,"'()\\]+\.[^\s<>;,"'()\\]+$/.test(fields.email || '') ? fields.email : undefined, /* إيميل بسيط بس: أي رموز عنونة غريبة بتتتجاهل */
           extraTo: users.notifyEmails(),
           attachments
         });
@@ -559,7 +640,7 @@ pub.post('/send', (req, res) => {
 function notFound(req, res) {
   const lang = (req.originalUrl.match(/^\/(ar|en)\b/) || [])[1] || 'ar';
   req.params = Object.assign({}, req.params, { lang });
-  res.status(404).render('404', base(req, { title: dict[lang].notfound }));
+  res.status(404).render('404', base(req, { title: UI(lang).notfound }));
 }
 
 // ---------- admin ----------
@@ -602,15 +683,15 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', texts: 'content', layout: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
   const seg = (req.path.split('/')[1] || '').toLowerCase();
   const perm = Object.prototype.hasOwnProperty.call(PERM_OF, seg) ? PERM_OF[seg] : null;
   if (!perm && (seg === '' || seg === 'account')) return next();
-  if (seg === 'hosting' && req.me && req.me.owner) return next();
-  if ((seg === 'under-construction' || seg === 'samples') && req.me && req.me.owner) return next();
+  if ((seg === 'hosting' || seg === 'bot') && req.me && req.me.owner) return next(); // الاستضافة وإعدادات المساعد (فيها مفتاح الـ API) للمدير الأساسي بس
+  if ((seg === 'under-construction' || seg === 'samples' || seg === 'apply-defaults') && req.me && req.me.owner) return next();
   if (perm && users.has(req.me, perm)) return next();
   res.status(403).render('admin/denied', adminView(req, {}));
 }
@@ -795,6 +876,10 @@ function auditMw(req, res, next) {
 const admin = express.Router({ caseSensitive: true });
 app.use('/admin', auth, guard, auditMw, admin);
 
+// المحتوى الجاهز اللي جاي مع النسخة (فولدر data جنب الكود). على الاستضافة البيانات الحية في DATA_DIR ومبتتغيرش لوحدها لما ترفع نسخة جديدة.
+const shippedFile = name => path.join(__dirname, 'data', name + '.json');
+function shippedSite() { try { return JSON.parse(fs.readFileSync(shippedFile('site'), 'utf8')); } catch (e) { return null; } }
+function shippedProducts() { try { const v = JSON.parse(fs.readFileSync(shippedFile('projects'), 'utf8')); return Array.isArray(v) ? v : null; } catch (e) { return null; } }
 admin.get('/', (req, res) => {
   const inbox = store.get('inbox');
   res.render('admin/dash', adminView(req, {
@@ -810,6 +895,7 @@ admin.get('/', (req, res) => {
     missingStats: (store.get('site').stats || []).filter(s => !s.value).map(s => tr(s.label, 'ar')),
     quotesCount: (store.get('site').quotes || []).length,
     noEmail: !req.me.email,
+    newContent: Boolean(shippedSite() && shippedSite().contentVersion && shippedSite().contentVersion !== (store.get('site').contentVersion || '')),
     samples: {
       site: store.get('site').sample === true,
       projects: (store.get('projects') || []).filter(p => p.sample).length
@@ -877,7 +963,7 @@ admin.get('/inbox/export.csv', (req, res) => {
   res.send(csv);
 });
 
-// ----- projects (المشروعات) -----
+// ----- products (المنتجات؛ متخزنة في projects.json) -----
 const projList = () => store.get('projects') || [];
 const sectorNames = () => (store.get('site').sectors || []).map(s => tr(s.name, 'ar')).filter(Boolean);
 admin.get('/projects', (req, res) => res.render('admin/projects', adminView(req, { section: 'projects', list: projList(), catName: x => x || '—' })));
@@ -888,7 +974,7 @@ admin.get('/projects/:id/edit', (req, res) => {
   res.render('admin/projectform', adminView(req, { section: 'projects', item, cats: sectorNames() }));
 });
 admin.post('/projects/save', (req, res) => {
-  diskImages.array('images', 20)(req, res, err => {
+  diskProduct.fields([{ name: 'images', maxCount: 20 }, { name: 'datasheet', maxCount: 1 }])(req, res, err => {
     const b = req.body || {};
     const list = projList();
     const old = list.find(p => p.id === clean(b.id));
@@ -898,32 +984,35 @@ admin.post('/projects/save', (req, res) => {
     images = images.filter(x => !remove.includes(x));
     // صورة الغلاف = أول صورة
     if (b.cover && images.includes(b.cover)) images = [b.cover].concat(images.filter(x => x !== b.cover));
-    (req.files || []).forEach(f => images.push('/uploads/' + f.filename));
+    ((req.files || {}).images || []).forEach(f => images.push('/uploads/' + f.filename));
+    let datasheet = old ? (old.datasheet || '') : '';
+    const newSheet = ((req.files || {}).datasheet || [])[0];
+    if (newSheet) { unlinkUpload(datasheet); datasheet = '/uploads/' + newSheet.filename; }
+    else if (b.remove_datasheet === 'on' && datasheet) { unlinkUpload(datasheet); datasheet = ''; }
     const rec = {
       id: old ? old.id : uid(),
-      title: bi(b, 'title'), cat: clean(b.cat, 100), status: STATUS.includes(b.status) ? b.status : 'done',
-      client: bi(b, 'client'), location: bi(b, 'location'),
-      year: clean(b.year, 40), area: clean(b.area, 60),
+      title: bi(b, 'title'), cat: clean(b.cat, 100),
+      pack: bi(b, 'pack'),
       scope: bi(b, 'scope'), desc: bi(b, 'desc'),
-      images: images.slice(0, 40),
+      images: images.slice(0, 40), datasheet,
       featured: b.featured === 'on', visible: b.visible === 'on',
       at: old ? old.at : now(), updated: now()
     };
-    if (!rec.title.ar) { flash(req, 'اكتب اسم المشروع بالعربي', 'err'); return res.redirect(old ? '/admin/projects/' + old.id + '/edit' : '/admin/projects/new'); }
+    if (!rec.title.ar) { flash(req, 'اكتب اسم المنتج بالعربي', 'err'); return res.redirect(old ? '/admin/projects/' + old.id + '/edit' : '/admin/projects/new'); }
     if (old) { Object.assign(old, rec); delete old.sample; } else list.unshift(rec);
     store.set('projects', list);
-    flash(req, err ? 'اتحفظ المشروع، بس فيه صورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ المشروع', err ? 'err' : 'ok');
+    flash(req, err ? 'اتحفظ المنتج، بس فيه صورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ المنتج', err ? 'err' : 'ok');
     res.redirect('/admin/projects');
   });
 });
 admin.post('/projects/:id/toggle', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) { p.visible = p.visible === false; store.set('projects', list); flash(req, p.visible ? 'المشروع ظاهر على الموقع' : 'المشروع اتخفى من الموقع'); }
+  if (p) { p.visible = p.visible === false; store.set('projects', list); flash(req, p.visible ? 'المنتج ظاهر على الموقع' : 'المنتج اتخفى من الموقع'); }
   res.redirect('/admin/projects');
 });
 admin.post('/projects/:id/feature', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) { p.featured = !p.featured; store.set('projects', list); flash(req, p.featured ? 'المشروع بقى ضمن المشروعات المختارة في الصفحة الرئيسية' : 'اتشال من المشروعات المختارة'); }
+  if (p) { p.featured = !p.featured; store.set('projects', list); flash(req, p.featured ? 'المنتج بقى ضمن المنتجات المختارة في الصفحة الرئيسية' : 'اتشال من المنتجات المختارة'); }
   res.redirect('/admin/projects');
 });
 admin.post('/projects/:id/move', (req, res) => {
@@ -934,10 +1023,30 @@ admin.post('/projects/:id/move', (req, res) => {
 });
 admin.post('/projects/:id/delete', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); // صور الموقع الأصلية (/img/...) متتمسحش
+  if (p) { (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); unlinkUpload(p.datasheet); } // صور الموقع الأصلية (/img/...) متتمسحش
   store.set('projects', list.filter(x => x.id !== req.params.id));
-  flash(req, 'تم حذف المشروع');
+  flash(req, 'تم حذف المنتج');
   res.redirect('/admin/projects');
+});
+// تطبيق المحتوى الجديد اللي جاي مع النسخة على الموقع (للمدير الأساسي بس). بيحتفظ بنسخة من القديم، وبيسيب التصميم والصور اللي رفعتها والإعدادات.
+admin.post('/apply-defaults', (req, res) => {
+  if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
+  const sSite = shippedSite(), sProd = shippedProducts();
+  if (!sSite || !sProd) { flash(req, 'مش لاقي المحتوى الجاهز اللي جاي مع النسخة (فولدر data)', 'err'); return res.redirect('/admin'); }
+  const cur = store.get('site');
+  const dir = path.join(store.DIR, 'backups');
+  const stamp = now().replace(/[:.]/g, '-');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'site-' + stamp + '.json'), JSON.stringify(cur, null, 1));
+    fs.writeFileSync(path.join(dir, 'products-' + stamp + '.json'), JSON.stringify(store.get('projects') || [], null, 1));
+  } catch (e) { /* النسخة الاحتياطية مش شرط لإتمام التحديث */ }
+  const next = Object.assign({}, sSite);
+  ['theme', 'colors', 'ui', 'homeLayout', 'images', 'channels', 'hosting', 'profilePdf'].forEach(k => { if (cur[k] !== undefined) next[k] = cur[k]; });
+  store.set('site', next);
+  store.set('projects', sProd);
+  flash(req, 'تم تطبيق المحتوى الجديد على الموقع. لو الموقع لسه بيظهر قديم عندك، اعمل تحديث للصفحة (Ctrl+F5).');
+  res.redirect('/admin');
 });
 admin.post('/samples/clear', (req, res) => {
   if (!req.me.owner) { flash(req, 'للمدير الأساسي بس', 'err'); return res.redirect('/admin'); }
@@ -1187,8 +1296,8 @@ admin.post('/content/:key', (req, res) => {
 
 // ----- custom sections (أقسام إضافية) -----
 const POSITIONS = [
-  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "آلية العمل"'],
-  ['after_sectors', 'بعد "الجودة والسلامة"'], ['after_jobs', 'بعد "العملاء"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
+  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "المنتجات" و"طريقة الطلب"'],
+  ['after_sectors', 'بعد "المخازن" و"لماذا روك لاين"'], ['after_jobs', 'بعد "الأخبار"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
 ];
 admin.get('/sections', (req, res) => res.render('admin/sections', adminView(req, { section: 'sections', list: store.get('site').sections || [], POSITIONS })));
 admin.get('/sections/new', (req, res) => res.render('admin/sectionform', adminView(req, { section: 'sections', item: null, POSITIONS })));
@@ -1274,8 +1383,87 @@ admin.get('/stats', (req, res) => {
   res.render('admin/stats', adminView(req, { section: 'stats', n, sum }));
 });
 
+// ----- المساعد (الشات بوت) -----
+function botView(req, extra) {
+  const k = chat.apiKey();
+  return adminView(req, Object.assign({ section: 'bot', bot: chat.settings(), keySource: chat.keySource(), keyTail: k ? k.slice(-4) : '', aiReady: chat.aiReady(), test: null }, extra || {}));
+}
+admin.get('/bot', (req, res) => res.render('admin/bot', botView(req)));
+admin.post('/bot', (req, res) => {
+  const b = req.body || {}; const next = Object.assign({}, chat.DEFAULTS, store.get('bot') || {});
+  next.enabled = b.enabled === 'on';
+  next.mode = b.mode === 'site' ? 'site' : 'ai';
+  next.model = clean(b.model, 60).replace(/[^\w.\-]/g, '') || chat.DEFAULTS.model;
+  next.dailyLimit = Math.max(0, Math.min(5000, parseInt(b.dailyLimit, 10) || 0));
+  next.extra = clean(b.extra, 2000);
+  const newKey = clean(b.apiKey, 200).replace(/\s/g, '');
+  if (b.remove_key === 'on') next.apiKey = '';
+  else if (newKey) {
+    if (!/^[\w\-]{20,}$/.test(newKey)) { flash(req, 'المفتاح شكله غلط (حروف وأرقام وشرطات بس). انسخه من Google AI Studio تاني.', 'err'); return res.redirect('/admin/bot'); }
+    next.apiKey = newKey;
+  }
+  store.set('bot', next);
+  security.audit(req.me, 'bot', next.enabled ? (next.mode === 'ai' && chat.apiKey() ? 'on-ai' : 'on-site') : 'off', req.ip);
+  flash(req, 'تم حفظ إعدادات المساعد');
+  res.redirect('/admin/bot');
+});
+admin.post('/bot/test', async (req, res) => {
+  const msg = clean((req.body || {}).message, 500);
+  if (!msg) return res.redirect('/admin/bot');
+  const lang = chat.hasArabic(msg) ? 'ar' : 'en';
+  let test;
+  try { const o = await chat.respond(msg, [], chatCtx(lang), { nolog: true }); test = { q: msg, a: o.reply, via: o.via, actions: o.actions || [] }; }
+  catch (e) { test = { q: msg, a: 'حصل خطأ: ' + String(e && e.message || e).slice(0, 200), via: 'error', actions: [] }; }
+  res.render('admin/bot', botView(req, { test }));
+});
+admin.post('/bot/clear-log', (req, res) => { const b = Object.assign({}, chat.DEFAULTS, store.get('bot') || {}); b.log = []; store.set('bot', b); flash(req, 'اتمسح سجل المحادثات'); res.redirect('/admin/bot'); });
+
+// ----- نصوص الواجهة (عناوين الأقسام والأزرار وأسماء القوايم) -----
+admin.get('/texts', (req, res) => res.render('admin/texts', adminView(req, { section: 'texts', groups: uitexts.groups(), dict, ui: store.get('site').ui || {} })));
+admin.post('/texts', (req, res) => {
+  const b = req.body || {}; const ui = { ar: {}, en: {} };
+  uitexts.allKeys().forEach(k => ['ar', 'en'].forEach(l => {
+    const v = clean(b['t_' + l + '_' + k], 400);
+    if (v && v !== dict[l][k]) ui[l][k] = v; // اللي زي الافتراضي مبنخزنوش
+  }));
+  const site = store.get('site'); site.ui = ui; store.set('site', site);
+  flash(req, 'تم حفظ نصوص الواجهة');
+  res.redirect('/admin/texts');
+});
+admin.post('/texts/reset', (req, res) => {
+  const site = store.get('site'); delete site.ui; store.set('site', site);
+  flash(req, 'رجعت كل نصوص الواجهة للأصلية');
+  res.redirect('/admin/texts');
+});
+
+// ----- ترتيب أقسام الصفحة الرئيسية -----
+admin.get('/layout', (req, res) => res.render('admin/layout', adminView(req, { section: 'layout', list: homeLayout(store.get('site')) })));
+function saveLayout(list) { const site = store.get('site'); site.homeLayout = list.map(x => ({ id: x.id, visible: x.visible })); store.set('site', site); }
+admin.post('/layout/reset', (req, res) => { const site = store.get('site'); delete site.homeLayout; store.set('site', site); flash(req, 'رجّعت الترتيب الأصلي'); res.redirect('/admin/layout'); });
+admin.post('/layout/:id/move', (req, res) => {
+  const list = homeLayout(store.get('site')); const i = list.findIndex(x => x.id === req.params.id);
+  const j = i + (req.body && req.body.dir === 'up' ? -1 : 1);
+  if (i >= 0 && j >= 0 && j < list.length) { [list[i], list[j]] = [list[j], list[i]]; saveLayout(list); }
+  res.redirect('/admin/layout');
+});
+admin.post('/layout/:id/toggle', (req, res) => {
+  const list = homeLayout(store.get('site')); const x = list.find(y => y.id === req.params.id);
+  if (x) { x.visible = !x.visible; saveLayout(list); flash(req, (x.visible ? 'ظهر' : 'اتخفى') + ' قسم «' + x.label + '» في الصفحة الرئيسية'); }
+  res.redirect('/admin/layout');
+});
+
+// ----- ألوان الموقع -----
+admin.post('/design/colors', (req, res) => {
+  const b = req.body || {}; const site = store.get('site');
+  if (b.reset === '1') delete site.colors;
+  else site.colors = { primary: hexOk(b.primary) && b.use_primary === 'on' ? b.primary : '', accent: hexOk(b.accent) && b.use_accent === 'on' ? b.accent : '' };
+  store.set('site', site);
+  flash(req, b.reset === '1' ? 'رجعت ألوان التصميم الأصلية' : 'تم حفظ ألوان الموقع');
+  res.redirect('/admin/design');
+});
+
 // ----- شكل الموقع (اختيار التصميم + معاينة) -----
-admin.get('/design', (req, res) => res.render('admin/design', adminView(req, { section: 'design', THEMES, current: themeKey(store.get('site')), preview: req.session.previewTheme || '' })));
+admin.get('/design', (req, res) => res.render('admin/design', adminView(req, { section: 'design', THEMES, colors: store.get('site').colors || {}, current: themeKey(store.get('site')), preview: req.session.previewTheme || '' })));
 admin.post('/design', (req, res) => {
   const t = (req.body || {}).theme;
   if (!Object.prototype.hasOwnProperty.call(THEMES, t)) { flash(req, 'اختار تصميم من القايمة', 'err'); return res.redirect('/admin/design'); }
@@ -1291,9 +1479,9 @@ admin.get('/design/preview/:t', (req, res) => {
 admin.get('/design/preview-off', (req, res) => { delete req.session.previewTheme; res.redirect(String(req.query.back || '') === 'site' ? '/ar' : '/admin/design'); });
 
 // ----- site images -----
-admin.get('/images', (req, res) => res.render('admin/images', adminView(req, { section: 'images', slots: IMAGE_SLOTS })));
+admin.get('/images', (req, res) => res.render('admin/images', adminView(req, { section: 'images', slots: imageSlots() })));
 admin.post('/images/:slot', (req, res) => {
-  const slot = IMAGE_SLOTS.find(x => x.k === req.params.slot);
+  const slot = imageSlots().find(x => x.k === req.params.slot);
   if (!slot) return res.redirect('/admin/images');
   diskImages.single('image')(req, res, err => {
     const site = store.get('site');
@@ -1479,8 +1667,10 @@ admin.post('/users/:id/delete', (req, res) => {
 app.get('/:slug', (req, res, next) => { const s = String(req.params.slug || '').toLowerCase(); if (!social.slugOk(s)) return next(); if (renderSocialPage(req, res, s)) return; next(); });
 app.use((req, res) => notFound(req, res));
 app.use((err, req, res, next) => {
+  const st = err && (err.status || err.statusCode);
+  if (st >= 400 && st < 500) return res.status(st).type('text/plain').send(st === 413 ? 'payload too large' : 'bad request'); // JSON فاسد أو طلب كبير: مش خطأ سيرفر
   console.error(err);
-  res.status(500).send('server error');
+  res.status(500).type('text/plain').send('server error');
 });
 
 app.listen(PORT, () => console.log('Rock Line Group website: http://localhost:' + PORT + '  |  admin: /admin'));

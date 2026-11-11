@@ -18,21 +18,31 @@
 </div>
 <% } %>
 
+<% if (me.owner) { %>
+<div class="card nudge" style="border-inline-start:4px solid <%= newContent ? '#d08a1e' : '#2e8b57' %>">
+  <h2 class="h3"><%- icon('sparkles') %> <%= newContent ? 'فيه محتوى جديد جاهز مع النسخة دي — لسه مطبّقتوش' : 'تحديث المحتوى من النسخة الجديدة' %></h2>
+  <p class="muted" style="margin:0 0 10px">لو رفعت نسخة جديدة من الموقع ولسه بيظهر المحتوى القديم، ده عشان بيانات الموقع (النصوص والمنتجات) محفوظة لوحدها ومبتتغيرش مع رفع الكود. الزرار ده بيطبّق نصوص ومنتجات النسخة الجديدة على الموقع. بيحتفظ بالتصميم المختار والصور اللي رفعتها وإعدادات الإيميل، وبيحفظ نسخة من المحتوى القديم في فولدر <code>backups</code> جوه فولدر البيانات. <b>أي تعديل عملته على النصوص والمنتجات هيتبدل.</b></p>
+  <form method="post" action="/admin/apply-defaults" data-confirm="هيتبدل محتوى الموقع (النصوص والمنتجات والمخازن) بالمحتوى الجديد اللي جاي مع النسخة. هيتحفظ نسخة من القديم. متأكد؟">
+    <button class="btn <%= newContent ? 'navy' : 'ghost' %>" type="submit"><%- icon('check') %> طبّق المحتوى الجديد على الموقع</button>
+  </form>
+</div>
+<% } %>
+
 <% if (me.owner && (samples.site || samples.projects)) { %>
 <div class="card nudge">
   <h2 class="h3"><%- icon('info') %> فيه محتوى نموذجي لازم تراجعه قبل ما تفتح الموقع للعامة</h2>
   <ul>
-    <% if (samples.site) { %><li>الأرقام (سنين الخبرة، عدد المشروعات...) ونطاق العمل والنصوص مكتوبة كنموذج. <a href="/admin/content/stats">راجع الأرقام</a> · <a href="/admin/content/hero">راجع النصوص</a>
+    <% if (samples.site) { %><li>النصوص والمنتجات وبيانات المخازن مكتوبة كنموذج مبدئي ولازم تتراجع. <a href="/admin/content/hero">راجع النصوص</a> · <a href="/admin/contact">راجع العنوان والتواصل</a>
       <form method="post" action="/admin/samples/clear" style="display:inline"><input type="hidden" name="what" value="site"><button class="btn sm ghost" type="submit">راجعتها ✓</button></form></li><% } %>
-    <% if (samples.projects) { %><li><b><%= samples.projects %></b> مشروع نموذجي (مكتوب عليهم «نموذج»). عدّلهم ببيانات مشروعاتكم الحقيقية وصورها، أو امسحهم.
-      <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح كل المشروعات النموذجية؟"><input type="hidden" name="what" value="projects"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
+    <% if (samples.projects) { %><li><b><%= samples.projects %></b> منتج نموذجي (مكتوب عليهم «نموذج»). راجع الأقطار والأنواع والماركات الحقيقية عندكم وعدّلها، أو امسحهم وضيف منتجاتكم.
+      <form method="post" action="/admin/samples/clear" style="display:inline" data-confirm="تمسح كل المنتجات النموذجية؟"><input type="hidden" name="what" value="projects"><button class="btn sm ghost" type="submit">امسح النماذج</button></form></li><% } %>
   </ul>
 </div>
 <% } %>
 <% if (noContact && can('contact')) { %><div class="flash warn"><%- icon('phone') %> لسه مفيش أرقام تليفون ولا واتساب للشركة، فزراير الاتصال والواتساب مش ظاهرة على الموقع. <a href="/admin/contact">ضيف بيانات التواصل</a></div><% } %>
 
 <div class="kpis">
-  <% if (can('projects')) { %><a class="kpi" href="/admin/projects"><%- icon('building') %><b><%= counts.projects %></b><span>مشروع ظاهر</span></a><% } %>
+  <% if (can('projects')) { %><a class="kpi" href="/admin/projects"><%- icon('building') %><b><%= counts.projects %></b><span>منتج ظاهر</span></a><% } %>
   <% if (can('inbox')) { %><a class="kpi" href="/admin/inbox"><%- icon('inbox') %><b><%= counts.messages %></b><span>رسالة (<%= counts.week %> الأسبوع ده)</span></a><% } %>
   <% if (can('news')) { %><a class="kpi" href="/admin/news"><%- icon('newspaper') %><b><%= counts.news %></b><span>خبر ومنشور</span></a><% } %>
 </div>
@@ -49,13 +59,14 @@
 
 <h2 class="h2">إضافة سريعة</h2>
 <div class="quick">
-  <% if (can('projects')) { %><a href="/admin/projects/new"><%- icon('plus') %> مشروع جديد</a><% } %>
+  <% if (can('projects')) { %><a href="/admin/projects/new"><%- icon('plus') %> منتج جديد</a><% } %>
   <% if (can('news')) { %><a href="/admin/news/new"><%- icon('plus') %> خبر أو منشور</a><% } %>
   <% if (can('gallery')) { %><a href="/admin/gallery"><%- icon('plus') %> صور للمعرض</a><% } %>
   <% if (can('images')) { %><a href="/admin/images"><%- icon('image') %> تغيير صور الصفحة الرئيسية</a><% } %>
   <% if (can('sections')) { %><a href="/admin/sections/new"><%- icon('plus') %> قسم جديد في الصفحة الرئيسية</a><% } %>
   <% if (can('contact')) { %><a href="/admin/contact"><%- icon('phone') %> تعديل الأرقام والعنوان</a><% } %>
-  <% if (can('content')) { %><a href="/admin/content/stats"><%- icon('chart') %> تعديل الأرقام والإحصائيات</a><% } %>
+  <% if (can('content')) { %><a href="/admin/content/warehouses"><%- icon('store') %> مخازن إضافية (اختياري)</a><% } %>
+  <% if (can('content')) { %><a href="/admin/content/team"><%- icon('users') %> فريق التواصل</a><% } %>
   <% if (can('users')) { %><a href="/admin/users/new"><%- icon('user') %> إضافة مستخدم</a><% } %>
 </div>
 

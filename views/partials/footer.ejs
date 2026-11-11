@@ -4,16 +4,16 @@
   <div class="wrap ft-grid">
     <div class="ft-brand">
       <a class="ft-logo" href="<%= L('') %>" aria-label="<%= tr(site.brand.name) %>"><img src="<%= img('logoLight') %>" alt="<%= tr(site.brand.name) %>" width="190" height="96" loading="lazy"></a>
-      <p><%= tr(site.about.p1).split(/[،,.]/).slice(0,2).join('،') %>.</p>
-      <% if (site.brand.license) { %><span class="lic-chip"><%- icon('shield') %> <%= t.member_no %> <%= site.brand.license %><% if (site.brand.grade) { %> · <%= t.grade %> <%= site.brand.grade %><% } %></span><% } %>
+      <p><%= tr(site.about.p1).split(/[،,.]/).slice(0,2).join(lang === 'ar' ? '،' : ',') %>.</p>
       <% if (socials.length) { %><div class="socials"><% socials.forEach(function(s){ %><a href="<%= safeUrl(s.url) %>" target="_blank" rel="noopener" aria-label="<%= s.k %>"><%- brand(s.k) %></a><% }); %></div><% } %>
     </div>
     <div>
       <h4><%= t.quick_links %></h4>
       <a href="<%= L('/about') %>"><%= t.nav_about %></a>
+      <a href="<%= L('/products') %>"><%= t.nav_products %></a>
       <a href="<%= L('/services') %>"><%= t.nav_services %></a>
-      <a href="<%= L('/projects') %>"><%= t.nav_projects %></a>
-      <a href="<%= L('/clients') %>"><%= t.nav_clients %></a>
+      <a href="<%= L('/warehouses') %>"><%= t.nav_warehouses %></a>
+      <a href="<%= L('/calculator') %>"><%= t.nav_calc %></a>
       <a href="<%= L('/quote') %>"><%= t.cta_quote %></a>
       <a href="<%= L('/vendors') %>"><%= t.nav_vendors %></a>
       <a href="<%= L('/news') %>"><%= t.nav_news %></a>
@@ -29,6 +29,7 @@
     <div>
       <h4><%= t.address %></h4>
       <% if (tr(site.contact.address)) { %><a href="<%= mapUrl %>" target="_blank" rel="noopener"><%- icon('map') %> <%= tr(site.contact.address) %></a><% } %>
+      <% (site.warehouses || []).slice(0, 4).forEach(function(w){ %><a href="<%= /^https?:\/\//i.test(w.map || '') ? w.map : L('/warehouses') %>"<% if (/^https?:\/\//i.test(w.map || '')) { %> target="_blank" rel="noopener"<% } %>><%- icon('store') %> <%= tr(w.name) %><% if (tr(w.address)) { %> — <%= tr(w.address) %><% } %></a><% }); %>
       <% if (tr(site.contact.hours)) { %><p><%- icon('clock') %> <%= tr(site.contact.hours) %></p><% } %>
       <% if (site.profilePdf) { %><a class="btn gold sm" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
       <a class="btn line-light sm" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
@@ -45,10 +46,12 @@
 <nav class="mbar" aria-label="quick actions">
   <% if (phone1) { %><a href="<%= tel(phone1) %>"><%- icon('phone') %><span><%= t.cta_call %></span></a><% } %>
   <% if (hasWa) { %><a href="<%= wa(t.wa_hello + ' ') %>" target="_blank" rel="noopener" class="mb-wa"><%- brand('whatsapp') %><span><%= t.whatsapp %></span></a><% } %>
-  <a href="<%= L('/projects') %>"><%- icon('building') %><span><%= t.nav_projects %></span></a>
+  <a href="<%= L('/products') %>"><%- icon('package') %><span><%= t.nav_products %></span></a>
   <a href="<%= L('/quote') %>" class="mb-cta"><%- icon('doc') %><span><%= t.cta_quote %></span></a>
 </nav>
-<script>window.NK = <%- JSON.stringify({ lang: lang, t: { sending: t.sending, sent_ok: t.sent_ok, sent_fail: t.sent_fail, required: t.required, wa_note: t.sent_wa_note, too_many: t.too_many } }) %>;</script>
-<script src="/js/main.js?v=20" defer></script>
+<script nonce="<%= nonce %>">window.NK = <%- JSON.stringify({ lang: lang, t: { sending: t.sending, sent_ok: t.sent_ok, sent_fail: t.sent_fail, required: t.required, wa_note: t.sent_wa_note, too_many: t.too_many, list_empty: t.list_empty, list_remove: t.list_remove, list_clear: t.list_clear, added_to_list: t.added_to_list, qty: t.qty } }).replace(/</g, '\\u003c') %>;</script>
+<script src="/js/main.js?v=<%= ver %>" defer></script>
+<script src="/js/basket.js?v=<%= ver %>" defer></script>
+<% if (chatOn) { %><%- include('chat') %><% } %>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <%
-/* الفورمات: طلب عرض سعر، تسجيل مورد / مقاول باطن، استفسار.
+/* الفورمات: طلب عرض سعر، تسجيل مورد / مصنع، استفسار.
    كل فورم يتبعت بطريقتين: واتساب (رسالة جاهزة) أو إيميل (من السيرفر). */
 var KINDS = ['quote', 'vendor', 'contact'];
 var tabsOn = typeof only === 'undefined' || !only;
@@ -8,36 +8,37 @@ var pre = (typeof ptype !== 'undefined' && ptype) || '';
 var waNum = String(site.contact.whatsapp || '').replace(/[^0-9]/g, '');
 var TAB_IC = { quote: 'doc', vendor: 'package', contact: 'mail' };
 function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+var T_ = {}; Object.keys(t).forEach(function(k){ T_[k] = esc(t[k]); }); // نصوص الواجهة بتتعدل من لوحة التحكم: بنعمل لها escape قبل ما تدخل في HTML
 function fld(o) {
   var req = o.req ? ' required' : '';
   var star = o.req ? ' <em aria-hidden="true">*</em>' : '';
   var cls = 'fld' + (o.wide ? ' wide' : '');
-  var lab = '<span class="fl">' + o.label + star + '</span>';
-  var attrs = ' name="' + o.name + '" data-label="' + o.label + '"' + req + (o.value && o.type !== 'select' ? ' value="' + esc(o.value) + '"' : '') + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.list ? ' list="' + o.list + '"' : '') + (o.auto ? ' autocomplete="' + o.auto + '"' : '');
+  var lab = '<span class="fl">' + esc(o.label) + star + '</span>';
+  var attrs = ' name="' + o.name + '" data-label="' + esc(o.label) + '"' + req + (o.value && o.type !== 'select' ? ' value="' + esc(o.value) + '"' : '') + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.list ? ' list="' + o.list + '"' : '') + (o.auto ? ' autocomplete="' + o.auto + '"' : '');
   if (o.type === 'textarea') return '<label class="' + cls + '">' + lab + '<textarea rows="' + (o.rows || 3) + '"' + attrs + '></textarea></label>';
   if (o.type === 'select') {
-    return '<label class="' + cls + '">' + lab + '<select' + attrs + '><option value="">' + t.f_choose + '</option>' + o.options.map(function(x){ return '<option' + (x === o.value ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '<option>' + t.f_other + '</option></select></label>';
+    return '<label class="' + cls + '">' + lab + '<select' + attrs + '><option value="">' + T_.f_choose + '</option>' + o.options.map(function(x){ return '<option' + (x === o.value ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '<option>' + T_.f_other + '</option></select></label>';
   }
   return '<label class="' + cls + '">' + lab + '<input type="' + (o.type || 'text') + '"' + attrs + (o.type === 'tel' ? ' dir="ltr" inputmode="tel"' : '') + (o.type === 'email' ? ' dir="ltr"' : '') + (o.type === 'number' ? ' min="0" inputmode="numeric"' : '') + '></label>';
 }
 function file(label) {
-  return '<label class="fld wide file"><span class="fl">' + label + '</span><input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.webp"><small>' + t.f_file_hint + '</small></label>';
+  return '<label class="fld wide file"><span class="fl">' + label + '</span><input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.webp"><small>' + T_.f_file_hint + '</small></label>';
 }
 function actions() {
   // طرق الإرسال بتتحكم فيها من لوحة التحكم (إعدادات الإيميل): واتساب / إيميل. لو الاتنين مقفولين بيظهر زرار "إرسال" عادي.
   var showWa = chans.whatsapp && !!waNum;
   var emailBtn = chans.email && mailReady;
   var plainBtn = !showWa && !emailBtn;
-  return '<label class="consent"><input type="checkbox" name="consent" required> <span>' + t.consent_pre + ' <a href="' + L('/privacy') + '" target="_blank" rel="noopener">' + t.privacy + '</a> ' + t.consent_post + '</span></label>' +
+  return '<label class="consent"><input type="checkbox" name="consent" required> <span>' + T_.consent_pre + ' <a href="' + L('/privacy') + '" target="_blank" rel="noopener">' + T_.privacy + '</a> ' + T_.consent_post + '</span></label>' +
     '<div class="factions">' +
-    (showWa ? '<button type="button" class="btn wa" data-ch="whatsapp">' + brand('whatsapp') + ' ' + t.send_wa + '</button>' : '') +
-    (showWa && emailBtn ? '<span class="or">' + t.or + '</span>' : '') +
-    (emailBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('mail') + ' ' + t.send_email + '</button>' : '') +
-    (plainBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('send') + ' ' + t.send_form + '</button>' : '') +
+    (showWa ? '<button type="button" class="btn wa" data-ch="whatsapp">' + brand('whatsapp') + ' ' + T_.send_wa + '</button>' : '') +
+    (showWa && emailBtn ? '<span class="or">' + T_.or + '</span>' : '') +
+    (emailBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('mail') + ' ' + T_.send_email + '</button>' : '') +
+    (plainBtn ? '<button type="submit" class="btn navy" data-ch="email">' + icon('send') + ' ' + T_.send_form + '</button>' : '') +
     '</div><p class="fstatus" role="status" aria-live="polite"></p>';
 }
 function open(kind) {
-  return '<form class="nform" data-kind="' + kind + '" data-wa="' + waNum + '" data-title="' + t['wa_' + kind] + '" action="' + L('/send') + '" method="post" enctype="multipart/form-data"' + (active !== kind ? ' hidden' : '') + '>' +
+  return '<form class="nform" data-kind="' + kind + '" data-wa="' + waNum + '" data-title="' + T_['wa_' + kind] + '" action="' + L('/send') + '" method="post" enctype="multipart/form-data"' + (active !== kind ? ' hidden' : '') + '>' +
     '<input type="hidden" name="kind" value="' + kind + '"><input type="hidden" name="channel" value="email">' +
     '<label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>';
 }
@@ -59,9 +60,10 @@ var show = function(k){ return tabsOn || only === k; };
       <%- fld({ name: 'email', label: t.f_email, type: 'email', auto: 'email' }) %>
       <%- fld({ name: 'ptype', label: t.f_ptype, req: 1, type: 'select', options: ptypes, value: pre }) %>
       <%- fld({ name: 'location', label: t.f_location }) %>
-      <%- fld({ name: 'area', label: t.f_area, ph: lang === 'ar' ? 'مثال: 1200 م² أو 5 أدوار' : 'e.g. 1,200 m² or 5 floors' }) %>
-      <%- fld({ name: 'start', label: t.f_start, ph: lang === 'ar' ? 'مثال: خلال 3 شهور' : 'e.g. within 3 months' }) %>
-      <%- fld({ name: 'details', label: t.f_details, req: 1, wide: 1, type: 'textarea', rows: 3, ph: lang === 'ar' ? 'مثال: تنفيذ هيكل خرساني وتشطيب كامل لمبنى إداري 4 أدوار' : 'e.g. concrete frame and full finishing for a 4-storey office building' }) %>
+      <%- fld({ name: 'area', label: t.f_area, ph: lang === 'ar' ? 'مثال: 25 طن أو 500 كيس' : 'e.g. 25 tonnes or 500 bags' }) %>
+      <%- fld({ name: 'start', label: t.f_start, ph: lang === 'ar' ? 'مثال: خلال أسبوع' : 'e.g. within a week' }) %>
+      <%- fld({ name: 'items', label: t.f_items, wide: 1, type: 'textarea', rows: 3 }) %>
+      <%- fld({ name: 'details', label: t.f_details, req: 1, wide: 1, type: 'textarea', rows: 3, ph: lang === 'ar' ? 'مثال: حديد 12 مم و16 مم، أسمنت معبأ، التسليم في كفر الشيخ' : 'e.g. 12 mm and 16 mm rebar, bagged cement, delivery to Kafr El-Sheikh' }) %>
       <%- file(t.f_file_quote) %>
     </div>
     <%- actions() %>

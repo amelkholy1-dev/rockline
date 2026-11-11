@@ -1,0 +1,22 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec duo">
+  <div class="wrap duo-grid">
+    <div class="duo-card co reveal">
+      <span class="duo-ic"><%- icon('doc') %></span>
+      <h2><%= t.quote_title %></h2>
+      <p><%= t.quote_sub %></p>
+      <div class="duo-act">
+        <a class="btn gold" href="<%= L('/quote') %>"><%= t.cta_quote %></a>
+        <% if (site.profilePdf) { %><a class="btn line" href="<%= site.profilePdf %>" download><%- icon('download') %> <%= t.cta_profile %></a><% } %>
+      </div>
+    </div>
+    <div class="duo-card wk reveal">
+      <span class="duo-ic"><%- icon('store') %></span>
+      <h2><%= t.home_duo_wh %></h2>
+      <p><%= t.home_duo_wh_sub %></p>
+      <div class="duo-act">
+        <a class="btn navy" href="<%= L('/warehouses') %>"><%= t.cta_warehouses %></a>
+      </div>
+    </div>
+  </div>
+</section>

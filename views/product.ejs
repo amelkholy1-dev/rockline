@@ -1,0 +1,51 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/pagehead', { heading: tr(p.title), parent: ['/products', t.nav_products] }) %>
+<% var imgs = p.images || []; var specs = tr(p.scope).split(/\n/).map(function(x){ return x.trim(); }).filter(Boolean); %>
+<section class="sec">
+  <div class="wrap job-grid">
+    <article class="job-main reveal">
+      <div class="pj-cover"><img src="<%= imgs[0] || img('project') %>" alt="<%= tr(p.title) %>"></div>
+      <% if (tr(p.desc)) { %>
+        <h2><%= t.p_about_prod %></h2>
+        <div class="prose"><% tr(p.desc).split(/\n/).forEach(function(l){ if (l.trim()) { %><p><%= l %></p><% } }); %></div>
+      <% } %>
+      <% if (specs.length) { %>
+        <h2><%= t.p_specs %></h2>
+        <ul class="checks"><% specs.forEach(function(s){ %><li><%- icon('checkcircle') %><%= s %></li><% }); %></ul>
+      <% } %>
+      <% if (imgs.length > 1) { %>
+        <div class="pgrid" data-lightbox><% imgs.forEach(function(x){ %><a class="ph-it" href="<%= x %>" data-cap="<%= tr(p.title) %>"><img src="<%= x %>" alt="" loading="lazy"></a><% }); %></div>
+      <% } %>
+    </article>
+    <aside class="job-side reveal">
+      <div class="side-card">
+        <dl class="job-facts col">
+          <% if (p.cat) { %><div><dt><%- icon(catIcon(p.cat)) %><%= t.p_cat %></dt><dd><a href="<%= L('/products?cat=' + encodeURIComponent(p.cat)) %>"><%= cat(p.cat) %></a></dd></div><% } %>
+          <% if (tr(p.pack)) { %><div><dt><%- icon('package') %><%= t.p_pack %></dt><dd><%= tr(p.pack) %></dd></div><% } %>
+          <div><dt><%- icon('truck') %><%= t.nav_services %></dt><dd><%= t.deliver_all %></dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h3><%= t.p_cta %></h3>
+        <p class="muted"><%= t.p_cta_sub %></p>
+        <div class="bbox" data-basket-box>
+          <div class="bbox-row"><label><%= t.qty %><input type="number" min="0" step="any" value="1" data-bq></label>
+            <select data-bu aria-label="unit"><option><%= t.unit_ton %></option><option><%= t.unit_bag %></option><option><%= t.unit_bar %></option></select></div>
+          <button type="button" class="btn navy wide" data-add-basket data-name="<%= tr(p.title) %>"><%- icon('plus') %> <%= t.add_to_list %></button>
+          <span class="bmsg" data-bmsg></span>
+        </div>
+        <a class="btn gold wide" href="<%= L('/quote?type=' + encodeURIComponent(cat(p.cat))) %>"><%- icon('doc') %> <%= t.cta_quote %></a>
+        <% if (p.datasheet) { %><a class="btn line-navy wide" href="<%= p.datasheet %>" download><%- icon('download') %> <%= t.p_datasheet %></a><% } %>
+        <button class="btn line-navy wide" type="button" data-share data-title="<%= tr(p.title) %>"><%- icon('copy') %> <%= t.share %></button>
+      </div>
+    </aside>
+  </div>
+  <% if (related.length) { %>
+  <div class="wrap">
+    <div class="shead"><h2><%= t.p_related %></h2><span class="rule"></span></div>
+    <div class="proj-grid"><% related.forEach(function(x){ %><%- include('partials/productcard', { p: x }) %><% }); %></div>
+  </div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

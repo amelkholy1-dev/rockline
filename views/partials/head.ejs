@@ -16,14 +16,14 @@
 <meta property="og:description" content="<%= metaDesc.slice(0,160) %>">
 <meta property="og:image" content="<%= baseUrl %><%= typeof ogImage !== 'undefined' && ogImage ? ogImage : img('og') %>">
 <meta property="og:locale" content="<%= lang === 'ar' ? 'ar_EG' : 'en_US' %>">
-<link rel="icon" type="image/png" href="/img/favicon.png">
-<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="<%= img('favicon') %>">
+<link rel="apple-touch-icon" href="<%= site.images && site.images.favicon ? img('favicon') : '/img/apple-touch-icon.png' %>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=<%= themeInfo.font %>&display=swap">
-<link rel="stylesheet" href="/css/style.css?v=30">
-<link rel="stylesheet" href="/css/theme-<%= theme %>.css?v=30">
-<style>:root{--banner:url("<%= img('banner') %>")}</style>
+<link rel="stylesheet" href="/css/style.css?v=<%= ver %>">
+<link rel="stylesheet" href="/css/theme-<%= theme %>.css?v=<%= ver %>">
+<style>:root{--banner:url("<%= img('banner') %>")}<%- colorCss %></style>
 <script type="application/ld+json"><%- JSON.stringify({
   '@context': 'https://schema.org', '@type': 'GeneralContractor',
   name: tr(site.brand.name), url: baseUrl, logo: baseUrl + img('logo'),

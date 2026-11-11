@@ -1,36 +1,28 @@
 <%- include('nav') %>
 <% var p = item || {}; var v = function(k, l){ return p[k] ? (l ? (p[k][l] || '') : p[k]) : ''; }; var imgs = p.images || []; %>
-<div class="pthead"><div><h1 class="pt"><%= item ? 'تعديل مشروع' : 'مشروع جديد' %></h1><p class="sub">اكتب بالعربي. الإنجليزي اختياري، ولو سبته فاضي هيظهر العربي في النسخة الإنجليزية.</p></div>
+<div class="pthead"><div><h1 class="pt"><%= item ? 'تعديل منتج' : 'منتج جديد' %></h1><p class="sub">اكتب بالعربي. الإنجليزي اختياري، ولو سبته فاضي هيظهر العربي في النسخة الإنجليزية.</p></div>
 <a class="btn ghost" href="/admin/projects"><%- icon('arrowr') %> رجوع</a></div>
 <form class="card form" method="post" action="/admin/projects/save" enctype="multipart/form-data">
   <input type="hidden" name="id" value="<%= p.id || '' %>">
   <div class="grid2">
-    <label>اسم المشروع (عربي) <em>*</em><input name="title_ar" value="<%= v('title','ar') %>" required placeholder="مثال: مبنى إداري بالتجمع الخامس"></label>
-    <label>اسم المشروع (إنجليزي)<input name="title_en" dir="ltr" value="<%= v('title','en') %>"></label>
-    <label>القطاع
+    <label>اسم المنتج (عربي) <em>*</em><input name="title_ar" value="<%= v('title','ar') %>" required placeholder="مثال: حديد تسليح مضلّع"></label>
+    <label>اسم المنتج (إنجليزي)<input name="title_en" dir="ltr" value="<%= v('title','en') %>"></label>
+    <label>التصنيف
       <select name="cat">
         <option value="">— اختار —</option>
         <% var curCat = p.cat || ''; var listCats = cats.slice(); if (curCat && listCats.indexOf(curCat) < 0) listCats.push(curCat); %>
         <% listCats.forEach(function(c){ %><option<%= c === curCat ? ' selected' : '' %>><%= c %></option><% }); %>
       </select>
-      <small>القايمة دي هي «القطاعات» في <a href="/admin/content/sectors">محتوى الموقع</a>.</small></label>
-    <label>الحالة
-      <select name="status">
-        <option value="done"<%= p.status !== 'ongoing' ? ' selected' : '' %>>منفّذ (تم التسليم)</option>
-        <option value="ongoing"<%= p.status === 'ongoing' ? ' selected' : '' %>>جاري التنفيذ</option>
-      </select></label>
-    <label>الموقع (عربي)<input name="location_ar" value="<%= v('location','ar') %>" placeholder="القاهرة الجديدة"></label>
-    <label>الموقع (إنجليزي)<input name="location_en" dir="ltr" value="<%= v('location','en') %>" placeholder="New Cairo"></label>
-    <label>العميل / المالك (عربي) — اختياري<input name="client_ar" value="<%= v('client','ar') %>"><small>اكتبه بس لو العميل موافق إن اسمه يظهر.</small></label>
-    <label>العميل / المالك (إنجليزي)<input name="client_en" dir="ltr" value="<%= v('client','en') %>"></label>
-    <label>السنة أو المدة<input name="year" dir="ltr" value="<%= v('year') %>" placeholder="2024  أو  2023 – 2025"></label>
-    <label>الحجم / المساحة<input name="area" value="<%= v('area') %>" placeholder="مثال: 14,500 م² أو 12 كم أو 36 عمارة"></label>
-    <label class="span2">عن المشروع (عربي)<textarea name="desc_ar" rows="5"><%= v('desc','ar') %></textarea></label>
-    <label class="span2">عن المشروع (إنجليزي)<textarea name="desc_en" dir="ltr" rows="4"><%= v('desc','en') %></textarea></label>
-    <label>نطاق الأعمال (عربي)<textarea name="scope_ar" rows="5" placeholder="كل بند في سطر&#10;مثال: هيكل خرساني&#10;تشطيبات خارجية"><%= v('scope','ar') %></textarea></label>
-    <label>نطاق الأعمال (إنجليزي)<textarea name="scope_en" dir="ltr" rows="5"><%= v('scope','en') %></textarea></label>
+      <small>القايمة دي هي «تصنيفات المنتجات» في <a href="/admin/content/sectors">محتوى الموقع</a>.</small></label>
+    <span></span>
+    <label>طريقة التوريد (عربي)<input name="pack_ar" value="<%= v('pack','ar') %>" placeholder="مثال: بالطن، بالكيس، بالصهريج"></label>
+    <label>طريقة التوريد (إنجليزي)<input name="pack_en" dir="ltr" value="<%= v('pack','en') %>" placeholder="e.g. By the tonne"></label>
+    <label class="span2">عن المنتج (عربي)<textarea name="desc_ar" rows="5"><%= v('desc','ar') %></textarea></label>
+    <label class="span2">عن المنتج (إنجليزي)<textarea name="desc_en" dir="ltr" rows="4"><%= v('desc','en') %></textarea></label>
+    <label>المواصفات والتفاصيل (عربي)<textarea name="scope_ar" rows="5" placeholder="كل بند في سطر&#10;مثال: أقطار من 8 مم لـ 32 مم&#10;أطوال قياسية"><%= v('scope','ar') %></textarea></label>
+    <label>المواصفات والتفاصيل (إنجليزي)<textarea name="scope_en" dir="ltr" rows="5"><%= v('scope','en') %></textarea></label>
     <div class="span2">
-      <span class="lbl">صور المشروع</span>
+      <span class="lbl">صور المنتج</span>
       <p class="muted small" style="margin:0 0 8px">أول صورة هي الغلاف (بتظهر في الكروت). تقدر تختار غلاف تاني أو تحذف صور. الحد 20 صورة في المرة، 10 ميجا للصورة.</p>
       <% if (imgs.length) { %>
         <div class="imgs-edit"><% imgs.forEach(function(src, i){ %><figure><img src="<%= src %>" alt=""><figcaption>
@@ -40,9 +32,15 @@
       <label class="drop"><%- icon('image') %><span>اختار صورة أو أكتر</span><input type="file" name="images" accept="image/*" multiple data-preview></label>
       <div class="preview"></div>
     </div>
-    <label class="check"><input type="checkbox" name="featured"<%= p.featured ? ' checked' : '' %>> ⭐ يظهر في «مشروعات مختارة» في الصفحة الرئيسية</label>
+    <div class="span2">
+      <span class="lbl">ورقة البيانات الفنية (PDF) — اختياري</span>
+      <p class="muted small" style="margin:0 0 8px">بتظهر على صفحة المنتج كزرار «حمّل ورقة البيانات الفنية». PDF لحد 25 ميجا.</p>
+      <% if (p.datasheet) { %><p><a href="<%= p.datasheet %>" target="_blank">الورقة الحالية</a> · <label class="check" style="display:inline"><input type="checkbox" name="remove_datasheet"> حذفها</label></p><% } %>
+      <input type="file" name="datasheet" accept="application/pdf,.pdf">
+    </div>
+    <label class="check"><input type="checkbox" name="featured"<%= p.featured ? ' checked' : '' %>> ⭐ يظهر في «منتجاتنا» في الصفحة الرئيسية</label>
     <label class="check"><input type="checkbox" name="visible"<%= !item || p.visible !== false ? ' checked' : '' %>> يظهر على الموقع</label>
   </div>
-  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ المشروع</button><a class="btn ghost" href="/admin/projects">إلغاء</a></div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ المنتج</button><a class="btn ghost" href="/admin/projects">إلغاء</a></div>
 </form>
 <%- include('foot') %>

@@ -1,0 +1,17 @@
+<% var arrow = icon(lang === 'ar' ? 'arrow' : 'arrowr'); %>
+<section class="sec sky sv-sec" id="services">
+  <div class="wrap">
+    <div class="shx reveal"><div><span class="kick"><%= t.services %></span><h2><%= t.services_sub %></h2></div><a class="btn navy" href="<%= L('/services') %>"><%= t.view_all %> <%- arrow %></a></div>
+    <div class="sv-g">
+      <% (site.services || []).forEach(function(s, i){ %>
+        <article class="sv reveal">
+          <img class="sv-img" src="<%= svcImg(i) %>" alt="" loading="lazy">
+          <span class="sv-n"><%= String(i + 1).padStart(2, '0') %></span>
+          <span class="sv-ic"><%- icon(s.icon) %></span>
+          <div class="sv-tx"><h3><%= tr(s.title) %></h3><p><%= tr(s.desc) %></p></div>
+          <a class="sv-ar" href="<%= L('/quote') %>" aria-label="<%= t.cta_quote %>"><%- arrow %></a>
+        </article>
+      <% }); %>
+    </div>
+  </div>
+</section>

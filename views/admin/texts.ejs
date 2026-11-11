@@ -1,0 +1,22 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">نصوص الواجهة</h1><p class="sub">كل العناوين وأسماء القوايم والأزرار وعناوين الفورم اللي بتظهر في الموقع. اكتب النص الجديد في الخانة، ولو سبتها فاضية بيظهر النص الأصلي (المكتوب باهت جواها). نصوص الصفحات نفسها (من نحن، الخدمات، المنتجات...) بتتعدل من «محتوى الموقع».</p></div>
+  <form method="post" action="/admin/texts/reset" data-confirm="ترجّع كل نصوص الواجهة للأصلية؟"><button class="btn ghost" type="submit">رجّع الكل للأصلي</button></form>
+</div>
+<form method="post" action="/admin/texts" class="texts-form">
+  <% groups.forEach(function(g, gi){ %>
+  <details class="card" <%= gi === 0 ? 'open' : '' %>>
+    <summary class="h3"><%= g.title %> <small class="muted">(<%= g.keys.length %>)</small></summary>
+    <div class="trows">
+      <% g.keys.forEach(function(k){ %>
+      <div class="trow">
+        <label>عربي<input name="t_ar_<%= k %>" value="<%= (ui.ar && ui.ar[k]) || '' %>" placeholder="<%= dict.ar[k] || '' %>"></label>
+        <label>English<input name="t_en_<%= k %>" dir="ltr" value="<%= (ui.en && ui.en[k]) || '' %>" placeholder="<%= dict.en[k] || '' %>"></label>
+      </div>
+      <% }); %>
+    </div>
+  </details>
+  <% }); %>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ النصوص</button></div>
+</form>
+<%- include('foot') %>

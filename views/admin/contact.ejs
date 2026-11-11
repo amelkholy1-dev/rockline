@@ -34,8 +34,8 @@
   <div class="card">
     <h2 class="h3"><%- icon('shield') %> بيانات الشركة</h2>
     <div class="grid2">
-      <label>رقم القيد بالاتحاد المصري لمقاولي التشييد والبناء<input name="license" value="<%= site.brand.license || '' %>"><small>لو اتكتب، بيظهر فوق في كل الصفحات وفي «من نحن».</small></label>
-      <label>الفئة في الاتحاد<input name="grade" value="<%= site.brand.grade || '' %>" placeholder="مثال: الأولى — أعمال عامة"></label>
+      <label>رقم القيد / الترخيص (اختياري)<input name="license" value="<%= site.brand.license || '' %>"><small>لو اتكتب بيظهر في «من نحن».</small></label>
+      <label>الفئة / التصنيف (اختياري)<input name="grade" value="<%= site.brand.grade || '' %>" ></label>
       <label>رقم السجل التجاري (اختياري)<input name="cr" value="<%= site.brand.cr || '' %>"></label>
       <label>رقم البطاقة الضريبية (اختياري)<input name="tax" value="<%= site.brand.tax || '' %>"></label>
       <label>سنة التأسيس (اختياري)<input name="founded" value="<%= site.brand.founded || '' %>"></label>

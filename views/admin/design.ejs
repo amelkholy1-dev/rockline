@@ -16,5 +16,15 @@
   </div>
   <% }); %>
 </div>
+<form method="post" action="/admin/design/colors" class="card form" style="margin-top:22px">
+  <h2 class="h3"><%- icon('sparkles') %> ألوان الموقع</h2>
+  <p class="muted">اختياري. لو سبته مش مفعّل بيستخدم ألوان التصميم الأصلية. <b>لون التمييز</b> للأزرار والعناوين الصغيرة. <b>اللون الأساسي</b> للخلفيات الغامقة والعناوين (مش بيأثر في التصميم الداكن B).</p>
+  <div class="grid2">
+    <label class="check"><input type="checkbox" name="use_accent"<%= colors.accent ? ' checked' : '' %>> لون التمييز <input type="color" name="accent" value="<%= colors.accent || '#b7a98e' %>"></label>
+    <label class="check"><input type="checkbox" name="use_primary"<%= colors.primary ? ' checked' : '' %>> اللون الأساسي <input type="color" name="primary" value="<%= colors.primary || '#203145' %>"></label>
+  </div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ الألوان</button>
+    <% if (colors.accent || colors.primary) { %><button class="btn ghost" type="submit" name="reset" value="1">رجّع ألوان التصميم الأصلية</button><% } %></div>
+</form>
 <p class="muted small">صورة الواجهة: لو رفعت صورة من «صور الموقع» هتظهر في كل التصميمات. لو سبتها، كل تصميم بيستخدم صورته الافتراضية.</p>
 <%- include('foot') %>

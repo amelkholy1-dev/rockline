@@ -1,212 +1,112 @@
 [
  {
-  "id": "p1",
+  "id": "p-rebar-ribbed",
   "title": {
-   "ar": "مبنى إداري متعدد الطوابق",
-   "en": "Multi-storey office building"
+   "ar": "حديد تسليح مضلّع (عالي المقاومة)",
+   "en": "Ribbed steel rebar (high strength)"
   },
-  "cat": "إداري وتجاري",
-  "status": "done",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "القاهرة الجديدة",
-   "en": "New Cairo"
-  },
-  "year": "2024",
-  "area": "14,500 م²",
-  "scope": {
-   "ar": "هيكل خرساني\nتشطيبات خارجية بواجهات زجاجية\nأعمال كهروميكانيكية كاملة",
-   "en": "Concrete frame\nGlazed façade finishing\nComplete MEP works"
+  "cat": "حديد التسليح",
+  "pack": {
+   "ar": "بالطن",
+   "en": "By the tonne"
   },
   "desc": {
-   "ar": "تنفيذ مبنى إداري من بدروم وأرضي و8 أدوار متكررة، شاملاً الهيكل الإنشائي والتشطيبات والأعمال الكهروميكانيكية حتى التسليم.",
-   "en": "An office building with basement, ground and eight typical floors, including structure, finishing and MEP through to handover."
+   "ar": "حديد تسليح مضلّع للأساسات والأعمدة والكمرات والأسقف في المباني والمشروعات. الأقطار والرتب المتاحة بتتأكد وقت الطلب حسب المخزون.",
+   "en": "Ribbed steel rebar for foundations, columns, beams and slabs. Available diameters and grades are confirmed at the time of order, subject to stock."
+  },
+  "scope": {
+   "ar": "أقطار متعددة من 8 مم لـ 32 مم\nأطوال قياسية\nمطابق للمواصفات القياسية المصرية",
+   "en": "Multiple diameters from 8 to 32 mm\nStandard lengths\nTo Egyptian standard specifications"
   },
   "images": [
-   "/img/photos/22.jpg"
+   "/img/photos/02.jpg",
+   "/img/products/rebar.svg"
   ],
   "featured": true,
   "visible": true,
   "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
+  "at": "2026-11-11T00:00:00.000Z"
  },
  {
-  "id": "p2",
+  "id": "p-rebar-plain",
   "title": {
-   "ar": "مجمع سكني متكامل",
-   "en": "Integrated residential compound"
+   "ar": "حديد تسليح أملس",
+   "en": "Plain steel rebar"
   },
-  "cat": "سكني",
-  "status": "ongoing",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "الشيخ زايد",
-   "en": "Sheikh Zayed"
-  },
-  "year": "2025 – 2026",
-  "area": "36 عمارة",
-  "scope": {
-   "ar": "أعمال الحفر والأساسات\nالهياكل الخرسانية\nالبنية التحتية للموقع",
-   "en": "Excavation and foundations\nConcrete structures\nSite infrastructure"
+  "cat": "حديد التسليح",
+  "pack": {
+   "ar": "بالطن",
+   "en": "By the tonne"
   },
   "desc": {
-   "ar": "تنفيذ مجموعة عمارات سكنية مع شبكات المرافق والطرق الداخلية وتنسيق الموقع.",
-   "en": "Residential buildings with utility networks, internal roads and landscaping."
+   "ar": "حديد تسليح أملس للكانات والأعمال اللي بتحتاج حديد أملس. الأقطار المتاحة بتتأكد وقت الطلب.",
+   "en": "Plain steel bars for stirrups and works that need plain bars. Available diameters are confirmed at the time of order."
   },
-  "images": [
-   "/img/photos/04.jpg",
-   "/img/photos/05.jpg"
-  ],
-  "featured": true,
-  "visible": true,
-  "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
- },
- {
-  "id": "p3",
-  "title": {
-   "ar": "مخازن ومصنع بهياكل معدنية",
-   "en": "Steel-structure factory & warehouses"
-  },
-  "cat": "صناعي ومخازن",
-  "status": "done",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "العين السخنة",
-   "en": "Ain Sokhna"
-  },
-  "year": "2023",
-  "area": "22,000 م²",
   "scope": {
-   "ar": "تصنيع وتركيب الهياكل المعدنية\nأرضيات صناعية\nأعمال الحريق والكهرباء",
-   "en": "Steel fabrication and erection\nIndustrial flooring\nFire fighting and electrical works"
-  },
-  "desc": {
-   "ar": "إنشاء مصنع ومخازن بهياكل معدنية وأرضيات صناعية عالية التحمل.",
-   "en": "A factory and warehouses with steel structures and heavy-duty industrial floors."
+   "ar": "أقطار متعددة\nأطوال قياسية",
+   "en": "Multiple diameters\nStandard lengths"
   },
   "images": [
-   "/img/photos/03.jpg",
-   "/img/photos/02.jpg"
-  ],
-  "featured": true,
-  "visible": true,
-  "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
- },
- {
-  "id": "p4",
-  "title": {
-   "ar": "مدرسة تجريبية",
-   "en": "Experimental school"
-  },
-  "cat": "تعليمي",
-  "status": "done",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "الجيزة",
-   "en": "Giza"
-  },
-  "year": "2022",
-  "area": "6,800 م²",
-  "scope": {
-   "ar": "هيكل خرساني\nتشطيبات\nملاعب وأسوار",
-   "en": "Concrete frame\nFinishing\nSports courts and fencing"
-  },
-  "desc": {
-   "ar": "تنفيذ مبنى تعليمي من 3 أدوار مع الملاعب والأسوار والمرافق.",
-   "en": "A three-storey school building with sports courts, fencing and utilities."
-  },
-  "images": [
-   "/img/photos/39.jpg"
-  ],
-  "featured": true,
-  "visible": true,
-  "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
- },
- {
-  "id": "p5",
-  "title": {
-   "ar": "تطوير ورصف طرق داخلية",
-   "en": "Internal roads development & paving"
-  },
-  "cat": "بنية تحتية",
-  "status": "ongoing",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "العاصمة الإدارية الجديدة",
-   "en": "New Administrative Capital"
-  },
-  "year": "2025",
-  "area": "12 كم",
-  "scope": {
-   "ar": "أعمال ترابية\nطبقات أساس ورصف\nشبكات صرف أمطار وإنارة",
-   "en": "Earthworks\nBase layers and asphalt\nStorm drainage and lighting"
-  },
-  "desc": {
-   "ar": "تنفيذ شبكة طرق داخلية شاملة الأعمال الترابية والرصف والإنارة وصرف الأمطار.",
-   "en": "An internal road network including earthworks, paving, lighting and storm drainage."
-  },
-  "images": [
-   "/img/photos/33.jpg",
-   "/img/photos/30.jpg",
-   "/img/photos/34.jpg",
-   "/img/photos/35.jpg"
-  ],
-  "featured": true,
-  "visible": true,
-  "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
- },
- {
-  "id": "p6",
-  "title": {
-   "ar": "فندق وشاليهات ساحلية",
-   "en": "Coastal hotel & chalets"
-  },
-  "cat": "سياحي وفندقي",
-  "status": "done",
-  "client": {
-   "ar": "",
-   "en": ""
-  },
-  "location": {
-   "ar": "الساحل الشمالي",
-   "en": "North Coast"
-  },
-  "year": "2023",
-  "area": "120 وحدة",
-  "scope": {
-   "ar": "تشطيبات فندقية\nحمامات سباحة\nلاندسكيب",
-   "en": "Hotel-grade finishing\nSwimming pools\nLandscaping"
-  },
-  "desc": {
-   "ar": "تنفيذ أعمال التشطيبات الفندقية وحمامات السباحة وتنسيق المواقع لمنتجع ساحلي.",
-   "en": "Hotel-grade finishing, swimming pools and landscaping for a coastal resort."
-  },
-  "images": [
-   "/img/photos/14.jpg",
-   "/img/photos/20.jpg"
+   "/img/photos/05.jpg",
+   "/img/products/rebar.svg"
   ],
   "featured": false,
   "visible": true,
   "sample": true,
-  "at": "2026-11-09T00:00:00.000Z"
+  "at": "2026-11-11T00:00:00.000Z"
+ },
+ {
+  "id": "p-cement-bag",
+  "title": {
+   "ar": "الأسمنت المعبأ",
+   "en": "Bagged cement"
+  },
+  "cat": "الأسمنت",
+  "pack": {
+   "ar": "بالكيس / بالطن",
+   "en": "By the bag / tonne"
+  },
+  "desc": {
+   "ar": "أسمنت معبأ في أكياس للبناء والمباني والأعمال الخرسانية، مناسب للأفراد والمقاولين وتجار التجزئة. الأنواع والماركات المتاحة بتتأكد وقت الطلب.",
+   "en": "Bagged cement for building and concrete works, suitable for individuals, contractors and retailers. Available types and brands are confirmed at the time of order."
+  },
+  "scope": {
+   "ar": "أكياس 50 كجم\nتوريد بالكيس أو بالطن\nكميات صغيرة وكبيرة",
+   "en": "50 kg bags\nSupplied by the bag or tonne\nSmall and large quantities"
+  },
+  "images": [
+   "/img/products/cement-bag.svg"
+  ],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-11T00:00:00.000Z"
+ },
+ {
+  "id": "p-cement-bulk",
+  "title": {
+   "ar": "الأسمنت السائب",
+   "en": "Bulk cement"
+  },
+  "cat": "الأسمنت",
+  "pack": {
+   "ar": "بالطن (صهريج)",
+   "en": "By the tonne (tanker)"
+  },
+  "desc": {
+   "ar": "أسمنت سائب بالصهاريج لمحطات الخرسانة الجاهزة والمشروعات الكبيرة والمصانع، بتوريد منتظم حسب جدول التسليم المتفق عليه.",
+   "en": "Bulk cement by tanker for ready-mix plants, large projects and factories, with regular supply on the agreed delivery schedule."
+  },
+  "scope": {
+   "ar": "توريد بالصهريج\nمناسب للكميات الكبيرة\nجدول تسليم متفق عليه",
+   "en": "Tanker supply\nSuited to large quantities\nAgreed delivery schedule"
+  },
+  "images": [
+   "/img/products/cement-bulk.svg"
+  ],
+  "featured": true,
+  "visible": true,
+  "sample": true,
+  "at": "2026-11-11T00:00:00.000Z"
  }
 ]

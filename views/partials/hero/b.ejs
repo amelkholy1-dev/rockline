@@ -1,12 +1,12 @@
 <section class="hx hx-b">
   <div class="wrap hx-grid">
     <div class="hx-tx">
-      <span class="kick">ROCK LINE GROUP — <%= tr(site.hero.badge).split('·')[0] %></span>
+      <span class="kick">ROCK LINE GROUP — <%= tr(site.hero.badge).split('·')[0].trim() %></span>
       <h1><%= tr(site.hero.title) %></h1>
       <p><%= tr(site.hero.sub) %></p>
       <div class="hx-cta">
         <a class="btn gold lg" href="<%= L('/quote') %>"><%= t.cta_quote %> <%- arrow %></a>
-        <a class="btn line-gold lg" href="<%= L('/projects') %>"><%= t.nav_projects %></a>
+        <a class="btn line-gold lg" href="<%= L('/products') %>"><%= t.nav_products %></a>
       </div>
     </div>
     <div class="hx-vis"><img src="<%= img('hero') %>" alt="" fetchpriority="high"><% if (stats[1]) { %><div class="hx-badge"><b><%= stats[1].value %></b><%= tr(stats[1].label) %></div><% } %></div>

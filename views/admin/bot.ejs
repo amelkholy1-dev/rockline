@@ -1,0 +1,75 @@
+<%- include('nav') %>
+<div class="pthead">
+  <div><h1 class="pt">المساعد الذكي (الشات)</h1><p class="sub">مساعد بيظهر للزوار في الموقع ويرد من محتوى الموقع كله (المنتجات والمخازن والتواصل والأسئلة الشائعة...). أي تعديل بتعمله في الموقع بيظهر في ردوده لوحده.</p></div>
+</div>
+
+<% var on = bot.enabled; var ai = aiReady; %>
+<div class="flash <%= on ? (ai ? 'ok' : 'warn') : 'warn' %>">
+  <%- icon(on ? 'checkcircle' : 'info') %>
+  <span><b>الحالة:</b>
+    <% if (!on) { %>المساعد <b>موقوف</b> ومش ظاهر للزوار.
+    <% } else if (ai) { %>المساعد <b>شغال</b> بالذكاء الاصطناعي (Gemini) ومعاه محتوى الموقع.
+    <% } else { %>المساعد <b>شغال</b> من <b>محتوى الموقع بس</b> (من غير API).<% } %></span>
+</div>
+
+<form class="card form" method="post" action="/admin/bot">
+  <h2 class="h3"><%- icon('settings2') %> الإعدادات</h2>
+  <div class="grid2">
+    <label class="check span2"><input type="checkbox" name="enabled"<%= bot.enabled ? ' checked' : '' %>> <b>تشغيل المساعد</b> (شيل العلامة لإيقافه خالص)</label>
+
+    <div class="span2">
+      <span class="lbl">طريقة الرد</span>
+      <label class="opt"><input type="radio" name="mode" value="ai"<%= bot.mode !== 'site' ? ' checked' : '' %>><span><b>ذكاء اصطناعي (Gemini)</b><br>ردود أذكى وأطبع. محتاج مفتاح API. لو المفتاح مش موجود أو وقف، بيرد من محتوى الموقع لوحده.</span></label>
+      <label class="opt"><input type="radio" name="mode" value="site"<%= bot.mode === 'site' ? ' checked' : '' %>><span><b>محتوى الموقع بس</b><br>من غير أي API ولا تكلفة. بيرد من بيانات الموقع (المنتجات، التوصيل، المخازن، المواعيد، الأسئلة الشائعة...) بالكلمات المفتاحية.</span></label>
+    </div>
+
+    <label class="span2">مفتاح Gemini API
+      <input type="password" name="apiKey" autocomplete="off" placeholder="<%= keyTail ? '•••••••• ' + keyTail + (keySource === 'env' ? '  (متظبط من متغير البيئة GEMINI_API_KEY)' : '  (محفوظ)') : 'الصق المفتاح هنا (AIza...)' %>" dir="ltr">
+      <small>اعمله مجاناً من <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio ← API Keys</a>. سيب الخانة فاضية لو مش عايز تغيّر المفتاح المحفوظ. <b>متبعتش المفتاح لحد في شات ولا رسالة</b> — حطه هنا بس.</small></label>
+    <% if (keyTail && keySource === 'panel') { %><label class="check span2"><input type="checkbox" name="remove_key"> <b>الغي الـ API</b> — امسح المفتاح المحفوظ، والمساعد يعتمد على محتوى الموقع بس</label><% } %>
+
+    <label>الموديل<input name="model" dir="ltr" value="<%= bot.model %>"><small>الافتراضي <code>gemini-2.5-flash</code>. لو جوجل غيّرت الأسماء حط الاسم الجديد من AI Studio.</small></label>
+    <label>الحد اليومي لردود الذكاء الاصطناعي<input type="number" name="dailyLimit" min="0" max="5000" value="<%= bot.dailyLimit %>"><small>بعده بيرد من محتوى الموقع بدل ما يخلّص الحصة المجانية. 0 = بدون حد.</small></label>
+
+    <label class="span2">تعليمات إضافية للمساعد (اختياري)
+      <textarea name="extra" rows="4" placeholder="مثال: لو حد سأل عن الأسعار قوله إن الأسعار بتتحدد وقت الطلب وادّيله رقم واتساب."><%= bot.extra %></textarea></label>
+  </div>
+  <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button></div>
+</form>
+
+<div class="card nudge">
+  <h2 class="h3"><%- icon('info') %> لازم تعرفها</h2>
+  <ul>
+    <li>الخطة المجانية من Gemini ليها <b>حدود استخدام</b> (عدد طلبات في الدقيقة واليوم). لو خلصت، المساعد بيرد من محتوى الموقع تلقائياً.</li>
+    <li>على الخطة المجانية، حسب شروط جوجل، <b>ممكن المحادثات تُستخدم لتحسين خدماتهم</b>. راجع شروط Gemini API، وبنكتب للزائر إنه ميبعتش بيانات حساسة.</li>
+    <li>المساعد مش بيألّف أسعار: الأسعار بتتحدد بعرض سعر. وبيحوّل الزائر لـ «اطلب عرض سعر» أو الواتساب.</li>
+    <li>الزائر يقدر يسيب رقمه من الشات، والطلب بيوصل في «الرسائل».</li>
+    <li>نصوص واجهة الشات (الترحيب والأزرار) بتتعدل من «نصوص الواجهة».</li>
+  </ul>
+</div>
+
+<form class="card form" method="post" action="/admin/bot/test">
+  <h2 class="h3"><%- icon('send') %> جرّب المساعد</h2>
+  <label>اكتب سؤال كأنك زبون<input name="message" maxlength="500" placeholder="مثال: بتوصلوا أسوان؟ ومواعيدكم إيه؟" required></label>
+  <% if (test) { %>
+  <div class="bot-test">
+    <p><b>السؤال:</b> <%= test.q %></p>
+    <p><b>الرد</b> <span class="tag"><%= test.via === 'ai' ? 'Gemini' : (test.via === 'site' ? 'محتوى الموقع' : 'خطأ') %></span></p>
+    <pre style="white-space:pre-wrap;margin:0"><%= test.a %></pre>
+  </div>
+  <% } %>
+  <div class="form-foot"><button class="btn navy" type="submit">جرّب</button></div>
+</form>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <h2 class="h3" style="margin:0"><%- icon('inbox') %> آخر المحادثات (<%= (bot.log || []).length %>)</h2>
+    <% if ((bot.log || []).length) { %><form method="post" action="/admin/bot/clear-log" data-confirm="تمسح سجل المحادثات؟"><button class="btn sm ghost" type="submit">امسح السجل</button></form><% } %>
+  </div>
+  <% if ((bot.log || []).length) { %>
+  <div class="table-wrap"><table class="tbl"><thead><tr><th>الوقت</th><th>السؤال</th><th>الرد</th><th>المصدر</th></tr></thead><tbody>
+    <% bot.log.slice(0, 60).forEach(function(l){ %><tr><td><small><%= new Date(l.at).toLocaleString('ar-EG', { timeZone: 'Africa/Cairo' }) %></small></td><td><%= l.q %></td><td><small><%= l.a %></small></td><td><span class="tag"><%= l.via === 'ai' ? 'Gemini' : 'الموقع' %></span></td></tr><% }); %>
+  </tbody></table></div>
+  <% } else { %><p class="muted">مفيش محادثات لسه.</p><% } %>
+</div>
+<%- include('foot') %>
