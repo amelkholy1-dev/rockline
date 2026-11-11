@@ -32,6 +32,7 @@ const users = require('./lib/users');
 users.emergencyReset();
 const analytics = require('./lib/analytics');
 const uitexts = require('./lib/uitexts');
+const chat = require('./lib/chat');
 const privacyDefault = require('./lib/privacy-default');
 
 // ترقية لمرة واحدة: لو البيانات المحفوظة على السيرفر لسه بتاعة النسخة القديمة (نسر الخليج)، نبدأ بمحتوى روك لاين الافتراضي.
@@ -318,7 +319,7 @@ function base(req, extra) {
     theme, themeInfo: THEMES[theme], previewTheme: pv, colorCss: colorCss(site, theme),
     svcImg: i => (site.images && site.images['svc' + i]) || SVC_IMG[i % SVC_IMG.length],
     baseUrl: siteUrl(req),
-    mailReady: mailer.ready(),
+    mailReady: mailer.ready(), chatOn: chat.isOn(),
     chans: channels(),
     cat: x => catName(site, x, lang),
     catIcon: x => catIcon(site, x),
@@ -468,6 +469,26 @@ const T = req => UI(langOf(req));
 pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: T(req).about_title })));
 pub.get('/services', (req, res) => res.render('services', base(req, { page: 'services', title: T(req).services })));
 pub.get('/clients', (req, res) => res.redirect(301, '/' + langOf(req) + '/about'));
+// ---------- المساعد (الشات) ----------
+function chatCtx(lang) {
+  const site = store.get('site');
+  const priceOn = (homeLayout(site).find(x => x.id === 'prices') || {}).visible;
+  return { lang, site, products: activeProjects(), t: UI(lang), prices: priceOn ? (site.prices || []).filter(x => tr(x.name, 'ar') && x.price) : [] };
+}
+pub.post('/chat', async (req, res) => {
+  if (!chat.isOn()) return res.status(404).json({ ok: false });
+  const pageLang = langOf(req);
+  if (tooMany('chat:' + (req.ip || ''), 25, 10 * 60 * 1000)) return res.status(429).json({ ok: false, reply: UI(pageLang).too_many });
+  const b = req.body && typeof req.body === 'object' ? req.body : {};
+  const msg = clean(b.message, 500);
+  if (!msg) return res.status(400).json({ ok: false });
+  const lang = chat.hasArabic(msg) ? 'ar' : (/[a-z]/i.test(msg) ? 'en' : pageLang);
+  const history = (Array.isArray(b.history) ? b.history : []).slice(-8).map(h => ({ role: h && h.role === 'user' ? 'user' : 'bot', text: clean(h && h.text, 600) })).filter(h => h.text);
+  try {
+    const out = await chat.respond(msg, history, chatCtx(lang));
+    res.json({ ok: true, reply: out.reply, actions: out.actions || [], via: out.via });
+  } catch (e) { console.error('chat error:', e && e.message); res.status(500).json({ ok: false, reply: UI(pageLang).chat_error }); }
+});
 pub.get('/calculator', (req, res) => res.render('calculator', base(req, { page: 'calc', title: UI(langOf(req)).calc_title })));
 pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', title: T(req).quote_title, ptype: clean(req.query.type, 100) })));
 pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
@@ -1355,6 +1376,41 @@ admin.get('/stats', (req, res) => {
   const sum = analytics.summary(n);
   res.render('admin/stats', adminView(req, { section: 'stats', n, sum }));
 });
+
+// ----- المساعد (الشات بوت) -----
+function botView(req, extra) {
+  const k = chat.apiKey();
+  return adminView(req, Object.assign({ section: 'bot', bot: chat.settings(), keySource: chat.keySource(), keyTail: k ? k.slice(-4) : '', aiReady: chat.aiReady(), test: null }, extra || {}));
+}
+admin.get('/bot', (req, res) => res.render('admin/bot', botView(req)));
+admin.post('/bot', (req, res) => {
+  const b = req.body || {}; const next = Object.assign({}, chat.DEFAULTS, store.get('bot') || {});
+  next.enabled = b.enabled === 'on';
+  next.mode = b.mode === 'site' ? 'site' : 'ai';
+  next.model = clean(b.model, 60).replace(/[^\w.\-]/g, '') || chat.DEFAULTS.model;
+  next.dailyLimit = Math.max(0, Math.min(5000, parseInt(b.dailyLimit, 10) || 0));
+  next.extra = clean(b.extra, 2000);
+  const newKey = clean(b.apiKey, 200).replace(/\s/g, '');
+  if (b.remove_key === 'on') next.apiKey = '';
+  else if (newKey) {
+    if (!/^[\w\-]{20,}$/.test(newKey)) { flash(req, 'المفتاح شكله غلط (حروف وأرقام وشرطات بس). انسخه من Google AI Studio تاني.', 'err'); return res.redirect('/admin/bot'); }
+    next.apiKey = newKey;
+  }
+  store.set('bot', next);
+  security.audit(req.me, 'bot', next.enabled ? (next.mode === 'ai' && chat.apiKey() ? 'on-ai' : 'on-site') : 'off', req.ip);
+  flash(req, 'تم حفظ إعدادات المساعد');
+  res.redirect('/admin/bot');
+});
+admin.post('/bot/test', async (req, res) => {
+  const msg = clean((req.body || {}).message, 500);
+  if (!msg) return res.redirect('/admin/bot');
+  const lang = chat.hasArabic(msg) ? 'ar' : 'en';
+  let test;
+  try { const o = await chat.respond(msg, [], chatCtx(lang), { nolog: true }); test = { q: msg, a: o.reply, via: o.via, actions: o.actions || [] }; }
+  catch (e) { test = { q: msg, a: 'حصل خطأ: ' + String(e && e.message || e).slice(0, 200), via: 'error', actions: [] }; }
+  res.render('admin/bot', botView(req, { test }));
+});
+admin.post('/bot/clear-log', (req, res) => { const b = Object.assign({}, chat.DEFAULTS, store.get('bot') || {}); b.log = []; store.set('bot', b); flash(req, 'اتمسح سجل المحادثات'); res.redirect('/admin/bot'); });
 
 // ----- نصوص الواجهة (عناوين الأقسام والأزرار وأسماء القوايم) -----
 admin.get('/texts', (req, res) => res.render('admin/texts', adminView(req, { section: 'texts', groups: uitexts.groups(), dict, ui: store.get('site').ui || {} })));

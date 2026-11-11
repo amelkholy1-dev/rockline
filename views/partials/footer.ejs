@@ -52,5 +52,6 @@
 <script>window.NK = <%- JSON.stringify({ lang: lang, t: { sending: t.sending, sent_ok: t.sent_ok, sent_fail: t.sent_fail, required: t.required, wa_note: t.sent_wa_note, too_many: t.too_many, list_empty: t.list_empty, list_remove: t.list_remove, list_clear: t.list_clear, added_to_list: t.added_to_list, qty: t.qty } }) %>;</script>
 <script src="/js/main.js?v=<%= ver %>" defer></script>
 <script src="/js/basket.js?v=<%= ver %>" defer></script>
+<% if (chatOn) { %><%- include('chat') %><% } %>
 </body>
 </html>

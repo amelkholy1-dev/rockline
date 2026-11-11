@@ -1,0 +1,16 @@
+<div class="chat" id="chat" data-lang="<%= lang %>" data-url="<%= L('/chat') %>" data-send="<%= L('/send') %>" hidden>
+  <button type="button" class="chat-fab" id="chatFab" aria-label="<%= t.chat_title %>" aria-expanded="false"><%- icon('headset') %><span><%= t.chat_title %></span></button>
+  <section class="chat-box" id="chatBox" aria-label="<%= t.chat_title %>" hidden>
+    <header><b><%- icon('headset') %> <%= t.chat_title %></b><button type="button" class="chat-x" id="chatX" aria-label="<%= t.close || 'x' %>">×</button></header>
+    <div class="chat-msgs" id="chatMsgs" aria-live="polite"></div>
+    <div class="chat-chips" id="chatChips"><button type="button"><%= t.chat_chip1 %></button><button type="button"><%= t.chat_chip2 %></button><button type="button"><%= t.chat_chip3 %></button></div>
+    <form class="chat-in" id="chatForm" autocomplete="off"><input id="chatInput" maxlength="500" placeholder="<%= t.chat_placeholder %>" aria-label="<%= t.chat_placeholder %>"><button type="submit" aria-label="<%= t.chat_send %>"><%- icon(lang === 'ar' ? 'arrow' : 'arrowr') %></button></form>
+    <details class="chat-leave"><summary><%= t.chat_leave %></summary>
+      <form id="chatLeave"><input name="name" placeholder="<%= t.chat_leave_name %>" required maxlength="80"><input name="phone" type="tel" dir="ltr" placeholder="<%= t.chat_leave_phone %>" required maxlength="30"><button type="submit"><%= t.chat_leave_send %></button></form>
+      <small id="chatLeaveMsg"></small>
+    </details>
+    <p class="chat-note"><%= t.chat_ai_note %></p>
+  </section>
+</div>
+<script>window.NKC = <%- JSON.stringify({ welcome: t.chat_welcome, error: t.chat_error, ok: t.chat_leave_ok, wa: t.chat_wa, hello: t.wa_hello }).replace(/</g, '\\u003c') %>;</script>
+<script src="/js/chat.js?v=<%= ver %>" defer></script>
