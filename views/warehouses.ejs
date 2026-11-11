@@ -3,7 +3,10 @@
 <%- include('partials/pagehead', { heading: t.warehouses, sub: t.warehouses_sub }) %>
 <section class="sec">
   <div class="wrap">
+    <%- include('partials/whinfo') %>
+    <p class="wh-note reveal"><%- icon('truck') %> <%= t.deliver_all %></p>
     <% if ((site.warehouses || []).length) { %>
+    <div class="shead reveal" style="margin-top:46px"><h2><%= t.wh_more %></h2><span class="rule"></span></div>
     <div class="wh-grid">
       <% site.warehouses.forEach(function(w){ %>
         <article class="wh reveal">
@@ -12,15 +15,11 @@
             <h3><%= tr(w.name) %></h3>
             <% if (tr(w.address)) { %><p><%- icon('map') %> <%= tr(w.address) %></p><% } %>
             <% if (w.phone) { %><p><%- icon('phone') %> <a href="<%= tel(w.phone) %>" dir="ltr"><%= w.phone %></a></p><% } %>
-            <% if (tr(site.contact.hours)) { %><p><%- icon('clock') %> <%= tr(site.contact.hours) %></p><% } %>
             <% if (/^https?:\/\//i.test(w.map || '')) { %><a class="btn line-navy sm" href="<%= w.map %>" target="_blank" rel="noopener"><%- icon('mapped') %> <%= t.wh_open %></a><% } %>
           </div>
         </article>
       <% }); %>
     </div>
-    <p class="wh-note reveal"><%- icon('truck') %> <%= t.deliver_all %></p>
-    <% } else { %>
-      <div class="empty"><%- icon('store') %><p><%= t.wh_none %></p></div>
     <% } %>
   </div>
 </section>

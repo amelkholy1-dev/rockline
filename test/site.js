@@ -31,7 +31,7 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   ok(/روك لاين/.test(r.t) && !/نسر الخليج|Nasr|nisrelkhaleeg/i.test(r.t), 'home is Rock Line, no old brand');
   ok(/class="pcard/.test(r.t) && /data-kind="quote"/.test(r.t), 'home has product cards + quote form');
   ok(/حديد/.test(r.t) && /أسمنت|الأسمنت/.test(r.t) && !/مقاولات عامة|للمقاولات/.test(r.t), 'home is steel & cement supply, not general contracting');
-  ok(/مخزن كفر الشيخ/.test(r.t), 'home shows the Kafr El-Sheikh warehouse');
+  ok(/مخازن في أنحاء الجمهورية/.test(r.t) && /شارع الضرائب/.test(r.t) && /maps\.app\.goo\.gl\/seQsg9rinhwQwUm46/.test(r.t), 'home shows nationwide warehouses + company address and map');
   r = await req(V, 'GET', '/ar/products?cat=' + encodeURIComponent('الأسمنت')); ok(r.s === 200 && (r.t.match(/class="pcard/g) || []).length === 2, 'category filter: 2 cement products');
   r = await req(V, 'GET', '/ar/projects'); ok(r.s === 301 && r.loc === '/ar/products', 'old /projects → /products');
   r = await req(V, 'GET', '/ar/clients'); ok(r.s === 301 && r.loc === '/ar/about', 'old /clients → /about');

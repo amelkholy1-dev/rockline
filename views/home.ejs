@@ -65,19 +65,13 @@
 
 <%- include('partials/customs', { pos: 'after_services' }) %>
 
-<% if ((site.warehouses || []).length) { %>
 <section class="sec" id="warehouses">
   <div class="wrap">
     <div class="shx reveal"><div><span class="kick"><%= t.nav_warehouses %></span><h2><%= t.warehouses_sub %></h2></div><a class="btn navy" href="<%= L('/warehouses') %>"><%= t.view_all %> <%- arrow %></a></div>
-    <div class="wh-grid">
-      <% site.warehouses.slice(0, 6).forEach(function(w){ %>
-        <article class="wh reveal"><span class="wh-ic"><%- icon('store') %></span><div class="wh-tx"><h3><%= tr(w.name) %></h3><% if (tr(w.address)) { %><p><%- icon('map') %> <%= tr(w.address) %></p><% } %></div></article>
-      <% }); %>
-    </div>
+    <%- include('partials/whinfo') %>
     <p class="wh-note reveal"><%- icon('truck') %> <%= t.deliver_all %></p>
   </div>
 </section>
-<% } %>
 
 <section class="sec navy why" id="why">
   <div class="wrap">

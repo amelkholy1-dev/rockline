@@ -1,0 +1,16 @@
+<div class="wh-grid wh-two">
+  <article class="wh reveal">
+    <span class="wh-ic"><%- icon('store') %></span>
+    <div class="wh-tx"><h3><%= t.wh_everywhere %></h3><p class="wh-p"><%= t.wh_everywhere_sub %></p></div>
+  </article>
+  <article class="wh reveal">
+    <span class="wh-ic"><%- icon('map') %></span>
+    <div class="wh-tx">
+      <h3><%= t.hq %></h3>
+      <% if (tr(site.contact.address)) { %><p><%- icon('map') %> <%= tr(site.contact.address) %></p><% } %>
+      <% if (tr(site.contact.hours)) { %><p><%- icon('clock') %> <%= tr(site.contact.hours) %></p><% } %>
+      <p class="wh-p"><%= t.hq_sub %></p>
+      <a class="btn gold sm" href="<%= mapUrl %>" target="_blank" rel="noopener"><%- icon('mapped') %> <%= t.hq_open %></a>
+    </div>
+  </article>
+</div>

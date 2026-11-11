@@ -1,8 +1,8 @@
 {
  "brand": {
   "name": {
-   "ar": "روك لاين جروب لتوريد الحديد والأسمنت",
-   "en": "Rock Line Group for Steel & Cement Supply"
+   "ar": "روك لاين للتوريدات العامة وتجارة الحديد والأسمنت",
+   "en": "Rock Line for General Supplies & Steel and Cement Trading"
   },
   "short": {
    "ar": "روك لاين",
@@ -28,8 +28,8 @@
    "en": "Steel and cement, delivered to your site"
   },
   "sub": {
-   "ar": "روك لاين جروب بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
-   "en": "Rock Line Group supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
+   "ar": "روك لاين بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
+   "en": "Rock Line supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
   }
  },
  "points": [
@@ -65,8 +65,8 @@
  "stats": [],
  "about": {
   "p1": {
-   "ar": "روك لاين جروب شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
-   "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
+   "ar": "روك لاين شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
+   "en": "Rock Line specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
   },
   "p2": {
    "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه.",
@@ -419,8 +419,8 @@
   "whatsapp": "",
   "email": "info@rocklineg.com",
   "address": {
-   "ar": "",
-   "en": ""
+   "ar": "شارع الضرائب، قسم أول كفر الشيخ، محافظة كفر الشيخ",
+   "en": "Al-Daraeb Street, First District, Kafr El-Sheikh, Kafr El-Sheikh Governorate"
   },
   "hours": {
    "ar": "من السبت إلى الخميس، من 9 صباحاً إلى 9 مساءً",
@@ -430,7 +430,7 @@
    "ar": "حديد وأسمنت بجودة مضمونة .. وتوصيل لكل المحافظات",
    "en": "Quality steel & cement, delivered to every governorate"
   },
-  "mapLink": "",
+  "mapLink": "https://maps.app.goo.gl/seQsg9rinhwQwUm46",
   "facebook": "",
   "instagram": "",
   "tiktok": "",
@@ -445,20 +445,7 @@
   "email": true
  },
  "sample": true,
- "warehouses": [
-  {
-   "name": {
-    "ar": "مخزن كفر الشيخ",
-    "en": "Kafr El-Sheikh warehouse"
-   },
-   "address": {
-    "ar": "كفر الشيخ",
-    "en": "Kafr El-Sheikh"
-   },
-   "phone": "",
-   "map": ""
-  }
- ],
+ "warehouses": [],
  "team": [
   {
    "name": {
