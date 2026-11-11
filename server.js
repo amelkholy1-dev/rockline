@@ -73,6 +73,7 @@ app.disable('x-powered-by');
 process.on('unhandledRejection', e => console.error('[unhandledRejection]', e && e.message));
 
 app.use((req, res, next) => {
+  res.locals.nonce = require('crypto').randomBytes(16).toString('base64'); // nonce للسكربتات الـ inline في الصفحات العامة (وصفحة الخطأ لو اتعرضت جوه /admin)
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -84,10 +85,15 @@ app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
   }
+  else {
+    // الصفحات العامة: السكربتات من الموقع نفسه أو بـ nonce (مفيش inline سكربت من غير nonce)، ومفيش اتصال لأي دومين تاني
+    const nonce = res.locals.nonce;
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'nonce-" + nonce + "'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
+  }
   next();
 });
 app.use(express.urlencoded({ extended: true, limit: '4mb' }));
-app.use(express.json({ limit: '4mb' }));
+app.use(express.json({ limit: '256kb' }));
 app.use(express.text({ limit: '64kb' }));
 
 // الصور المرفوعة بس هي اللي بتتعرض للزوار. أي ملف تاني (زي السير الذاتية القديمة) مقفول.
@@ -478,9 +484,10 @@ function chatCtx(lang) {
 pub.post('/chat', async (req, res) => {
   if (!chat.isOn()) return res.status(404).json({ ok: false });
   const pageLang = langOf(req);
-  if (tooMany('chat:' + (req.ip || ''), 25, 10 * 60 * 1000)) return res.status(429).json({ ok: false, reply: UI(pageLang).too_many });
+  // حد لكل زائر (25 رسالة / 10 دقايق) وحد عام (120 / دقيقة) عشان محدش يستنزف الحصة أو يكتب على الديسك
+  if (tooMany('chat:' + (req.ip || ''), 25, 10 * 60 * 1000) || tooMany('chat:all', 120, 60 * 1000)) return res.status(429).json({ ok: false, reply: UI(pageLang).too_many });
   const b = req.body && typeof req.body === 'object' ? req.body : {};
-  const msg = clean(b.message, 500);
+  const msg = typeof b.message === 'string' ? clean(b.message, 500) : '';
   if (!msg) return res.status(400).json({ ok: false });
   const lang = chat.hasArabic(msg) ? 'ar' : (/[a-z]/i.test(msg) ? 'en' : pageLang);
   const history = (Array.isArray(b.history) ? b.history : []).slice(-8).map(h => ({ role: h && h.role === 'user' ? 'user' : 'bot', text: clean(h && h.text, 600) })).filter(h => h.text);
@@ -581,7 +588,7 @@ pub.post('/send', (req, res) => {
     const kind = (typeof b.kind === 'string' && Object.prototype.hasOwnProperty.call(FORMS, b.kind)) ? b.kind : 'contact'; /* hasOwn: kind=__proto__ كان بيوقّع السيرفر كله */
     if (clean(b.website)) return reply(true, t.sent_ok); // فخ للبرامج الآلية
     const ip = req.ip || '';
-    if (tooMany(ip, 8, 10 * 60 * 1000)) return reply(false, t.too_many, 429);
+    if (tooMany(ip, 8, 10 * 60 * 1000) || tooMany('send:all', 60, 60 * 1000)) return reply(false, t.too_many, 429); // حد لكل زائر + حد عام (حماية الرسائل من الإغراق)
 
     const { fields, missing } = readForm(kind, b);
     if (missing.length) return reply(false, t.required);
@@ -607,7 +614,7 @@ pub.post('/send', (req, res) => {
         await mailer.send(rows, {
           subject: FORMS[kind].subject + ' - ' + (fields.company || fields.name || ''),
           title: FORMS[kind].subject,
-          replyTo: /\S+@\S+\.\S+/.test(fields.email || '') ? fields.email : undefined,
+          replyTo: /^[^\s<>;,"'()\\]+@[^\s<>;,"'()\\]+\.[^\s<>;,"'()\\]+$/.test(fields.email || '') ? fields.email : undefined, /* إيميل بسيط بس: أي رموز عنونة غريبة بتتتجاهل */
           extraTo: users.notifyEmails(),
           attachments
         });
@@ -677,14 +684,14 @@ function auth(req, res, next) {
   res.redirect('/admin/login' + nextUrl);
 }
 // كل مسار في لوحة التحكم ليه صلاحية
-const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', texts: 'content', layout: 'content', bot: 'content', prices: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
+const PERM_OF = { design: 'content', stats: 'stats', inbox: 'inbox', projects: 'projects', news: 'news', gallery: 'gallery', content: 'content', texts: 'content', layout: 'content', social: 'social', sections: 'sections', images: 'images', contact: 'contact', mail: 'mail', users: 'users', security: 'users', audit: 'audit' };
 function guard(req, res, next) {
   if (!process.env.SITE_URL && req.me) _adminHost = req.protocol + '://' + req.get('host');
   /* حروف صغيرة + أي مسار مش معروف يتقفل (قبل كده /admin/Users كان بيعدّي من غير فحص لأن Express مش حساس لحالة الحروف) */
   const seg = (req.path.split('/')[1] || '').toLowerCase();
   const perm = Object.prototype.hasOwnProperty.call(PERM_OF, seg) ? PERM_OF[seg] : null;
   if (!perm && (seg === '' || seg === 'account')) return next();
-  if (seg === 'hosting' && req.me && req.me.owner) return next();
+  if ((seg === 'hosting' || seg === 'bot') && req.me && req.me.owner) return next(); // الاستضافة وإعدادات المساعد (فيها مفتاح الـ API) للمدير الأساسي بس
   if ((seg === 'under-construction' || seg === 'samples' || seg === 'apply-defaults') && req.me && req.me.owner) return next();
   if (perm && users.has(req.me, perm)) return next();
   res.status(403).render('admin/denied', adminView(req, {}));
@@ -1661,8 +1668,10 @@ admin.post('/users/:id/delete', (req, res) => {
 app.get('/:slug', (req, res, next) => { const s = String(req.params.slug || '').toLowerCase(); if (!social.slugOk(s)) return next(); if (renderSocialPage(req, res, s)) return; next(); });
 app.use((req, res) => notFound(req, res));
 app.use((err, req, res, next) => {
+  const st = err && (err.status || err.statusCode);
+  if (st >= 400 && st < 500) return res.status(st).type('text/plain').send(st === 413 ? 'payload too large' : 'bad request'); // JSON فاسد أو طلب كبير: مش خطأ سيرفر
   console.error(err);
-  res.status(500).send('server error');
+  res.status(500).type('text/plain').send('server error');
 });
 
 app.listen(PORT, () => console.log('Rock Line Group website: http://localhost:' + PORT + '  |  admin: /admin'));

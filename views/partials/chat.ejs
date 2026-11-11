@@ -12,5 +12,5 @@
     <p class="chat-note"><%= t.chat_ai_note %></p>
   </section>
 </div>
-<script>window.NKC = <%- JSON.stringify({ welcome: t.chat_welcome, error: t.chat_error, ok: t.chat_leave_ok, wa: t.chat_wa, hello: t.wa_hello }).replace(/</g, '\\u003c') %>;</script>
+<script nonce="<%= nonce %>">window.NKC = <%- JSON.stringify({ welcome: t.chat_welcome, error: t.chat_error, ok: t.chat_leave_ok, wa: t.chat_wa, hello: t.wa_hello }).replace(/</g, '\\u003c') %>;</script>
 <script src="/js/chat.js?v=<%= ver %>" defer></script>

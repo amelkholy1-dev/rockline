@@ -21,7 +21,7 @@
       <% items.forEach(function(it){ if(it.valid){ %><a class="lnk" href="<%= it.href %>"><b class="t"><%= it.label %></b></a><% } }); %>
     </div></div></noscript>
 </div>
-<script>
+<script nonce="<%= nonce %>">
 window.__ICONS__ = <%- icons_json %>;
 window.__SOCIAL__ = { cfg: <%- cfg_json %>, base: "<%= baseUrl %>", ttl: "<%= ttl.replace(/"/g,'\\"') %>", logo: "<%= img('logo') %>" };
 </script>

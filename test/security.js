@@ -111,6 +111,8 @@ const totp = (secret, d = 0) => { const st = Math.floor(Date.now() / 30000) + d;
   r = await req(E, 'GET', '/admin/social'); ok(r.s === 403, 'employee without the social perm is blocked from the social page');
   r = await req(E, 'GET', '/admin/hosting'); ok(r.s === 403, 'a non-owner employee is blocked from the hosting page');
   { const ex = await req(E, 'GET', '/admin/hosting/export'); ok(ex.s === 403, 'a non-owner employee cannot download the full-site ZIP'); }
+  for (const p of ['/admin/bot', '/admin/Bot', '/admin/BOT', '/admin/texts', '/admin/layout']) { r = await req(E, 'GET', p); ok(r.s === 403, 'employee (inbox only) blocked from ' + p + ' ' + r.s); }
+  for (const p of ['/admin/bot', '/admin/apply-defaults', '/admin/texts', '/admin/design/colors']) { r = await req(E, 'POST', p, { enabled: 'on', apiKey: 'AAAAAAAAAAAAAAAAAAAAAAAAAA' }); ok(r.s === 403, 'employee cannot POST ' + p + ' ' + r.s); }
   // case-insensitive route bypass (critical): a non-owner must be blocked from /admin/Users, /admin/Security etc. in any letter case
   for (const p of ['/admin/Users', '/admin/USERS', '/admin/Security', '/admin/Audit', '/admin/Mail', '/admin/Masar', '/admin/Inbox']) { r = await req(E, 'GET', p); ok(r.s === 403 || r.s === 404, 'employee blocked from ' + p + ' ' + r.s); }
   r = await req(E, 'POST', '/admin/Users/save', { id: 'x', perms: 'masar' }); ok(r.s === 403 || r.s === 404, 'POST /admin/Users/save blocked for employee ' + r.s);
