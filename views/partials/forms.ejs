@@ -1,5 +1,5 @@
 <%
-/* الفورمات: طلب عرض سعر، تسجيل مورد / مقاول باطن، استفسار.
+/* الفورمات: طلب عرض سعر، تسجيل مورد / مصنع، استفسار.
    كل فورم يتبعت بطريقتين: واتساب (رسالة جاهزة) أو إيميل (من السيرفر). */
 var KINDS = ['quote', 'vendor', 'contact'];
 var tabsOn = typeof only === 'undefined' || !only;
@@ -59,9 +59,9 @@ var show = function(k){ return tabsOn || only === k; };
       <%- fld({ name: 'email', label: t.f_email, type: 'email', auto: 'email' }) %>
       <%- fld({ name: 'ptype', label: t.f_ptype, req: 1, type: 'select', options: ptypes, value: pre }) %>
       <%- fld({ name: 'location', label: t.f_location }) %>
-      <%- fld({ name: 'area', label: t.f_area, ph: lang === 'ar' ? 'مثال: 1200 م² أو 5 أدوار' : 'e.g. 1,200 m² or 5 floors' }) %>
-      <%- fld({ name: 'start', label: t.f_start, ph: lang === 'ar' ? 'مثال: خلال 3 شهور' : 'e.g. within 3 months' }) %>
-      <%- fld({ name: 'details', label: t.f_details, req: 1, wide: 1, type: 'textarea', rows: 3, ph: lang === 'ar' ? 'مثال: تنفيذ هيكل خرساني وتشطيب كامل لمبنى إداري 4 أدوار' : 'e.g. concrete frame and full finishing for a 4-storey office building' }) %>
+      <%- fld({ name: 'area', label: t.f_area, ph: lang === 'ar' ? 'مثال: 25 طن أو 500 كيس' : 'e.g. 25 tonnes or 500 bags' }) %>
+      <%- fld({ name: 'start', label: t.f_start, ph: lang === 'ar' ? 'مثال: خلال أسبوع' : 'e.g. within a week' }) %>
+      <%- fld({ name: 'details', label: t.f_details, req: 1, wide: 1, type: 'textarea', rows: 3, ph: lang === 'ar' ? 'مثال: حديد 12 مم و16 مم، أسمنت معبأ، التسليم في كفر الشيخ' : 'e.g. 12 mm and 16 mm rebar, bagged cement, delivery to Kafr El-Sheikh' }) %>
       <%- file(t.f_file_quote) %>
     </div>
     <%- actions() %>

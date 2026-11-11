@@ -14,5 +14,12 @@
   <% if (tr(site.contact.address)) { %>
   <div class="cc wide"><span class="cc-ic"><%- icon('map') %></span><div><h3><%= t.address %></h3><a href="<%= mapUrl %>" target="_blank" rel="noopener"><%= tr(site.contact.address) %></a><% if (tr(site.contact.hours)) { %><small><%- icon('clock') %> <%= tr(site.contact.hours) %></small><% } %></div></div>
   <% } %>
-  <div class="cc wide quote-cc"><span class="cc-ic"><%- icon('doc') %></span><div><h3><%= t.quote_title %></h3><p><%= lang === 'ar' ? 'ابعت تفاصيل مشروعك والرسومات من الفورم، وهنتواصل معاك لتحديد معاينة.' : 'Send your project details and drawings through the form and we will arrange a site visit.' %></p></div></div>
+  <% if (tr(site.contact.hours)) { %>
+  <div class="cc wide"><span class="cc-ic"><%- icon('clock') %></span><div><h3><%= t.hours %></h3><p class="cc-p"><%= tr(site.contact.hours) %></p></div></div>
+  <% } %>
+  <% (site.team || []).forEach(function(m){ %>
+  <div class="cc wide team-cc"><span class="cc-ic"><%- icon('user') %></span><div><h3><%= tr(m.role) %></h3><b class="cc-n"><%= tr(m.name) %></b>
+    <% if (m.phone) { %><a href="<%= tel(m.phone) %>" dir="ltr"><%= m.phone %></a><% } %>
+    <% if (m.email) { %><a href="mailto:<%= m.email %>" dir="ltr"><%= m.email %></a><% } %></div></div>
+  <% }); %>
 </div>

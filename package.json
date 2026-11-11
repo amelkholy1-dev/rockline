@@ -1,8 +1,8 @@
 {
   "name": "rockline",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "Rock Line Group general contracting website",
+  "description": "Rock Line Group steel and cement supply website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

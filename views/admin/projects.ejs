@@ -1,29 +1,29 @@
 <%- include('nav') %>
 <div class="pthead">
-  <div><h1 class="pt">المشروعات</h1><p class="sub">سابقة الأعمال اللي بتظهر في صفحة «مشروعاتنا». المشروعات اللي عليها ⭐ بتظهر في الصفحة الرئيسية، والترتيب هنا هو نفس ترتيب الموقع.</p></div>
-  <a class="btn navy" href="/admin/projects/new"><%- icon('plus') %> مشروع جديد</a>
+  <div><h1 class="pt">المنتجات</h1><p class="sub">الحديد والأسمنت اللي بيظهروا في صفحة «المنتجات». المنتجات اللي عليها ⭐ بتظهر في الصفحة الرئيسية، والترتيب هنا هو نفس ترتيب الموقع. تقدر تضيف وتعدّل وتمسح أي منتج.</p></div>
+  <a class="btn navy" href="/admin/projects/new"><%- icon('plus') %> منتج جديد</a>
 </div>
 <% if (list.length) { %>
 <div class="table-wrap"><table class="tbl">
-  <thead><tr><th>المشروع</th><th class="hide-sm">القطاع</th><th class="hide-sm">الحالة</th><th>مختار</th><th>الظهور</th><th></th></tr></thead>
+  <thead><tr><th>المنتج</th><th class="hide-sm">التصنيف</th><th class="hide-sm">طريقة التوريد</th><th>مختار</th><th>الظهور</th><th></th></tr></thead>
   <tbody>
   <% list.forEach(function(p, i){ %>
     <tr>
-      <td><div class="jt"><img class="pthumb" src="<%= (p.images && p.images[0]) || img('project') %>" alt=""><div><b><%= tr(p.title) %></b><% if (p.sample) { %> <span class="tag sample">نموذج</span><% } %><br><small class="muted"><%= tr(p.location) %><%= p.year ? ' · ' + p.year : '' %> · <%= (p.images || []).length %> صورة</small></div></div></td>
+      <td><div class="jt"><img class="pthumb" src="<%= (p.images && p.images[0]) || img('project') %>" alt=""><div><b><%= tr(p.title) %></b><% if (p.sample) { %> <span class="tag sample">نموذج</span><% } %><br><small class="muted"><%= (p.images || []).length %> صورة</small></div></div></td>
       <td class="hide-sm"><%= catName(p.cat) %></td>
-      <td class="hide-sm"><span class="tag <%= p.status === 'ongoing' ? 'k-quote' : 'k-career' %>"><%= p.status === 'ongoing' ? 'جاري التنفيذ' : 'منفّذ' %></span></td>
+      <td class="hide-sm"><%= tr(p.pack) || '—' %></td>
       <td><form method="post" action="/admin/projects/<%= p.id %>/feature"><button class="pill <%= p.featured ? 'on' : 'off' %>" title="اضغط للتغيير"><%= p.featured ? '⭐ في الرئيسية' : 'لا' %></button></form></td>
       <td><form method="post" action="/admin/projects/<%= p.id %>/toggle"><button class="pill <%= p.visible !== false ? 'on' : 'off' %>" title="اضغط للتغيير"><%= p.visible !== false ? 'ظاهر' : 'مخفي' %></button></form></td>
       <td class="acts">
         <% if (i > 0) { %><form method="post" action="/admin/projects/<%= p.id %>/move"><input type="hidden" name="dir" value="up"><button class="icon-btn" title="لفوق"><%- icon('up') %></button></form><% } %>
         <% if (i < list.length - 1) { %><form method="post" action="/admin/projects/<%= p.id %>/move"><input type="hidden" name="dir" value="down"><button class="icon-btn" title="لتحت"><%- icon('chevdown') %></button></form><% } %>
-        <a class="icon-btn" href="/ar/projects/<%= p.id %>" target="_blank" title="عرض"><%- icon('eye') %></a>
+        <a class="icon-btn" href="/ar/products/<%= p.id %>" target="_blank" title="عرض"><%- icon('eye') %></a>
         <a class="icon-btn" href="/admin/projects/<%= p.id %>/edit" title="تعديل"><%- icon('edit') %></a>
-        <form method="post" action="/admin/projects/<%= p.id %>/delete" data-confirm="متأكد إنك عايز تحذف المشروع ده وصوره؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
+        <form method="post" action="/admin/projects/<%= p.id %>/delete" data-confirm="متأكد إنك عايز تحذف المنتج ده وصوره؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
       </td>
     </tr>
   <% }); %>
   </tbody>
 </table></div>
-<% } else { %><div class="empty">مفيش مشروعات لسه. <a href="/admin/projects/new">أضف أول مشروع</a></div><% } %>
+<% } else { %><div class="empty">مفيش منتجات لسه. <a href="/admin/projects/new">أضف أول منتج</a></div><% } %>
 <%- include('foot') %>

@@ -196,9 +196,9 @@ const IMAGE_SLOTS = [
   { k: 'logoLight', label: 'الشعار الكامل (على خلفية كحلي)', hint: 'نفس الشعار بالكتابة الفاتحة — بيظهر في الفوتر. PNG شفاف.', def: '/img/logo-full-light.png' },
   { k: 'hero', label: 'صورة الواجهة الرئيسية', hint: 'الصورة الكبيرة في أول الصفحة الرئيسية — يفضل صورة لمشروع أو موقع عمل، عرضية وعالية الجودة (مثلاً 1920×1080). لو سبتها فاضية كل تصميم بيستخدم صورته الافتراضية.', def: '' },
   { k: 'about', label: 'صورة "من نحن"', hint: 'صورة لفريق العمل أو موقع (مثلاً 1200×960).', def: '/img/photos/05.jpg' },
-  { k: 'scope', label: 'صورة "نطاق عملنا"', hint: 'صورة عرضية جنب قايمة المناطق (مثلاً 1220×590).', def: '/img/photos/51.jpg' },
+  { k: 'scope', label: 'صورة "نطاق عملنا" (غير مستخدمة حالياً)', hint: 'مش ظاهرة في الموقع الحالي.', def: '/img/photos/51.jpg' },
   { k: 'banner', label: 'خلفية عناوين الصفحات', hint: 'بتظهر ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1920×700).', def: '/img/photos/50.jpg' },
-  { k: 'project', label: 'صورة المشروع الافتراضية', hint: 'بتظهر لأي مشروع لسه مرفعتلوش صور.', def: '/img/project.svg' },
+  { k: 'project', label: 'صورة المنتج الافتراضية', hint: 'بتظهر لأي منتج لسه مرفعتلوش صور.', def: '/img/project.svg' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
 function siteImg(site, slot, theme) {
@@ -209,9 +209,9 @@ function siteImg(site, slot, theme) {
 
 // ---------- تصميمات الموقع (بتتغير من لوحة التحكم ← شكل الموقع) ----------
 const THEMES = {
-  a: { label: 'كلاسيكي فاخر', desc: 'صورة كبيرة بعرض الشاشة، كحلي ورملي زي الشعار، وشكل رسمي هادي.', font: 'IBM+Plex+Sans+Arabic:wght@300;400;500;600;700', hero: '/img/photos/50.jpg', color: '#1c2b3e' },
-  b: { label: 'داكن جريء', desc: 'خلفية غامقة وخط كبير وصورة مقصوصة بزاوية زي حرف R في الشعار.', font: 'Cairo:wght@400;600;700;800;900', hero: '/img/photos/04.jpg', color: '#0d0f12' },
-  d: { label: 'حديث بلمسة برتقالي', desc: 'أبيض ورمادي غامق مع برتقالي مواقع العمل، وكروت بصور.', font: 'Tajawal:wght@400;500;700;800', hero: '/img/photos/33.jpg', color: '#f0661c' }
+  a: { label: 'كلاسيكي فاخر', desc: 'صورة كبيرة بعرض الشاشة، كحلي ورملي زي الشعار، وشكل رسمي هادي.', font: 'IBM+Plex+Sans+Arabic:wght@300;400;500;600;700', hero: '/img/photos/05.jpg', color: '#1c2b3e' },
+  b: { label: 'داكن جريء', desc: 'خلفية غامقة وخط كبير وصورة مقصوصة بزاوية زي حرف R في الشعار.', font: 'Cairo:wght@400;600;700;800;900', hero: '/img/photos/02.jpg', color: '#0d0f12' },
+  d: { label: 'حديث بلمسة برتقالي', desc: 'أبيض ورمادي غامق مع برتقالي مواقع العمل، وكروت بصور.', font: 'Tajawal:wght@400;500;700;800', hero: '/img/photos/03.jpg', color: '#f0661c' }
 };
 const themeKey = site => (Object.prototype.hasOwnProperty.call(THEMES, site && site.theme) ? site.theme : 'a');
 // المدير المسجّل دخوله يقدر يعاين أي تصميم قبل ما يعتمده (المعاينة محفوظة في جلسته بس)
@@ -221,7 +221,7 @@ function themeOf(req) {
   return themeKey(store.get('site'));
 }
 // صور افتراضية للخدمات (بتظهر في التصميم البرتقالي) بالترتيب
-const SVC_IMG = ['/img/photos/04.jpg', '/img/photos/02.jpg', '/img/photos/14.jpg', '/img/photos/22.jpg', '/img/photos/30.jpg', '/img/photos/03.jpg', '/img/photos/39.jpg', '/img/photos/05.jpg', '/img/photos/35.jpg'];
+const SVC_IMG = ['/img/photos/02.jpg', '/img/products/cement-bag.svg', '/img/products/cement-bulk.svg', '/img/photos/04.jpg', '/img/products/warehouse.svg', '/img/photos/03.jpg'];
 const photoCredits = require('./lib/photo-credits.json');
 
 function customSections(pos) {
@@ -231,7 +231,6 @@ function customSections(pos) {
 function channels() { const c = store.get('site').channels || {}; return { whatsapp: c.whatsapp !== false, email: c.email !== false }; }
 
 // ---------- المشروعات ----------
-const STATUS = ['done', 'ongoing'];
 function activeProjects() { return (store.get('projects') || []).filter(p => p.visible !== false); }
 // اسم القطاع بلغة الزائر (المشروع بيتخزن عليه اسم القطاع بالعربي)
 function catName(site, cat, lang) { const s = (site.sectors || []).find(x => tr(x.name, 'ar') === cat); return s ? tr(s.name, lang) : (cat || ''); }
@@ -283,7 +282,7 @@ const FORMS = {
     { k: 'name', req: 1, l: 'f_name' }, { k: 'company', l: 'f_company' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'ptype', req: 1, l: 'f_ptype' }, { k: 'location', l: 'f_location' }, { k: 'area', l: 'f_area' }, { k: 'start', l: 'f_start' },
     { k: 'details', req: 1, l: 'f_details' }] },
-  vendor: { subject: 'تسجيل مورد / مقاول باطن', file: true, fields: [
+  vendor: { subject: 'تسجيل مورد / مصنع', file: true, fields: [
     { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
     { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'grade', l: 'f_grade' }, { k: 'city', l: 'f_city' }, { k: 'notes', l: 'f_notes' }] },
@@ -291,7 +290,7 @@ const FORMS = {
     { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'message', req: 1, l: 'f_message' }] }
 };
-const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مقاول باطن', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
+const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مصنع', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
 // عنوان مختصر للرسالة في لوحة التحكم
 const msgTitle = f => f.company || f.name || '-';
@@ -358,11 +357,11 @@ app.get('/social', (req, res) => { renderSocialPage(req, res, 'social'); });
 app.get('/robots.txt', (req, res) => res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const b = siteUrl(req);
-  const pages = ['', '/about', '/services', '/projects', '/clients', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
+  const pages = ['', '/about', '/services', '/products', '/warehouses', '/quote', '/vendors', '/news', '/gallery', '/contact', '/privacy', '/credits'];
   const urls = [];
   LANGS.forEach(l => {
     pages.forEach(p => urls.push(`${b}/${l}${p}`));
-    activeProjects().forEach(p => urls.push(`${b}/${l}/projects/${p.id}`));
+    activeProjects().forEach(p => urls.push(`${b}/${l}/products/${p.id}`));
     store.get('news').forEach(n => urls.push(`${b}/${l}/news/${n.id}`));
   });
   res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
@@ -379,7 +378,7 @@ app.use('/:lang(ar|en)', (req, res, next) => {
       if (res.statusCode !== 200) return;
       let page = parts[0] || 'home';
       const job = '';
-      if (parts[0] === 'projects' && parts[1]) page = 'project';
+      if (parts[0] === 'products' && parts[1]) page = 'product';
       else if (parts[0] === 'news' && parts[1]) page = 'post';
       else if (parts[0] === 'gallery' && parts[1]) page = 'album';
       analytics.pageview(req, res, { page, job, lang });
@@ -402,7 +401,7 @@ pub.get('/', (req, res) => {
   const featured = all.filter(p => p.featured);
   res.render('home', base(req, {
     page: 'home',
-    projects: featured.concat(all.filter(p => !p.featured)).slice(0, 6), // المختارة الأول، وبعدها الباقي لحد 6
+    projects: (featured.length ? featured : all).slice(0, 6), // المنتجات المختارة (⭐) لو موجودة، وإلا أول 6
     projectsCount: all.length,
     news: store.get('news').slice(0, 3),
     photos: g.items.slice(0, 8)
@@ -412,37 +411,35 @@ pub.get('/', (req, res) => {
 const T = req => dict[langOf(req)];
 pub.get('/about', (req, res) => res.render('about', base(req, { page: 'about', title: T(req).about_title })));
 pub.get('/services', (req, res) => res.render('services', base(req, { page: 'services', title: T(req).services })));
-pub.get('/clients', (req, res) => res.render('clients', base(req, { page: 'clients', title: T(req).clients })));
+pub.get('/clients', (req, res) => res.redirect(301, '/' + langOf(req) + '/about'));
 pub.get('/quote', (req, res) => res.render('quote', base(req, { page: 'quote', title: T(req).quote_title, ptype: clean(req.query.type, 100) })));
 pub.get('/vendors', (req, res) => res.render('vendors', base(req, { page: 'vendors', title: T(req).vendors_title })));
 pub.get('/contact', (req, res) => res.render('contact', base(req, { page: 'contact', title: T(req).contact_title, tab: Object.prototype.hasOwnProperty.call(FORMS, req.query.tab) ? req.query.tab : 'quote' })));
 // روابط الموقع القديم
-[['companies', '/quote'], ['partners', '/clients'], ['guide', '/vendors'], ['jobs', ''], ['apply', '']].forEach(([from, to]) => pub.get(['/' + from, '/' + from + '/*'], (req, res) => res.redirect(301, '/' + langOf(req) + to)));
+[['companies', '/quote'], ['partners', '/about'], ['guide', '/vendors'], ['jobs', ''], ['apply', '']].forEach(([from, to]) => pub.get(['/' + from, '/' + from + '/*'], (req, res) => res.redirect(301, '/' + langOf(req) + to)));
 
-pub.get('/projects', (req, res) => {
+pub.get(['/projects', '/projects/:id'], (req, res) => res.redirect(301, '/' + langOf(req) + '/products' + (req.params.id ? '/' + encodeURIComponent(req.params.id) : '')));
+pub.get('/products', (req, res) => {
   const lang = langOf(req);
   const site = store.get('site');
   const all = activeProjects();
   const catQ = clean(req.query.cat, 100);
-  const status = STATUS.includes(req.query.status) ? req.query.status : '';
-  let list = all;
-  if (catQ) list = list.filter(p => p.cat === catQ);
-  if (status) list = list.filter(p => p.status === status);
-  // التصنيفات اللي فيها مشروعات بس، بنفس ترتيب القطاعات
+  const list = catQ ? all.filter(p => p.cat === catQ) : all;
+  // التصنيفات اللي فيها منتجات بس، بنفس ترتيب التصنيفات
   const used = new Set(all.map(p => p.cat));
   const cats = (site.sectors || []).map(s => tr(s.name, 'ar')).filter(c => used.has(c));
   all.forEach(p => { if (p.cat && !cats.includes(p.cat)) cats.push(p.cat); });
-  res.render('projects', base(req, { page: 'projects', title: dict[lang].projects, list, cats, catQ, status, total: all.length,
-    counts: { done: all.filter(p => p.status === 'done').length, ongoing: all.filter(p => p.status === 'ongoing').length } }));
+  res.render('products', base(req, { page: 'products', title: dict[lang].products, list, cats, catQ, total: all.length }));
 });
-pub.get('/projects/:id', (req, res) => {
+pub.get('/products/:id', (req, res) => {
   const p = activeProjects().find(x => x.id === req.params.id);
   if (!p) return notFound(req, res);
   const lang = langOf(req);
   const others = activeProjects().filter(x => x.id !== p.id);
   const related = others.filter(x => x.cat === p.cat).concat(others.filter(x => x.cat !== p.cat)).slice(0, 3);
-  res.render('project', base(req, { page: 'projects', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
+  res.render('product', base(req, { page: 'products', p, related, title: tr(p.title, lang), desc: tr(p.desc, lang).slice(0, 160), ogImage: (p.images || [])[0] || '' }));
 });
+pub.get('/warehouses', (req, res) => res.render('warehouses', base(req, { page: 'warehouses', title: dict[langOf(req)].warehouses })));
 
 pub.get('/credits', (req, res) => res.render('credits', base(req, { page: 'credits', title: langOf(req) === 'ar' ? 'مصادر الصور' : 'Photo credits', credits: photoCredits })));
 
@@ -877,7 +874,7 @@ admin.get('/inbox/export.csv', (req, res) => {
   res.send(csv);
 });
 
-// ----- projects (المشروعات) -----
+// ----- products (المنتجات؛ متخزنة في projects.json) -----
 const projList = () => store.get('projects') || [];
 const sectorNames = () => (store.get('site').sectors || []).map(s => tr(s.name, 'ar')).filter(Boolean);
 admin.get('/projects', (req, res) => res.render('admin/projects', adminView(req, { section: 'projects', list: projList(), catName: x => x || '—' })));
@@ -901,29 +898,28 @@ admin.post('/projects/save', (req, res) => {
     (req.files || []).forEach(f => images.push('/uploads/' + f.filename));
     const rec = {
       id: old ? old.id : uid(),
-      title: bi(b, 'title'), cat: clean(b.cat, 100), status: STATUS.includes(b.status) ? b.status : 'done',
-      client: bi(b, 'client'), location: bi(b, 'location'),
-      year: clean(b.year, 40), area: clean(b.area, 60),
+      title: bi(b, 'title'), cat: clean(b.cat, 100),
+      pack: bi(b, 'pack'),
       scope: bi(b, 'scope'), desc: bi(b, 'desc'),
       images: images.slice(0, 40),
       featured: b.featured === 'on', visible: b.visible === 'on',
       at: old ? old.at : now(), updated: now()
     };
-    if (!rec.title.ar) { flash(req, 'اكتب اسم المشروع بالعربي', 'err'); return res.redirect(old ? '/admin/projects/' + old.id + '/edit' : '/admin/projects/new'); }
+    if (!rec.title.ar) { flash(req, 'اكتب اسم المنتج بالعربي', 'err'); return res.redirect(old ? '/admin/projects/' + old.id + '/edit' : '/admin/projects/new'); }
     if (old) { Object.assign(old, rec); delete old.sample; } else list.unshift(rec);
     store.set('projects', list);
-    flash(req, err ? 'اتحفظ المشروع، بس فيه صورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ المشروع', err ? 'err' : 'ok');
+    flash(req, err ? 'اتحفظ المنتج، بس فيه صورة متقبلتش (الحد 10 ميجا وصيغ jpg/png/webp)' : 'تم حفظ المنتج', err ? 'err' : 'ok');
     res.redirect('/admin/projects');
   });
 });
 admin.post('/projects/:id/toggle', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) { p.visible = p.visible === false; store.set('projects', list); flash(req, p.visible ? 'المشروع ظاهر على الموقع' : 'المشروع اتخفى من الموقع'); }
+  if (p) { p.visible = p.visible === false; store.set('projects', list); flash(req, p.visible ? 'المنتج ظاهر على الموقع' : 'المنتج اتخفى من الموقع'); }
   res.redirect('/admin/projects');
 });
 admin.post('/projects/:id/feature', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
-  if (p) { p.featured = !p.featured; store.set('projects', list); flash(req, p.featured ? 'المشروع بقى ضمن المشروعات المختارة في الصفحة الرئيسية' : 'اتشال من المشروعات المختارة'); }
+  if (p) { p.featured = !p.featured; store.set('projects', list); flash(req, p.featured ? 'المنتج بقى ضمن المنتجات المختارة في الصفحة الرئيسية' : 'اتشال من المنتجات المختارة'); }
   res.redirect('/admin/projects');
 });
 admin.post('/projects/:id/move', (req, res) => {
@@ -936,7 +932,7 @@ admin.post('/projects/:id/delete', (req, res) => {
   const list = projList(); const p = list.find(x => x.id === req.params.id);
   if (p) (p.images || []).filter(x => /^\/uploads\//.test(x)).forEach(x => { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} }); // صور الموقع الأصلية (/img/...) متتمسحش
   store.set('projects', list.filter(x => x.id !== req.params.id));
-  flash(req, 'تم حذف المشروع');
+  flash(req, 'تم حذف المنتج');
   res.redirect('/admin/projects');
 });
 admin.post('/samples/clear', (req, res) => {
@@ -1187,8 +1183,8 @@ admin.post('/content/:key', (req, res) => {
 
 // ----- custom sections (أقسام إضافية) -----
 const POSITIONS = [
-  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "آلية العمل"'],
-  ['after_sectors', 'بعد "الجودة والسلامة"'], ['after_jobs', 'بعد "العملاء"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
+  ['after_hero', 'بعد الواجهة الرئيسية'], ['after_about', 'بعد "من نحن"'], ['after_services', 'بعد "المنتجات" و"طريقة الطلب"'],
+  ['after_sectors', 'بعد "المخازن" و"لماذا روك لاين"'], ['after_jobs', 'بعد "الأخبار"'], ['before_contact', 'قبل "تواصل معنا" في آخر الصفحة']
 ];
 admin.get('/sections', (req, res) => res.render('admin/sections', adminView(req, { section: 'sections', list: store.get('site').sections || [], POSITIONS })));
 admin.get('/sections/new', (req, res) => res.render('admin/sectionform', adminView(req, { section: 'sections', item: null, POSITIONS })));
