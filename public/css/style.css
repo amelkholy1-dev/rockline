@@ -881,3 +881,15 @@ a.sector { display: block; color: inherit; }
 .chat-leave input { padding: 7px 9px; border: 1px solid var(--line-2); border-radius: 8px; min-width: 0; } .chat-leave button { border: 0; background: var(--gold); color: #1b2a3c; font-weight: 800; padding: 0 12px; border-radius: 8px; cursor: pointer; }
 .chat-note { margin: 0; padding: 6px 14px 10px; font-size: .75rem; color: #7b8593; }
 @media (max-width: 760px) { .chat-fab { bottom: 78px; inset-inline-start: 12px; } .chat-fab span { display: none; } .chat-box { inset-inline-start: 12px; bottom: 76px; height: min(70vh, 520px); } }
+
+/* ---- أسطول النقل الثقيل ---- */
+.fleet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+.fleet-img { position: relative; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); background: var(--navy); }
+.fleet-img img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.fleet-count { position: absolute; inset-inline-end: 16px; bottom: 16px; display: grid; padding: 12px 18px; border-radius: 12px; background: var(--gold); color: var(--navy); line-height: 1.2; }
+.fleet-count b { font-size: 1.6rem; } .fleet-count span { font-size: .85rem; font-weight: 700; }
+.fleet-tx h2 { margin: 6px 0 10px; } .fleet-tx p { color: var(--muted); }
+.fleet-types { list-style: none; margin: 14px 0 20px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fleet-types li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line-2); font-weight: 700; color: var(--navy); }
+.fleet-types .ic { color: var(--gold-3); }
+@media (max-width: 800px) { .fleet-grid { grid-template-columns: 1fr; gap: 24px; } }

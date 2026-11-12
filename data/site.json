@@ -69,8 +69,8 @@
    "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
   },
   "p2": {
-   "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه.",
-   "en": "We keep it simple: you send the item, quantity and delivery location, we reply with a clear quote, prepare the order from our warehouse and deliver to your site on the agreed date."
+   "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه. ومعانا أسطول نقل ثقيل تابع للشركة لتوصيل الطلب لحد الموقع.",
+   "en": "We keep it simple: you send the item, quantity and delivery location, we reply with a clear quote, prepare the order from our warehouse and deliver to your site on the agreed date. We also run our own heavy transport fleet to deliver the order to your site."
   },
   "vision": {
    "ar": "أن نكون الاختيار الأول في توريد الحديد والأسمنت بالجودة والالتزام والسعر العادل.",
@@ -184,6 +184,17 @@
     "ar": "عرض سعر سريع وواضح، ومساعدة في اختيار الصنف والكمية المناسبة لشغلك.",
     "en": "A fast, clear quote and help choosing the right item and quantity for your job."
    }
+  },
+  {
+   "icon": "shipping",
+   "title": {
+    "ar": "أسطول نقل ثقيل",
+    "en": "Heavy transport fleet"
+   },
+   "desc": {
+    "ar": "سيارات نقل ثقيل تابعة للشركة بتوصّل الحديد والأسمنت من مخازننا لحد موقعك.",
+    "en": "Our own heavy transport vehicles deliver steel and cement from our warehouses to your site."
+   }
   }
  ],
  "process": [
@@ -289,6 +300,13 @@
    "text": {
     "ar": "بنتعامل مع الأفراد والمقاولين والشركات والمصانع",
     "en": "We serve individuals, contractors, companies and factories"
+   }
+  },
+  {
+   "icon": "truck",
+   "text": {
+    "ar": "أسطول نقل ثقيل تابع للشركة",
+    "en": "Our own heavy transport fleet"
    }
   }
  ],
@@ -407,6 +425,16 @@
     "ar": "من السبت للخميس، من 9 صباحاً لـ 9 مساءً.",
     "en": "Saturday to Thursday, 9 AM to 9 PM."
    }
+  },
+  {
+   "q": {
+    "ar": "هل عندكم عربيات نقل خاصة بيكم؟",
+    "en": "Do you have your own transport vehicles?"
+   },
+   "a": {
+    "ar": "أيوه، عندنا أسطول سيارات نقل ثقيل تابع للشركة بيوصّل الحديد والأسمنت لحد موقعك.",
+    "en": "Yes. We have our own heavy transport fleet that delivers steel and cement to your site."
+   }
   }
  ],
  "sections": [],
@@ -496,7 +524,7 @@
    "email": "info@rocklineg.com"
   }
  ],
- "contentVersion": "3.0.3",
+ "contentVersion": "3.2.1",
  "calc": {
   "diameters": "8,10,12,14,16,18,20,22,25,28,32",
   "barLength": "12",
@@ -509,5 +537,19 @@
    "ar": "",
    "en": ""
   }
+ },
+ "fleet": {
+  "title": {
+   "ar": "أسطول نقل ثقيل",
+   "en": "Heavy transport fleet"
+  },
+  "text": {
+   "ar": "عندنا أسطول سيارات نقل ثقيل تابع للشركة بيوصّل الحديد والأسمنت من مخازننا لحد موقعك في كل المحافظات، بمواعيد تسليم واضحة.",
+   "en": "We run our own heavy transport fleet that delivers steel and cement from our warehouses to your site in every governorate, on clear delivery dates."
+  },
+  "types": [
+   "نقل ثقيل"
+  ],
+  "count": ""
  }
 }
