@@ -44,6 +44,11 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   ok(/basket\.js/.test(r.t) && /id="basketBtn"/.test(r.t), 'basket script + header button present');
   ok(!/id="chat"/.test(r.t), 'chat widget off by default');
   let c = await chatPost(V, 'مواعيد العمل'); ok(c.s === 404, 'chat endpoint 404 while bot is off');
+  // ---- أسطول النقل الثقيل
+  r = await req(V, 'GET', '/ar'); ok(/id="fleet"/.test(r.t) && /أسطول نقل ثقيل/.test(r.t) && !/fleet-count/.test(r.t), 'home shows the heavy fleet section (no count by default)');
+  ok(r.t.indexOf('id="warehouses"') < r.t.indexOf('id="fleet"') && r.t.indexOf('id="fleet"') < r.t.indexOf('id="why"'), 'fleet section sits between warehouses and why');
+  r = await req(V, 'GET', '/ar/services'); ok(/أسطول نقل ثقيل/.test(r.t), 'fleet listed in services');
+  r = await req(V, 'GET', '/en'); ok(/Heavy transport fleet/.test(r.t), 'fleet section (en)');
   // ---- قائمة الطلب: طلب بأصناف من غير الصنف والتفاصيل
   r = await req(V, 'GET', '/ar/quote'); ok(/id="basketList"/.test(r.t) && /name="items"/.test(r.t), 'quote page has basket list + items field');
   let f = await fetch(B + '/ar/send', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' }, body: new URLSearchParams({ kind: 'quote', name: 'سلة', phone: '01000000009', items: '• حديد 12 مم — 5 طن' }).toString() }).then(async x => ({ s: x.status, j: await x.json() }));
@@ -56,6 +61,15 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   await req(A, 'POST', '/admin/2fa/setup', { code: totp(secret) }); await req(A, 'POST', '/admin/2fa/setup', {});
   r = await req(A, 'GET', '/admin/inbox'); ok(/حديد 12 مم/.test(r.t), 'basket items reach the inbox');
   for (const p of ['/admin/texts', '/admin/layout', '/admin/bot', '/admin/design', '/admin/images', '/admin/content/calc', '/admin/content/prices', '/admin/content/pricesinfo']) { const x = await req(A, 'GET', p); ok(x.s === 200, 'admin page ' + p + ' ' + x.s); }
+  // ---- أسطول النقل: تعديل + عدد اختياري + إخفاء + الشات
+  r = await req(A, 'GET', '/admin/content/fleet'); ok(r.s === 200, 'admin fleet editor');
+  await req(A, 'POST', '/admin/content/fleet', { json: JSON.stringify({ title: { ar: 'أسطول نقل ثقيل' }, text: { ar: 'نص' }, types: ['نقل ثقيل', 'صهريج'], count: '25+' }) });
+  r = await req(V, 'GET', '/ar'); ok(/fleet-count/.test(r.t) && /25\+/.test(r.t) && /صهريج/.test(r.t), 'optional fleet count + custom types shown');
+  await req(A, 'POST', '/admin/layout/fleet/toggle', {}); r = await req(V, 'GET', '/ar'); ok(!/id="fleet"/.test(r.t), 'fleet section can be hidden from the layout page');
+  await req(A, 'POST', '/admin/layout/fleet/toggle', {});
+  await req(A, 'POST', '/admin/content/fleet', { json: JSON.stringify({ title: { ar: '' }, text: { ar: '' }, types: [], count: '' }) }); r = await req(V, 'GET', '/ar'); ok(!/id="fleet"/.test(r.t), 'empty fleet title hides the section');
+  await req(A, 'POST', '/admin/content/fleet', { json: JSON.stringify({ title: { ar: 'أسطول نقل ثقيل' }, text: { ar: 'عندنا أسطول سيارات نقل ثقيل' }, types: ['نقل ثقيل'], count: '' }) });
+  r = await req(A, 'GET', '/admin/images'); ok(/id="fleet"/.test(r.t), 'fleet image slot in admin');
   // ---- نصوص الواجهة
   r = await req(A, 'POST', '/admin/texts', { t_ar_nav_products: 'خامات البناء', t_ar_products: 'خامات البناء', t_en_nav_products: 'Materials', t_ar_cta_quote: 'احسب تكلفتك' });
   r = await req(V, 'GET', '/ar'); ok(/خامات البناء/.test(r.t) && /احسب تكلفتك/.test(r.t), 'UI text override shows on the site (ar)');
@@ -102,6 +116,7 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   c = await chatPost(V, 'عنوان الشركة فين'); ok(/شارع الضرائب/.test(c.j.reply) && (c.j.actions || []).some(a => /maps\.app\.goo\.gl/.test(a.url)), 'site mode answers address + map action');
   c = await chatPost(V, 'الحديد بكام؟'); ok(/عرض سعر/.test(c.j.reply) && (c.j.actions || []).some(a => /\/ar\/quote/.test(a.url)), 'site mode: price question → quote');
   c = await chatPost(V, 'what are your working hours?', 'ar'); ok(/Saturday|9 AM/.test(c.j.reply), 'English question gets an English answer');
+  c = await chatPost(V, 'عندكم عربيات نقل؟'); ok(/أسطول/.test(c.j.reply), 'chat knows about the fleet: ' + (c.j.reply || '').slice(0, 40));
   c = await chatPost(V, 'حاسبة الكميات'); ok((c.j.actions || []).some(a => /calculator/.test(a.url)), 'calculator action');
   c = await chatPost(V, 'ما هي عاصمة فرنسا'); ok(c.s === 200 && c.j.reply, 'unknown question gets a safe fallback');
   c = await chatPost(V, ''); ok(c.s === 400, 'empty message rejected');

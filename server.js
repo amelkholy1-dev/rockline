@@ -218,6 +218,7 @@ const IMAGE_SLOTS = [
   { k: 'about', label: 'صورة "من نحن"', hint: 'صورة لفريق العمل أو موقع (مثلاً 1200×960).', def: '/img/photos/05.jpg' },
   { k: 'banner', label: 'خلفية عناوين الصفحات', hint: 'بتظهر ورا عنوان كل صفحة داخلية. عرضية (مثلاً 1920×700).', def: '/img/photos/50.jpg' },
   { k: 'project', label: 'صورة المنتج الافتراضية', hint: 'بتظهر لأي منتج لسه مرفعتلوش صور.', def: '/img/project.svg' },
+  { k: 'fleet', label: 'صورة أسطول النقل', hint: 'بتظهر في قسم «أسطول نقل ثقيل» في الرئيسية. الأفضل صورة حقيقية لعربيات الشركة (عرضية، مثلاً 1200×900). لو سبتها فيه رسمة توضيحية.', def: '/img/products/fleet.svg' },
   { k: 'favicon', label: 'أيقونة المتصفح (favicon)', hint: 'الأيقونة الصغيرة في تبويب المتصفح. PNG مربعة (مثلاً 256×256).', def: '/img/favicon.png' },
   { k: 'og', label: 'صورة المشاركة على فيسبوك وواتساب', hint: 'بتظهر لما حد يشارك لينك الموقع. المقاس 1200×630.', def: '/img/og.jpg' }
 ];
@@ -246,7 +247,7 @@ function themeOf(req) {
   return themeKey(store.get('site'));
 }
 // صور افتراضية للخدمات (بتظهر في التصميم البرتقالي) بالترتيب
-const SVC_IMG = ['/img/photos/02.jpg', '/img/products/cement-bag.svg', '/img/products/cement-bulk.svg', '/img/photos/04.jpg', '/img/products/warehouse.svg', '/img/photos/03.jpg'];
+const SVC_IMG = ['/img/photos/02.jpg', '/img/products/cement-bag.svg', '/img/products/cement-bulk.svg', '/img/photos/04.jpg', '/img/products/warehouse.svg', '/img/photos/03.jpg', '/img/products/fleet.svg'];
 const photoCredits = require('./lib/photo-credits.json');
 
 // نصوص الواجهة بعد ما نطبّق عليها تعديلات لوحة التحكم (site.ui)
@@ -267,7 +268,7 @@ function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name
 // أقسام الصفحة الرئيسية (الترتيب والإظهار بيتغيروا من لوحة التحكم ← ترتيب الصفحة الرئيسية)
 const HOME_SECTIONS = [
   { id: 'about', label: 'من نحن', on: true }, { id: 'services', label: 'الخدمات', on: true }, { id: 'products', label: 'المنتجات', on: true },
-  { id: 'process', label: 'طريقة الطلب', on: true }, { id: 'warehouses', label: 'المخازن والمقر', on: true }, { id: 'why', label: 'لماذا روك لاين', on: true },
+  { id: 'process', label: 'طريقة الطلب', on: true }, { id: 'warehouses', label: 'المخازن والمقر', on: true }, { id: 'fleet', label: 'أسطول النقل الثقيل', on: true }, { id: 'why', label: 'لماذا روك لاين', on: true },
   { id: 'calc', label: 'حاسبة الكميات', on: true }, { id: 'prices', label: 'أسعار اليوم (اختياري)', on: false }, { id: 'news', label: 'الأخبار', on: true },
   { id: 'gallery', label: 'معرض الصور', on: true }, { id: 'quotes', label: 'آراء العملاء', on: true }, { id: 'cta', label: 'شريط «اطلب السعر»', on: true },
   { id: 'duo', label: 'كارتين: عرض سعر + المخازن', on: true }, { id: 'contact', label: 'تواصل معنا (الفورم)', on: true }
@@ -278,7 +279,13 @@ function homeLayout(site) {
   (Array.isArray(site.homeLayout) ? site.homeLayout : []).forEach(x => {
     if (x && known[x.id] && !seen.has(x.id)) { seen.add(x.id); out.push({ id: x.id, label: known[x.id].label, visible: x.visible !== false }); }
   });
-  HOME_SECTIONS.forEach(s => { if (!seen.has(s.id)) out.push({ id: s.id, label: s.label, visible: s.on }); });
+  // أي قسم جديد (مش في الترتيب المحفوظ) بنحطه بعد القسم اللي قبله في الترتيب الافتراضي
+  HOME_SECTIONS.forEach((sec, k) => {
+    if (seen.has(sec.id)) return;
+    let at = 0;
+    for (let j = k - 1; j >= 0; j--) { const p = out.findIndex(x => x.id === HOME_SECTIONS[j].id); if (p >= 0) { at = p + 1; break; } }
+    out.splice(at, 0, { id: sec.id, label: sec.label, visible: sec.on });
+  });
   return out;
 }
 // ألوان الموقع (اختيارية من لوحة التحكم ← شكل الموقع)

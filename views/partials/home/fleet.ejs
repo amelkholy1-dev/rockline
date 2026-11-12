@@ -1,0 +1,16 @@
+<% var _fl = site.fleet || {}; var _ft = (_fl.types || []).filter(Boolean); %>
+<% if (tr(_fl.title)) { %>
+<section class="sec sky" id="fleet">
+  <div class="wrap fleet-grid">
+    <div class="fleet-img reveal"><img src="<%= img('fleet') %>" alt="<%= tr(_fl.title) %>" loading="lazy" width="640" height="480">
+      <% if (_fl.count) { %><div class="fleet-count"><b dir="auto"><%= _fl.count %></b><span><%= t.fleet_count %></span></div><% } %></div>
+    <div class="fleet-tx reveal">
+      <span class="kick"><%= t.fleet_kick %></span>
+      <h2><%= tr(_fl.title) %></h2>
+      <p><%= tr(_fl.text) %></p>
+      <% if (_ft.length) { %><ul class="fleet-types"><% _ft.forEach(function(x){ %><li><%- icon('truck') %><%= x %></li><% }); %></ul><% } %>
+      <a class="btn gold" href="<%= L('/quote') %>"><%- icon('doc') %> <%= t.cta_quote %></a>
+    </div>
+  </div>
+</section>
+<% } %>
