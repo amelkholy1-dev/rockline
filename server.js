@@ -269,7 +269,7 @@ function catIcon(site, cat) { const s = (site.sectors || []).find(x => tr(x.name
 const HOME_SECTIONS = [
   { id: 'about', label: 'من نحن', on: true }, { id: 'services', label: 'الخدمات', on: true }, { id: 'products', label: 'المنتجات', on: true },
   { id: 'process', label: 'طريقة الطلب', on: true }, { id: 'warehouses', label: 'المخازن والمقر', on: true }, { id: 'fleet', label: 'أسطول النقل الثقيل', on: true }, { id: 'why', label: 'لماذا روك لاين', on: true },
-  { id: 'calc', label: 'حاسبة الكميات', on: true }, { id: 'prices', label: 'أسعار اليوم (اختياري)', on: false }, { id: 'news', label: 'الأخبار', on: true },
+  { id: 'calc', label: 'حاسبة الكميات', on: true }, { id: 'prices', label: 'أسعار اليوم (اختياري)', on: false }, { id: 'markets', label: 'أسعار البورصة (لندن ومصر)', on: true }, { id: 'news', label: 'الأخبار', on: true },
   { id: 'gallery', label: 'معرض الصور', on: true }, { id: 'quotes', label: 'آراء العملاء', on: true }, { id: 'cta', label: 'شريط «اطلب السعر»', on: true },
   { id: 'duo', label: 'كارتين: عرض سعر + المخازن', on: true }, { id: 'contact', label: 'تواصل معنا (الفورم)', on: true }
 ];
@@ -349,7 +349,7 @@ const FORMS = {
     { k: 'name', req: 1, l: 'f_name' }, { k: 'company', l: 'f_company' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'ptype', req: 1, l: 'f_ptype' }, { k: 'location', l: 'f_location' }, { k: 'area', l: 'f_area' }, { k: 'start', l: 'f_start' },
     { k: 'items', l: 'f_items' }, { k: 'details', req: 1, l: 'f_details' }] },
-  vendor: { subject: 'تسجيل مورد / مصنع', file: true, fields: [
+  vendor: { subject: 'تسجيل مورد', file: true, fields: [
     { k: 'company', req: 1, l: 'f_company' }, { k: 'vtype', req: 1, l: 'f_vtype' }, { k: 'specialty', req: 1, l: 'f_specialty' },
     { k: 'person', l: 'f_person' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'grade', l: 'f_grade' }, { k: 'city', l: 'f_city' }, { k: 'notes', l: 'f_notes' }] },
@@ -357,7 +357,7 @@ const FORMS = {
     { k: 'name', req: 1, l: 'f_name' }, { k: 'phone', req: 1, l: 'f_phone' }, { k: 'email', l: 'f_email' },
     { k: 'message', req: 1, l: 'f_message' }] }
 };
-const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد / مصنع', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
+const KIND_LABEL = { quote: 'طلب عرض سعر', vendor: 'مورد', contact: 'استفسار', career: 'طلب توظيف (قديم)' };
 const CHANNEL_LABEL = { email: 'إيميل', whatsapp: 'واتساب', form: 'فورم' };
 // عنوان مختصر للرسالة في لوحة التحكم
 const msgTitle = f => f.company || f.name || '-';

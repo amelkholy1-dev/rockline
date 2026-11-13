@@ -44,6 +44,19 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   ok(/basket\.js/.test(r.t) && /id="basketBtn"/.test(r.t), 'basket script + header button present');
   ok(!/id="chat"/.test(r.t), 'chat widget off by default');
   let c = await chatPost(V, 'مواعيد العمل'); ok(c.s === 404, 'chat endpoint 404 while bot is off');
+  // ---- الواجهة الجديدة: اسم الشركة + الشعار + العنوان + الفقرة + الزرار + فقرة الفوتر
+  r = await req(V, 'GET', '/ar');
+  ok(/class="hx-name">مجموعة روك لاين</.test(r.t) && /class="hx-tag">شريكك الاستراتيجي في توريد الحديد والأسمنت</.test(r.t), 'hero: bold company name then the strategic-partner line');
+  ok(/<h1>ROCK LINE GROUP<\/h1>/.test(r.t) && /شركة متخصصة في توريد وتجارة مواد البناء، مع التركيز على حديد التسليح والأسمنت/.test(r.t), 'hero: ROCK LINE GROUP heading + the new paragraph');
+  ok(/عرض المنتجات/.test(r.t) && !/شوف المنتجات/.test(r.t), 'hero button says «عرض المنتجات»');
+  ok(/<footer[\s\S]*شركة متخصصة في توريد وتجارة مواد البناء/.test(r.t), 'footer paragraph is the new text');
+  // ---- مفيش أي ذكر للمصانع في الموقع (عربي وإنجليزي) ولا في المساعد
+  for (const p of ['/ar', '/en', '/ar/about', '/en/about', '/ar/services', '/en/services', '/ar/products', '/ar/products/p-cement-bulk', '/en/products/p-cement-bulk', '/ar/quote', '/ar/vendors', '/en/vendors', '/ar/privacy', '/en/privacy', '/ar/warehouses', '/ar/calculator', '/en/calculator', '/ar/contact']) {
+    const q = await req(V, 'GET', p); ok(q.s === 200 && !/مصان|مصنع|factor(y|ies)|\bmills?\b|\bplants?\b/i.test(q.t.replace(/<script[\s\S]*?<\/script>/g, '')), 'no «factories» wording on ' + p);
+  }
+  // ---- أسعار البورصة (لندن ومصر)
+  r = await req(V, 'GET', '/ar'); ok(/id="markets"/.test(r.t) && /بورصة لندن للمعادن/.test(r.t) && /البورصة المصرية/.test(r.t) && /href="https:\/\/www\.lme\.com\/"/.test(r.t) && /href="https:\/\/www\.egx\.com\.eg\/"/.test(r.t), 'markets section: London + Egypt with official links (no invented prices)');
+  r = await req(V, 'GET', '/en'); ok(/London Metal Exchange/.test(r.t) && /Egyptian Exchange/.test(r.t), 'markets section (en)');
   // ---- أسطول النقل الثقيل
   r = await req(V, 'GET', '/ar'); ok(/id="fleet"/.test(r.t) && /أسطول نقل ثقيل/.test(r.t) && !/fleet-count/.test(r.t), 'home shows the heavy fleet section (no count by default)');
   ok(r.t.indexOf('id="warehouses"') < r.t.indexOf('id="fleet"') && r.t.indexOf('id="fleet"') < r.t.indexOf('id="why"'), 'fleet section sits between warehouses and why');
@@ -61,6 +74,14 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   await req(A, 'POST', '/admin/2fa/setup', { code: totp(secret) }); await req(A, 'POST', '/admin/2fa/setup', {});
   r = await req(A, 'GET', '/admin/inbox'); ok(/حديد 12 مم/.test(r.t), 'basket items reach the inbox');
   for (const p of ['/admin/texts', '/admin/layout', '/admin/bot', '/admin/design', '/admin/images', '/admin/content/calc', '/admin/content/prices', '/admin/content/pricesinfo']) { const x = await req(A, 'GET', p); ok(x.s === 200, 'admin page ' + p + ' ' + x.s); }
+  // ---- أسعار البورصة: صفوف بتتحدّث يدوي + تغيّر بلون + الشات
+  r = await req(A, 'GET', '/admin/content/lme'); ok(r.s === 200, 'admin LME editor'); r = await req(A, 'GET', '/admin/content/egx'); ok(r.s === 200, 'admin EGX editor'); r = await req(A, 'GET', '/admin/content/marketsinfo'); ok(r.s === 200, 'admin markets info editor');
+  await req(A, 'POST', '/admin/content/lme', { json: JSON.stringify([{ name: { ar: 'حديد التسليح (LME)', en: 'Steel rebar (LME)' }, price: '560 دولار/طن', change: '+1.2%' }]) });
+  await req(A, 'POST', '/admin/content/egx', { json: JSON.stringify([{ name: { ar: 'مؤشر EGX30' }, price: '30,000', change: '-0.5%' }]) });
+  await req(A, 'POST', '/admin/content/marketsinfo', { json: JSON.stringify({ updated: '2026-11-13', note: { ar: '' }, lmeUrl: 'https://www.lme.com/', egxUrl: 'javascript:alert(1)' }) });
+  r = await req(V, 'GET', '/ar'); ok(/560 دولار\/طن/.test(r.t) && /class="up"/.test(r.t) && /class="down"/.test(r.t) && /2026-11-13/.test(r.t), 'market rows shown with up/down colours and update date');
+  ok(/href="https:\/\/www\.egx\.com\.eg\/"/.test(r.t) && !/href="javascript:/i.test(r.t), 'unsafe market link replaced by the official one');
+  await req(A, 'POST', '/admin/layout/markets/toggle', {}); r = await req(V, 'GET', '/ar'); ok(!/id="markets"/.test(r.t), 'markets section can be hidden'); await req(A, 'POST', '/admin/layout/markets/toggle', {});
   // ---- أسطول النقل: تعديل + عدد اختياري + إخفاء + الشات
   r = await req(A, 'GET', '/admin/content/fleet'); ok(r.s === 200, 'admin fleet editor');
   await req(A, 'POST', '/admin/content/fleet', { json: JSON.stringify({ title: { ar: 'أسطول نقل ثقيل' }, text: { ar: 'نص' }, types: ['نقل ثقيل', 'صهريج'], count: '25+' }) });
@@ -116,6 +137,7 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   c = await chatPost(V, 'عنوان الشركة فين'); ok(/شارع الضرائب/.test(c.j.reply) && (c.j.actions || []).some(a => /maps\.app\.goo\.gl/.test(a.url)), 'site mode answers address + map action');
   c = await chatPost(V, 'الحديد بكام؟'); ok(/عرض سعر/.test(c.j.reply) && (c.j.actions || []).some(a => /\/ar\/quote/.test(a.url)), 'site mode: price question → quote');
   c = await chatPost(V, 'what are your working hours?', 'ar'); ok(/Saturday|9 AM/.test(c.j.reply), 'English question gets an English answer');
+  c = await chatPost(V, 'سعر بورصة لندن'); ok(/LME|لندن/.test(c.j.reply) && /lme\.com/.test(c.j.reply), 'chat answers about the exchange with the official link');
   c = await chatPost(V, 'عندكم عربيات نقل؟'); ok(/أسطول/.test(c.j.reply), 'chat knows about the fleet: ' + (c.j.reply || '').slice(0, 40));
   c = await chatPost(V, 'حاسبة الكميات'); ok((c.j.actions || []).some(a => /calculator/.test(a.url)), 'calculator action');
   c = await chatPost(V, 'ما هي عاصمة فرنسا'); ok(c.s === 200 && c.j.reply, 'unknown question gets a safe fallback');

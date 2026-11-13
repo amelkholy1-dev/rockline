@@ -1,0 +1,23 @@
+<% var _mi = site.marketsinfo || {};
+  var _lme = (site.lme || []).filter(function(x){ return tr(x.name) && x.price; });
+  var _egx = (site.egx || []).filter(function(x){ return tr(x.name) && x.price; });
+  var _ok = function(u, d){ return /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : d; };
+  var _cols = [[t.markets_lme, _lme, _ok(_mi.lmeUrl, 'https://www.lme.com/')], [t.markets_egx, _egx, _ok(_mi.egxUrl, 'https://www.egx.com.eg/')]]; %>
+<section class="sec sky" id="markets">
+  <div class="wrap">
+    <div class="shead reveal"><h2><%= t.markets_title %></h2><span class="rule"></span><p><%= tr(_mi.note) || t.markets_sub %></p></div>
+    <div class="mk-grid">
+      <% _cols.forEach(function(c){ %>
+      <article class="mk reveal">
+        <h3><%- icon('chart') %> <%= c[0] %></h3>
+        <% if (c[1].length) { %>
+          <div class="table-wrap"><table class="ptable"><thead><tr><th><%= t.products %></th><th><%= t.prices_price %></th><th><%= t.markets_change %></th></tr></thead>
+            <tbody><% c[1].forEach(function(x){ var ch = String(x.change || ''); %><tr><td><b><%= tr(x.name) %></b></td><td dir="auto"><%= x.price %></td><td dir="auto" class="<%= /^\+/.test(ch) ? 'up' : (/^[-−]/.test(ch) ? 'down' : '') %>"><%= ch %></td></tr><% }); %></tbody></table></div>
+        <% } else { %><p><%= t.markets_live %></p><% } %>
+        <a class="btn navy sm" href="<%= c[2] %>" target="_blank" rel="noopener"><%- icon('link') %> <%= t.markets_open %></a>
+      </article>
+      <% }); %>
+    </div>
+    <% if (_mi.updated) { %><p class="mk-note"><%- icon('clock') %> <%= t.prices_updated %>: <span dir="auto"><%= _mi.updated %></span></p><% } %>
+  </div>
+</section>

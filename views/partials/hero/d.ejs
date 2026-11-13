@@ -1,11 +1,11 @@
 <section class="hx hx-d" style="--hx:url('<%= img('hero') %>')">
   <div class="wrap"><div class="hx-card">
-    <span class="kick"><%= tr(site.hero.badge) %></span>
+    <%- include('../herobrand') %>
     <h1><%= tr(site.hero.title) %></h1>
     <p><%= tr(site.hero.sub) %></p>
     <div class="hx-cta">
       <a class="btn gold lg" href="<%= L('/quote') %>"><%= t.cta_quote %> <%- arrow %></a>
-      <a class="btn navy lg" href="<%= L('/products') %>"><%= t.nav_products %></a>
+      <a class="btn navy lg" href="<%= L('/products') %>"><%= t.cta_products %></a>
     </div>
   </div></div>
 </section>

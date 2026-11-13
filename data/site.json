@@ -19,17 +19,21 @@
   "founded": ""
  },
  "hero": {
+  "name": {
+   "ar": "مجموعة روك لاين",
+   "en": "Rock Line Group"
+  },
   "badge": {
-   "ar": "توريد حديد التسليح · الأسمنت المعبأ والسائب",
-   "en": "Steel rebar · Bagged & bulk cement"
+   "ar": "شريكك الاستراتيجي في توريد الحديد والأسمنت",
+   "en": "Your strategic partner in steel and cement supply"
   },
   "title": {
-   "ar": "نورّد لك الحديد والأسمنت لحد موقعك",
-   "en": "Steel and cement, delivered to your site"
+   "ar": "ROCK LINE GROUP",
+   "en": "ROCK LINE GROUP"
   },
   "sub": {
-   "ar": "روك لاين جروب بتورّد حديد التسليح والأسمنت (معبأ وسائب) للأفراد والمقاولين والشركات والمصانع، من مخازننا لحد موقع المشروع في كل المحافظات. اطلب عرض سعر وهنرد عليك بالسعر والكمية وميعاد التوريد.",
-   "en": "Rock Line Group supplies steel rebar and cement (bagged and bulk) to individuals, contractors, companies and factories, from our warehouses to your site in every governorate. Request a quote and we will reply with price, quantity and delivery time."
+   "ar": "شركة متخصصة في توريد وتجارة مواد البناء، مع التركيز على حديد التسليح والأسمنت بمختلف أنواعه، سواء المعبأ أو السائب. تمتلك الشركة مخازن مجهزة تضمن توافر المنتجات وسرعة تجهيز وتنفيذ طلبات العملاء، مع الالتزام بالجودة ودقة مواعيد التوريد وتقديم حلول تنافسية تلبي احتياجات المشروعات والشركات والمقاولين.",
+   "en": "A company specialised in supplying and trading building materials, with a focus on steel rebar and cement in all types, bagged or bulk. The company runs well-equipped warehouses that ensure product availability and fast preparation and execution of customer orders, with a commitment to quality, accurate delivery dates and competitive solutions that meet the needs of projects, companies and contractors."
   }
  },
  "points": [
@@ -65,8 +69,8 @@
  "stats": [],
  "about": {
   "p1": {
-   "ar": "روك لاين جروب شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات والمصانع في كل المحافظات.",
-   "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors, companies and factories in every governorate."
+   "ar": "روك لاين جروب شركة متخصصة في توريد حديد التسليح والأسمنت بأنواعه (المعبأ والسائب). عندنا مخازن، وبنورّد للأفراد والمقاولين والشركات في كل المحافظات.",
+   "en": "Rock Line Group specialises in supplying steel rebar and cement in all its types (bagged and bulk). We run warehouses and supply individuals, contractors and companies in every governorate."
   },
   "p2": {
    "ar": "بنشتغل بنظام بسيط: تبعتلنا الصنف والكمية وموقع التسليم، ونرد عليك بعرض سعر واضح، ونجهّز الطلب من المخزن ونوصّله لحد الموقع في الميعاد المتفق عليه. ومعانا أسطول نقل ثقيل تابع للشركة لتوصيل الطلب لحد الموقع.",
@@ -79,6 +83,10 @@
   "mission": {
    "ar": "توفير حديد وأسمنت مطابقين للمواصفات بكميات كافية وفي المواعيد، مع تعامل واضح وشفاف مع كل عميل.",
    "en": "Providing steel and cement to specification, in sufficient quantities and on time, with clear and transparent dealing with every client."
+  },
+  "short": {
+   "ar": "شركة متخصصة في توريد وتجارة مواد البناء، مع التركيز على حديد التسليح والأسمنت بمختلف أنواعه، سواء المعبأ أو السائب. تمتلك الشركة مخازن مجهزة تضمن توافر المنتجات وسرعة تجهيز وتنفيذ طلبات العملاء، مع الالتزام بالجودة ودقة مواعيد التوريد وتقديم حلول تنافسية تلبي احتياجات المشروعات والشركات والمقاولين.",
+   "en": "A company specialised in supplying and trading building materials, with a focus on steel rebar and cement in all types, bagged or bulk. The company runs well-equipped warehouses that ensure product availability and fast preparation and execution of customer orders, with a commitment to quality, accurate delivery dates and competitive solutions that meet the needs of projects, companies and contractors."
   }
  },
  "values": [
@@ -142,14 +150,14 @@
    }
   },
   {
-   "icon": "factory",
+   "icon": "layers",
    "title": {
     "ar": "الأسمنت السائب",
     "en": "Bulk cement"
    },
    "desc": {
-    "ar": "توريد الأسمنت السائب بالصهاريج لمحطات الخرسانة الجاهزة والمشروعات الكبيرة والمصانع.",
-    "en": "Bulk cement by tanker for ready-mix plants, large projects and factories."
+    "ar": "توريد الأسمنت السائب بالصهاريج للمشروعات الكبيرة وأعمال الخرسانة الجاهزة.",
+    "en": "Bulk cement by tanker for large projects and ready-mix concrete works."
    }
   },
   {
@@ -170,8 +178,8 @@
     "en": "Large quantities & regular supply"
    },
    "desc": {
-    "ar": "توفير الكميات الكبيرة وتوريد دوري للشركات والمصانع والمشروعات المستمرة.",
-    "en": "Large quantities and regular supply for companies, factories and ongoing projects."
+    "ar": "توفير الكميات الكبيرة وتوريد دوري للشركات والمشروعات المستمرة.",
+    "en": "Large quantities and regular supply for companies and ongoing projects."
    }
   },
   {
@@ -298,8 +306,8 @@
   {
    "icon": "users",
    "text": {
-    "ar": "بنتعامل مع الأفراد والمقاولين والشركات والمصانع",
-    "en": "We serve individuals, contractors, companies and factories"
+    "ar": "بنتعامل مع الأفراد والمقاولين والشركات",
+    "en": "We serve individuals, contractors and companies"
    }
   },
   {
@@ -315,14 +323,14 @@
  "vtypes": [
   {
    "text": {
-    "ar": "مصنع حديد",
-    "en": "Steel mill"
+    "ar": "مورد حديد",
+    "en": "Steel supplier"
    }
   },
   {
    "text": {
-    "ar": "مصنع أسمنت",
-    "en": "Cement plant"
+    "ar": "مورد أسمنت",
+    "en": "Cement supplier"
    }
   },
   {
@@ -392,8 +400,8 @@
     "en": "Do you supply individuals or only companies?"
    },
    "a": {
-    "ar": "بنورّد للأفراد والمقاولين والشركات والمصانع.",
-    "en": "We supply individuals, contractors, companies and factories."
+    "ar": "بنورّد للأفراد والمقاولين والشركات.",
+    "en": "We supply individuals, contractors and companies."
    }
   },
   {
@@ -412,8 +420,8 @@
     "en": "What is the difference between bagged and bulk cement?"
    },
    "a": {
-    "ar": "المعبأ بيتباع في أكياس ومناسب للاستخدام العادي والكميات المتوسطة، والسائب بيتنقل في صهاريج ومناسب لمحطات الخرسانة والمشروعات الكبيرة.",
-    "en": "Bagged cement is sold in bags for everyday use and medium quantities; bulk cement is moved by tanker for concrete plants and large projects."
+    "ar": "المعبأ بيتباع في أكياس ومناسب للاستخدام العادي والكميات المتوسطة، والسائب بيتنقل في صهاريج ومناسب للمشروعات الكبيرة وأعمال الخرسانة الجاهزة.",
+    "en": "Bagged cement is sold in bags for everyday use and medium quantities; bulk cement is moved by tanker for large projects and ready-mix concrete works."
    }
   },
   {
@@ -524,7 +532,7 @@
    "email": "info@rocklineg.com"
   }
  ],
- "contentVersion": "3.2.1",
+ "contentVersion": "3.3.0",
  "calc": {
   "diameters": "8,10,12,14,16,18,20,22,25,28,32",
   "barLength": "12",
@@ -551,5 +559,16 @@
    "نقل ثقيل"
   ],
   "count": ""
+ },
+ "lme": [],
+ "egx": [],
+ "marketsinfo": {
+  "updated": "",
+  "note": {
+   "ar": "",
+   "en": ""
+  },
+  "lmeUrl": "https://www.lme.com/",
+  "egxUrl": "https://www.egx.com.eg/"
  }
 }

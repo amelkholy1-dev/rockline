@@ -81,7 +81,7 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   r = await req(V, 'GET', '/ar'); ok(/عنوان قديم ومعدّل/.test(r.t), 'edited hero shown before apply');
   r = await req(A, 'GET', '/admin'); ok(/طبّق المحتوى الجديد على الموقع/.test(r.t), 'dashboard has the apply-new-content button');
   r = await req(A, 'POST', '/admin/apply-defaults', {}); ok(r.s === 302 && r.loc === '/admin', 'apply-defaults ok');
-  r = await req(V, 'GET', '/ar'); ok(!/عنوان قديم ومعدّل/.test(r.t) && /نورّد لك الحديد والأسمنت/.test(r.t) && /t-b/.test(r.t), 'shipped content restored, chosen theme kept');
+  r = await req(V, 'GET', '/ar'); ok(!/عنوان قديم ومعدّل/.test(r.t) && /ROCK LINE GROUP/.test(r.t) && /t-b/.test(r.t), 'shipped content restored, chosen theme kept');
   ok(fs.existsSync(path.join(DATA, 'backups')) && fs.readdirSync(path.join(DATA, 'backups')).length >= 2, 'backup of old content saved');
   await req(A, 'POST', '/admin/design', { theme: 'a' });
   // بيانات التواصل بتظهر للزوار
