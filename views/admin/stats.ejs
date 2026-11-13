@@ -1,9 +1,9 @@
 <%- include('nav') %>
 <%
-var PAGE = { home: 'الرئيسية', about: 'من نحن', services: 'خدماتنا', products: 'المنتجات', product: 'صفحة منتج', warehouses: 'المخازن', clients: 'عملاؤنا', quote: 'اطلب عرض سعر', vendors: 'الموردين والمصانع', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', privacy: 'سياسة الخصوصية', other: 'أخرى' };
+var PAGE = { home: 'الرئيسية', about: 'من نحن', services: 'خدماتنا', products: 'المنتجات', product: 'صفحة منتج', warehouses: 'المخازن', clients: 'عملاؤنا', quote: 'اطلب عرض سعر', vendors: 'الموردين', news: 'الأخبار', post: 'صفحة خبر', gallery: 'معرض الصور', album: 'ألبوم صور', contact: 'تواصل معنا', privacy: 'سياسة الخصوصية', other: 'أخرى' };
 var SRC = { direct: 'دخول مباشر أو لينك محفوظ', facebook: 'فيسبوك', google: 'جوجل', instagram: 'إنستجرام', whatsapp: 'واتساب', linkedin: 'لينكدإن', tiktok: 'تيك توك', bing: 'Bing', x: 'X (تويتر)' };
 var T = sum.tot, ev = T.ev;
-var FK = [['quote', 'طلب عرض سعر'], ['vendor', 'مورد / مصنع'], ['contact', 'استفسار']];
+var FK = [['quote', 'طلب عرض سعر'], ['vendor', 'مورد'], ['contact', 'استفسار']];
 var forms = FK.reduce(function(a, k){ return a + (ev['form_' + k[0] + '_email'] || 0) + (ev['form_' + k[0] + '_whatsapp'] || 0); }, 0);
 var nf = function(x){ return Number(x || 0).toLocaleString('en-US'); };
 var pct = function(a, b){ return b ? Math.round(a * 100 / b) : 0; };

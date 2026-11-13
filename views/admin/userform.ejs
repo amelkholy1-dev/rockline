@@ -13,13 +13,23 @@
   <% if (u.owner) { %>
     <p class="flash warn" style="margin-top:16px">ده حساب المدير الأساسي، وليه كل الصلاحيات دايماً.</p>
   <% } else { %>
-  <h2 class="h3" style="margin-top:22px"><%- icon('shield') %> يقدر يفتح إيه</h2>
-  <div class="perm-grid">
-    <% PERMS.forEach(function(p){ if (p[0] === 'users' && !me.owner) return; %>
-      <label class="check perm"><input type="checkbox" name="perms" value="<%= p[0] %>"<%= perms.includes(p[0]) ? ' checked' : '' %>> <%= p[1] %></label>
+  <h2 class="h3" style="margin-top:22px"><%- icon('shield') %> يقدر يعمل إيه في كل قسم</h2>
+  <p class="muted" style="margin:0 0 10px">اختار لكل قسم: <b>بدون وصول</b> (القسم مش بيظهر ليه)، أو <b>اطلاع فقط</b> (يشوف من غير أي تغيير)، أو <b>إضافة فقط</b> (يضيف جديد من غير ما يعدّل أو يمسح الموجود)، أو <b>تعديل كامل</b>.</p>
+  <div class="lv-grid">
+    <% PERMS.forEach(function(p){ if (p[0] === 'users' && !me.owner) return; var cur = !perms.includes(p[0]) ? 'none' : ((u.lv || {})[p[0]] || 'full'); %>
+      <div class="lv-row"><span><%= p[1] %></span>
+        <select name="lv_<%= p[0] %>" aria-label="<%= p[1] %>">
+          <% [['none', 'بدون وصول'], ['view', 'اطلاع فقط'], ['add', 'إضافة فقط'], ['full', 'تعديل كامل']].forEach(function(o){ %><option value="<%= o[0] %>"<%= cur === o[0] ? ' selected' : '' %>><%= o[1] %></option><% }); %>
+        </select></div>
     <% }); %>
   </div>
-  <p class="muted" style="margin:8px 0 0"><button type="button" class="btn xs ghost" data-check-all>اختار الكل</button> <button type="button" class="btn xs ghost" data-check-none>شيل الكل</button></p>
+  <p class="muted" style="margin:10px 0 0">اختيار سريع للكل:
+    <button type="button" class="btn xs ghost" data-lv-all="full">تعديل كامل</button>
+    <button type="button" class="btn xs ghost" data-lv-all="add">إضافة فقط</button>
+    <button type="button" class="btn xs ghost" data-lv-all="view">اطلاع فقط</button>
+    <button type="button" class="btn xs ghost" data-lv-all="none">بدون وصول</button></p>
+  <p class="muted small" style="margin:6px 0 0">«إضافة فقط» بتشتغل في: المنتجات، الأخبار، معرض الصور، الأقسام الإضافية، ومحتوى الموقع (القوايم زي الأسئلة الشائعة والمخازن). باقي الأقسام «إضافة فقط» فيها بتتعامل كـ«اطلاع فقط». وأي تغيير في الصلاحيات بيسجّل خروج المستخدم من أجهزته.</p>
+  <script>document.querySelectorAll('[data-lv-all]').forEach(function (b) { b.addEventListener('click', function () { document.querySelectorAll('select[name^="lv_"]').forEach(function (s) { s.value = b.getAttribute('data-lv-all'); }); }); });</script>
   <% } %>
   <div class="grid2" style="margin-top:18px">
     <label class="check"><input type="checkbox" name="notify"<%= u.notify ? ' checked' : '' %>> يوصله إيميل بكل رسالة جديدة من الموقع</label>

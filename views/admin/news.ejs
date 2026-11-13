@@ -1,7 +1,7 @@
 <%- include('nav') %>
 <div class="pthead">
   <div><h1 class="pt">الأخبار والمنشورات</h1><p class="sub">أسعار وتوفر الحديد والأسمنت، عروض، مخازن جديدة، معارض، شهادات... أي حاجة عايز العملاء يشوفوها.</p></div>
-  <a class="btn navy" href="/admin/news/new"><%- icon('plus') %> خبر جديد</a>
+  <% if (canAdd('news')) { %><a class="btn navy" href="/admin/news/new"><%- icon('plus') %> خبر جديد</a><% } %>
 </div>
 <% if (news.length) { %>
 <div class="cards3">
@@ -13,8 +13,8 @@
       <b><%= tr(n.title) %></b>
       <div class="acts">
         <a class="icon-btn" href="/ar/news/<%= n.id %>" target="_blank" title="عرض"><%- icon('eye') %></a>
-        <a class="icon-btn" href="/admin/news/<%= n.id %>/edit" title="تعديل"><%- icon('edit') %></a>
-        <form method="post" action="/admin/news/<%= n.id %>/delete" data-confirm="متأكد إنك عايز تحذف الخبر ده؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form>
+        <% if (canFull('news')) { %><a class="icon-btn" href="/admin/news/<%= n.id %>/edit" title="تعديل"><%- icon('edit') %></a>
+        <form method="post" action="/admin/news/<%= n.id %>/delete" data-confirm="متأكد إنك عايز تحذف الخبر ده؟"><button class="icon-btn danger" title="حذف"><%- icon('trash') %></button></form><% } %>
       </div>
     </div>
   </div>

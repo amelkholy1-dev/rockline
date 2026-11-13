@@ -893,3 +893,20 @@ a.sector { display: block; color: inherit; }
 .fleet-types li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line-2); font-weight: 700; color: var(--navy); }
 .fleet-types .ic { color: var(--gold-3); }
 @media (max-width: 800px) { .fleet-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ---- بلوك اسم الشركة في الواجهة ---- */
+.hx-brand { display: grid; gap: 4px; margin-bottom: 14px; }
+.hx-name { font-size: clamp(1.35rem, 3.4vw, 1.9rem); font-weight: 900; color: var(--gold); line-height: 1.25; }
+.hx-tag { font-size: 1rem; font-weight: 600; opacity: .92; }
+.hx h1 { letter-spacing: .03em; }
+/* ---- أسعار البورصة ---- */
+.mk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.mk { background: #fff; border: 1px solid var(--line-2); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--gold); }
+.mk h3 { margin: 0; font-size: 1.15rem; display: flex; gap: 8px; align-items: center; }
+.mk h3 .ic { color: var(--gold-3); }
+.mk p { margin: 0; color: var(--muted); }
+.mk .ptable th, .mk .ptable td { padding: 9px 12px; font-size: .95rem; }
+.mk .up { color: #1e8e4e; font-weight: 800; } .mk .down { color: #c0392b; font-weight: 800; }
+.mk .btn { align-self: flex-start; margin-top: auto; }
+.mk-note { text-align: center; color: var(--muted); margin: 18px 0 0; }
+@media (max-width: 800px) { .mk-grid { grid-template-columns: 1fr; } }
