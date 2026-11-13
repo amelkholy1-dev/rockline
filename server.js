@@ -664,6 +664,10 @@ function adminView(req, extra) {
   return Object.assign({
     site, icon, brand, flash: f, section: '', me,
     can: perm => users.has(me, perm),
+    lvl: perm => users.level(me, perm),
+    canAdd: perm => ['add', 'full'].includes(users.level(me, perm)),
+    canFull: perm => users.level(me, perm) === 'full',
+    permOf: sec => PERM_OF[sec] || '',
     img: slot => siteImg(site, slot),
     tr: o => tr(o, 'ar'),
     pendingDev: users.has(me, 'users') ? security.devices().filter(d => d.status === 'pending').length : 0,
@@ -699,9 +703,28 @@ function guard(req, res, next) {
   if (!perm && (seg === '' || seg === 'account')) return next();
   if ((seg === 'hosting' || seg === 'bot') && req.me && req.me.owner) return next(); // الاستضافة وإعدادات المساعد (فيها مفتاح الـ API) للمدير الأساسي بس
   if ((seg === 'under-construction' || seg === 'samples' || seg === 'apply-defaults') && req.me && req.me.owner) return next();
-  if (perm && users.has(req.me, perm)) return next();
+  if (perm && users.has(req.me, perm)) {
+    // مستوى الصلاحية: full يعدّل كل حاجة، view للقراءة بس، add يضيف جديد بس (والمعالجات بتفرّق بين جديد وتعديل)
+    const lvl = users.level(req.me, perm);
+    if (lvl === 'full') return next();
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
+    if (lvl === 'add' && ADD_ROUTES.some(r => r.test(req.path))) return next();
+    return denyLevel(req, res, lvl);
+  }
   res.status(403).render('admin/denied', adminView(req, {}));
 }
+// المسارات اللي مستوى «إضافة فقط» يقدر يوصلها (والمعالج نفسه بيمنع التعديل على الموجود)
+const ADD_ROUTES = [/^\/projects\/save$/i, /^\/news\/save$/i, /^\/gallery\/album$/i, /^\/gallery\/[^/]+\/upload$/i, /^\/sections\/save$/i, /^\/content\/[^/]+$/i];
+function denyLevel(req, res, lvl) {
+  const msg = lvl === 'add' ? 'صلاحيتك على القسم ده «إضافة فقط»: تقدر تضيف جديد بس، مفيش تعديل أو حذف للموجود.' : 'صلاحيتك على القسم ده «اطلاع فقط»: تقدر تشوف بس، مفيش إضافة أو تعديل أو حذف.';
+  return res.status(403).render('admin/denied', adminView(req, { msg }));
+}
+// الملفات اللي اترفعت قبل ما نرفض الطلب بتتمسح
+function dropFiles(req) {
+  const f = req.files; const all = (Array.isArray(f) ? f : Object.values(f || {}).flat()).concat(req.file ? [req.file] : []);
+  all.forEach(x => { try { fs.unlinkSync(x.path); } catch (e) { /* مش مهم */ } });
+}
+const isFull = (req, perm) => users.level(req.me, perm) === 'full';
 const safeNext = n => (typeof n === 'string' && /^\/admin(\/|$)/.test(n) && !/^\/admin\/(login|logout|2fa)/.test(n)) ? n : '/admin';
 
 const loginHits = new Map();
@@ -985,6 +1008,7 @@ admin.post('/projects/save', (req, res) => {
     const b = req.body || {};
     const list = projList();
     const old = list.find(p => p.id === clean(b.id));
+    if (old && !isFull(req, 'projects')) { dropFiles(req); return denyLevel(req, res, 'add'); }
     let images = old ? (old.images || []).slice() : [];
     const remove = [].concat(b.remove || []);
     remove.forEach(x => { if (images.includes(x) && /^\/uploads\//.test(x)) { try { fs.unlinkSync(path.join(UPLOAD_DIR, path.basename(x))); } catch (e) {} } });
@@ -1077,6 +1101,7 @@ admin.post('/news/save', (req, res) => {
     const b = req.body || {};
     const news = store.get('news');
     const old = news.find(n => n.id === clean(b.id));
+    if (old && !isFull(req, 'news')) { dropFiles(req); return denyLevel(req, res, 'add'); }
     let images = old ? (old.images || (old.image ? [old.image] : [])) : [];
     const remove = [].concat(b.remove || []);
     images = images.filter(x => !remove.includes(x));
@@ -1295,7 +1320,16 @@ admin.post('/content/:key', (req, res) => {
   try { data = JSON.parse(req.body.json || 'null'); } catch (e) { data = null; }
   if (data == null) { flash(req, 'حصلت مشكلة في الحفظ، جرّب تاني', 'err'); return res.redirect('/admin/content/' + sec.key); }
   const site = store.get('site');
-  site[sec.key] = content.cleanSection(sec, data);
+  const cleaned = content.cleanSection(sec, data);
+  if (!isFull(req, 'content')) {
+    // «إضافة فقط»: القوايم بس، والعناصر الموجودة لازم تفضل زي ما هي وبنفس ترتيبها، والجديد بيتضاف في الآخر
+    const prev = site[sec.key];
+    if (sec.kind !== 'list' || !Array.isArray(data)) return denyLevel(req, res, 'add');
+    const before = content.cleanSection(sec, Array.isArray(prev) ? prev : []);
+    const same = before.length <= cleaned.length && before.every((x, i) => JSON.stringify(x) === JSON.stringify(cleaned[i]));
+    if (!same) return denyLevel(req, res, 'add');
+  }
+  site[sec.key] = cleaned;
   store.set('site', site);
   flash(req, 'تم حفظ "' + sec.label + '"');
   res.redirect('/admin/content/' + sec.key);
@@ -1319,6 +1353,7 @@ admin.post('/sections/save', (req, res) => {
     const site = store.get('site');
     site.sections = site.sections || [];
     const old = site.sections.find(s => s.id === clean(b.id));
+    if (old && !isFull(req, 'sections')) { dropFiles(req); return denyLevel(req, res, 'add'); }
     const rec = {
       id: old ? old.id : uid(),
       title: bi(b, 'title'), text: bi(b, 'text'),
@@ -1627,12 +1662,21 @@ admin.post('/users/save', async (req, res) => {
   const email = clean(b.email, 200);
   if (!clean(b.user, 60) || !email) { flash(req, 'اكتب اسم المستخدم والإيميل', 'err'); return res.redirect(back); }
   if (!/^\S+@\S+\.\S+$/.test(email)) { flash(req, 'الإيميل مش مكتوب صح', 'err'); return res.redirect(back); }
-  // محدش يدي صلاحية "المستخدمين" غير المدير الأساسي
-  let perms = [].concat(b.perms || []).filter(p => users.ALL.includes(p));
-  if (!req.me.owner) perms = perms.filter(p => p !== 'users');
+  if (old && !isFull(req, 'users')) return denyLevel(req, res, 'add');
+  // الصلاحيات: لكل قسم مستوى (بدون / اطلاع فقط / إضافة فقط / تعديل كامل). لو الفورم القديم (checkbox) = تعديل كامل
+  const rank = { view: 1, add: 2, full: 3 };
+  let perms = [], lv = {};
+  if (users.ALL.some(p => b['lv_' + p] !== undefined)) {
+    users.ALL.forEach(p => { const v = String(b['lv_' + p] || 'none'); if (users.LEVELS.includes(v)) { perms.push(p); if (v !== 'full') lv[p] = v; } });
+  } else perms = [].concat(b.perms || []).filter(p => users.ALL.includes(p));
+  // محدش يدي صلاحية "المستخدمين" غير المدير الأساسي، ولا يدّي حد أكتر من اللي معاه
+  if (!req.me.owner) {
+    perms = perms.filter(p => p !== 'users' && users.has(req.me, p));
+    perms.forEach(p => { const mine = users.level(req.me, p), want = lv[p] || 'full'; if (rank[want] > rank[mine]) lv[p] = mine; });
+  }
   let u;
   try {
-    u = users.upsert({ id: old ? old.id : undefined, name: clean(b.name, 80), user: clean(b.user, 60), email, perms, active: b.active === 'on', notify: b.notify === 'on', pass: b.pass || '' });
+    u = users.upsert({ id: old ? old.id : undefined, name: clean(b.name, 80), user: clean(b.user, 60), email, perms, lv, active: b.active === 'on', notify: b.notify === 'on', pass: b.pass || '' });
   } catch (e) { flash(req, e.message, 'err'); return res.redirect(back); }
   if (u.id === req.me.id) req.session.ver = u.tokenVer || 0;
   let msg = 'تم حفظ المستخدم';

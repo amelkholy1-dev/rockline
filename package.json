@@ -1,6 +1,6 @@
 {
   "name": "rockline",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "private": true,
   "description": "Rock Line Group steel and cement supply website",
   "main": "server.js",
@@ -11,9 +11,10 @@
     "test:security": "node test/security.js",
     "test:uc": "node test/under-construction.js",
     "test:site": "node test/site.js",
-    "test": "node test/security.js && node test/under-construction.js && node test/site.js && node test/features.js && node test/hardening.js",
+    "test": "node test/security.js && node test/under-construction.js && node test/site.js && node test/features.js && node test/hardening.js && node test/permissions.js",
     "test:features": "node test/features.js",
-    "test:hardening": "node test/hardening.js"
+    "test:hardening": "node test/hardening.js",
+    "test:permissions": "node test/permissions.js"
   },
   "engines": {
     "node": ">=20"

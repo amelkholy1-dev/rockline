@@ -13,7 +13,7 @@
       <td class="hide-sm">
         <% if (u.owner) { %><span class="tag k-company">المدير الأساسي: كل الصلاحيات</span>
         <% } else if (!(u.perms || []).length) { %><span class="muted">مفيش</span>
-        <% } else { %><div class="chips-sm"><% PERMS.filter(function(p){ return (u.perms||[]).includes(p[0]); }).forEach(function(p){ %><span class="tag"><%= p[1] %></span><% }); %></div><% } %>
+        <% } else { %><div class="chips-sm"><% PERMS.filter(function(p){ return (u.perms||[]).includes(p[0]); }).forEach(function(p){ %><% var _l = (u.lv || {})[p[0]]; %><span class="tag"><%= p[1] %><%= _l === 'view' ? ' · اطلاع' : (_l === 'add' ? ' · إضافة' : '') %></span><% }); %></div><% } %>
         <% if (u.notify) { %><div><small class="muted"><%- icon('bell') %> بيوصله إيميل بالرسائل</small></div><% } %>
       </td>
       <td><span class="pill <%= u.active !== false ? 'on' : 'off' %>"><%= u.active !== false ? 'نشط' : 'موقوف' %></span><% if (!u.hash) { %><br><small class="warn-text">لسه ما اختارش كلمة مرور</small><% } %></td>

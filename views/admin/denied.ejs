@@ -1,7 +1,13 @@
 <%- include('nav') %>
 <div class="empty">
+  <% if (typeof msg !== 'undefined' && msg) { %>
+  <p><b><%= msg %></b></p>
+  <p>لو محتاج صلاحية أكتر، كلّم المدير يعدّلها من "المستخدمين والصلاحيات".</p>
+  <a class="btn navy" href="javascript:history.back()">رجوع</a>
+  <% } else { %>
   <p><b>الصفحة دي مش ضمن صلاحياتك.</b></p>
   <p>لو محتاج توصلها، كلّم المدير يزوّدلك الصلاحية من "المستخدمين والصلاحيات".</p>
   <a class="btn navy" href="/admin">الرجوع للرئيسية</a>
+  <% } %>
 </div>
 <%- include('foot') %>
