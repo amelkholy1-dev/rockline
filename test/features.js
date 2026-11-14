@@ -82,6 +82,9 @@ const site = () => JSON.parse(fs.readFileSync(path.join(DATA, 'site.json'), 'utf
   r = await req(V, 'GET', '/ar'); ok(/560 دولار\/طن/.test(r.t) && /class="up"/.test(r.t) && /class="down"/.test(r.t) && /2026-11-13/.test(r.t), 'market rows shown with up/down colours and update date');
   ok(/href="https:\/\/www\.egx\.com\.eg\/"/.test(r.t) && !/href="javascript:/i.test(r.t), 'unsafe market link replaced by the official one');
   await req(A, 'POST', '/admin/layout/markets/toggle', {}); r = await req(V, 'GET', '/ar'); ok(!/id="markets"/.test(r.t), 'markets section can be hidden'); await req(A, 'POST', '/admin/layout/markets/toggle', {});
+  r = await req(A, 'GET', '/admin'); ok(/class="ver"[^>]*>v\d+\.\d+\.\d+</.test(r.t), 'admin shows the running version');
+  r = await req(V, 'GET', '/ar'); ok(/"@type":"LocalBusiness"/.test(r.t) && !/GeneralContractor/.test(r.t), 'structured data is LocalBusiness (not a general contractor)');
+  await req(A, 'POST', '/admin/contact', { phones: '+201016013020', license: '555' }); r = await req(V, 'GET', '/ar/about'); ok(/555/.test(r.t) && !/لمقاولي التشييد/.test(r.t), 'about page: registration number without the contractors federation wording');
   // ---- أسطول النقل: تعديل + عدد اختياري + إخفاء + الشات
   r = await req(A, 'GET', '/admin/content/fleet'); ok(r.s === 200, 'admin fleet editor');
   await req(A, 'POST', '/admin/content/fleet', { json: JSON.stringify({ title: { ar: 'أسطول نقل ثقيل' }, text: { ar: 'نص' }, types: ['نقل ثقيل', 'صهريج'], count: '25+' }) });

@@ -43,6 +43,7 @@
       <% }); %>
     </nav>
     <div class="side-foot">
+      <span class="ver" title="نسخة الموقع الشغّالة دلوقتي" dir="ltr">v<%= appVersion %></span>
       <span class="who"><%- icon('user') %> <%= me ? (me.name || me.user) : '' %></span>
       <a href="/ar" target="_blank"><%- icon('link') %> عرض الموقع</a>
       <a href="/admin/logout"><%- icon('logout') %> خروج</a>

@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/css/theme-<%= theme %>.css?v=<%= ver %>">
 <style>:root{--banner:url("<%= img('banner') %>")}<%- colorCss %></style>
 <script type="application/ld+json"><%- JSON.stringify({
-  '@context': 'https://schema.org', '@type': 'GeneralContractor',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: tr(site.brand.name), url: baseUrl, logo: baseUrl + img('logo'),
   telephone: (site.contact.phones || [])[0] || '', email: site.contact.email || '',
   address: { '@type': 'PostalAddress', streetAddress: tr(site.contact.address), addressCountry: 'EG' },
