@@ -33,6 +33,8 @@ const send = (fields) => fetch(B + '/ar/send', { method: 'POST', headers: { 'con
   ok(/حديد/.test(r.t) && /أسمنت|الأسمنت/.test(r.t) && !/مقاولات عامة|للمقاولات/.test(r.t), 'home is steel & cement supply, not general contracting');
   ok(/مخازن في أنحاء الجمهورية/.test(r.t) && /شارع الضرائب/.test(r.t) && /maps\.app\.goo\.gl\/seQsg9rinhwQwUm46/.test(r.t), 'home shows nationwide warehouses + company address and map');
   r = await req(V, 'GET', '/ar/products?cat=' + encodeURIComponent('الأسمنت')); ok(r.s === 200 && (r.t.match(/class="pcard/g) || []).length === 2, 'category filter: 2 cement products');
+  r = await req(V, 'GET', '/ar/quote'); ok(/placeholder="مثال: 100 طن"/.test(r.t) && !/500 كيس/.test(r.t), 'quote form quantity example is «100 طن» (no bags)');
+  r = await req(V, 'GET', '/en/quote'); ok(/placeholder="e\.g\. 100 tonnes"/.test(r.t), 'quote form quantity example (en)');
   r = await req(V, 'GET', '/ar/projects'); ok(r.s === 301 && r.loc === '/ar/products', 'old /projects → /products');
   r = await req(V, 'GET', '/ar/clients'); ok(r.s === 301 && r.loc === '/ar/about', 'old /clients → /about');
   r = await req(V, 'GET', '/ar/companies'); ok(r.s === 301 && r.loc === '/ar/quote', 'old /companies → /quote');
