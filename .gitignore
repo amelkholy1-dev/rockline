@@ -21,7 +21,6 @@ public/uploads/*
 !public/uploads/.gitkeep
 
 # ملفات مش من المشروع
-Claude outputs/
 *.zip
 *.log
 

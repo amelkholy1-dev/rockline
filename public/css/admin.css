@@ -368,3 +368,5 @@ input[type="color"] { width: 46px !important; height: 34px !important; flex: non
 .lv-row select { width: auto !important; min-width: 130px; }
 .lvl-banner { display: flex; gap: 8px; align-items: center; }
 @media (max-width: 800px) { .lv-grid { grid-template-columns: 1fr; } }
+
+.side-foot .ver { display: block; font-size: .75rem; opacity: .6; padding: 0 4px 6px; }

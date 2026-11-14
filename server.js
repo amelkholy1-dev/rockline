@@ -664,6 +664,7 @@ function adminView(req, extra) {
   return Object.assign({
     site, icon, brand, flash: f, section: '', me,
     can: perm => users.has(me, perm),
+    appVersion: pkgVersion,
     lvl: perm => users.level(me, perm),
     canAdd: perm => ['add', 'full'].includes(users.level(me, perm)),
     canFull: perm => users.level(me, perm) === 'full',
