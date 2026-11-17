@@ -370,3 +370,5 @@ input[type="color"] { width: 46px !important; height: 34px !important; flex: non
 @media (max-width: 800px) { .lv-grid { grid-template-columns: 1fr; } }
 
 .side-foot .ver { display: block; font-size: .75rem; opacity: .6; padding: 0 4px 6px; }
+
+.pwrow { display: flex; gap: 6px; align-items: center; } .pwrow input { flex: 1; }

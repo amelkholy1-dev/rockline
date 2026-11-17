@@ -26,13 +26,16 @@
         <% (FORMS[m.kind] ? def.fields : Object.keys(f).map(function(k){ return { k: k, l: 'f_' + k }; })).forEach(function(x){ if (f[x.k]) { %><div><dt><%= labels[x.l] || x.k %></dt><dd><%= f[x.k] %></dd></div><% } }); %>
         <% if (m.cv || m.cvUrl) { %><div><dt><%= m.kind === 'career' ? 'السيرة الذاتية' : m.kind === 'quote' ? 'الرسومات / المقايسة' : 'المرفق' %></dt><dd><a href="/admin/inbox/<%= m.id %>/cv"><%- icon('download') %> تحميل الملف<%= m.cvName ? ' (' + m.cvName + ')' : '' %></a></dd></div><% } %>
         <% if (m.consent) { %><div><dt>الموافقة</dt><dd>وافق على سياسة الخصوصية</dd></div><% } %>
-        <% if (m.mailError) { %><div><dt>سبب فشل الإيميل</dt><dd class="err-text"><%= m.mailError %></dd></div><% } %>
+        <% if (m.channel === 'email' && !m.mailed) { %>
+          <div><dt>حالة الإيميل</dt><dd class="err-text">لسه ما وصلش<% if (m.mailTries) { %> · المحاولات: <%= m.mailTries %><% } %><% if (m.mailNext) { %> · المحاولة الجاية: <%= fmtTime(m.mailNext) %><% } %><% if (m.mailError) { %><br><%= m.mailError %><% } %></dd></div>
+        <% } else if (m.channel === 'email' && m.mailed && m.mailTries > 1) { %><div><dt>حالة الإيميل</dt><dd>وصل بعد <%= m.mailTries %> محاولات<%= m.mailVia === 'backup' ? ' (من السيرفر الاحتياطي)' : '' %></dd></div><% } %>
       </dl>
       <div class="msg-acts">
         <% var phone = String(f.phone || '').replace(/[^0-9]/g, ''); if (phone) { if (phone.indexOf('0') === 0 && phone.length === 11) phone = '2' + phone; %>
           <a class="btn sm wa" href="https://wa.me/<%= phone %>" target="_blank" rel="noopener"><%- brand('whatsapp') %> رد على واتساب</a>
           <a class="btn sm ghost" href="tel:+<%= phone %>"><%- icon('phone') %> اتصال</a>
         <% } %>
+        <% if (m.channel === 'email' && !m.mailed) { %><form method="post" action="/admin/inbox/<%= m.id %>/resend"><button class="btn sm navy"><%- icon('send') %> أعد إرسال الإيميل</button></form><% } %>
         <% if (f.email) { %><a class="btn sm ghost" href="mailto:<%= f.email %>"><%- icon('mail') %> رد بالإيميل</a><% } %>
         <form method="post" action="/admin/inbox/<%= m.id %>/read"><input type="hidden" name="read" value="<%= m.read ? '0' : '1' %>"><button class="btn sm ghost"><%- icon(m.read ? 'eyeoff' : 'check') %> <%= m.read ? 'علّمها غير مقروءة' : 'تم التعامل' %></button></form>
         <form method="post" action="/admin/inbox/<%= m.id %>/delete" data-confirm="متأكد إنك عايز تحذف الرسالة دي؟"><button class="btn sm danger"><%- icon('trash') %> حذف</button></form>

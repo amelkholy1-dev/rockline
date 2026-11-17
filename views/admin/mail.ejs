@@ -1,5 +1,18 @@
 <%- include('nav') %>
-<div class="pthead"><div><h1 class="pt">الإيميل وطرق الإرسال</h1><p class="sub">عشان رسايل الفورمات توصل على إيميل الشركة لما الزائر يدوس "إرسال بالإيميل". وكل الرسايل بتتحفظ كمان في «الرسائل».</p></div></div>
+<div class="pthead"><div><h1 class="pt">الإيميل وطرق الإرسال</h1><p class="sub">عشان رسايل الفورمات توصل على إيميل الشركة. كل رسالة بتتحفظ الأول في «الرسائل»، وبعدين بتتبعت بالإيميل، ولو فشلت بنحاول تاني تلقائياً (بعد دقيقة، 5، 15، ساعة... لحد 14 يوم) من غير ما تضيع.</p></div></div>
+
+<% var okAt = mstate.lastOk, failAt = mstate.lastFail; %>
+<div class="flash <%= mailReady ? (failed ? 'warn' : 'ok') : 'err' %>"><%- icon(mailReady && !failed ? 'checkcircle' : 'info') %>
+  <span><b>الحالة:</b>
+  <% if (!mailReady) { %>الإيميل <b>مش متظبط</b>: ناقص كلمة المرور أو الإيميل. الرسايل محفوظة في «الرسائل» وهتتبعت أول ما تتظبط.
+  <% } else if (failed) { %>فيه <b><%= failed %></b> رسالة لسه ما وصلتش بالإيميل (بنحاول تلقائياً).
+  <% } else { %>الإيميل متظبط ومفيش رسايل متأخرة.<% } %>
+  <% if (okAt) { %><br><small>آخر إرسال ناجح: <%= fmtTime(okAt) %><%= mstate.lastVia === 'backup' ? ' (من السيرفر الاحتياطي)' : '' %></small><% } %>
+  <% if (mstate.lastError && (!okAt || (failAt && failAt > okAt) || mstate.lastVia === 'backup')) { %><br><small>آخر مشكلة: <%= mstate.lastError %></small><% } %></span></div>
+<% if (failed && mailReady) { %>
+<form class="card inline-form" method="post" action="/admin/inbox/resend-all"><input type="hidden" name="back" value="mail"><p>فيه <%= failed %> رسالة متأخرة. تقدر تبعتها دلوقتي من غير ما تستنى المحاولة التلقائية.</p><button class="btn navy" type="submit"><%- icon('send') %> أعد إرسال كل المتأخر (<%= failed %>)</button></form>
+<% } %>
+
 <form class="card form" method="post" action="/admin/mail/channels">
   <h2 class="h3"><%- icon('send') %> طرق إرسال الفورمات اللي تظهر للزوار</h2>
   <div class="grid2">
@@ -9,28 +22,78 @@
   <small class="muted">لو قفلت الاتنين، بيظهر زرار «إرسال» عادي والرسالة بتتحفظ في «الرسائل» بس. زرار الواتساب بيظهر بس لو رقم الواتساب متكتب في «بيانات الشركة والتواصل».</small>
   <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ طرق الإرسال</button></div>
 </form>
-<div class="flash <%= mailReady ? 'ok' : 'warn' %>"><%- icon(mailReady ? 'checkcircle' : 'info') %> <%= mailReady ? 'الإيميل متظبط. جرّب رسالة تجربة عشان تتأكد.' : 'الإيميل لسه مش متظبط: ناقص كلمة مرور صندوق البريد. ولحد ما تتظبط، زرار "إرسال بالإيميل" مش هيظهر للزوار، والواتساب شغال عادي.' %></div>
+
 <form class="card form" method="post" action="/admin/mail">
+  <h2 class="h3"><%- icon('mail') %> السيرفر الأساسي</h2>
+  <p class="muted" style="margin:0 0 10px">اختيار سريع للإعدادات:
+    <% Object.keys(PRESETS).forEach(function(k){ var p = PRESETS[k]; %><button type="button" class="btn xs ghost" data-preset="<%= k %>" data-host="<%= p.host %>" data-port="<%= p.port %>" data-enc="<%= p.enc %>"><%= p.label %></button> <% }); %></p>
   <div class="grid2">
-    <label>الإيميل اللي هيبعت منه الموقع<input name="user" dir="ltr" value="<%= mail.user || '' %>" placeholder="info@rocklineg.com"><small>لازم يكون صندوق بريد حقيقي على الدومين.</small></label>
-    <label>كلمة مرور صندوق البريد<input type="password" name="pass" dir="ltr" autocomplete="new-password" placeholder="<%= mail.pass || envPass ? '•••••••• (محفوظة، سيبها فاضية لو مش عايز تغيّرها)' : 'اكتب كلمة المرور' %>"></label>
+    <label>الإيميل اللي هيبعت منه الموقع<input name="user" dir="ltr" value="<%= mail.user || '' %>" placeholder="info@rocklineg.com"><small>لازم يكون صندوق بريد حقيقي على الدومين، ويتكتب كامل.</small></label>
+    <label>كلمة مرور صندوق البريد<input type="password" name="pass" dir="ltr" autocomplete="new-password" placeholder="<%= mail.pass || envPass ? '•••••••• (محفوظة، سيبها فاضية لو مش عايز تغيّرها)' : 'اكتب كلمة المرور بنفسك' %>"><small>بتتكتب هنا بس وبتتحفظ على السيرفر، ومبتظهرش تاني.<% if (envPass) { %> <b>تنبيه:</b> فيه متغير بيئة <code>MAIL_PASS</code> على الاستضافة وبيغلب اللي هنا.<% } %></small></label>
     <label class="span2">الرسايل توصل على<input name="to" dir="ltr" value="<%= mail.to || '' %>" placeholder="info@rocklineg.com"><small>ممكن تكتب أكتر من إيميل بينهم فاصلة، مثلاً: info@rocklineg.com, projects@rocklineg.com</small></label>
-    <label>اسم المرسل<input name="fromName" value="<%= mail.fromName || '' %>"></label>
+    <label>اسم المرسل<input name="fromName" value="<%= mail.fromName || '' %>" placeholder="روك لاين"></label>
+    <label>إيميل الرد (Reply-To) — اختياري<input name="replyTo" dir="ltr" value="<%= mail.replyTo || '' %>"><small>لو فاضي، الرد بيروح لإيميل الزائر لو كتبه.</small></label>
+    <label class="span2">نسخة احتياطية (BCC) — اختياري<input name="bcc" dir="ltr" value="<%= mail.bcc || '' %>"><small>إيميل (أو أكتر) تاني توصله نسخة من كل رسالة، فلو صندوق واحد عطلان ما تضيعش.</small></label>
+  </div>
+  <h3 class="h3" style="margin-top:18px">إعدادات السيرفر</h3>
+  <div class="grid2">
+    <label>SMTP Host<input name="host" id="f_host" dir="ltr" value="<%= mail.host || 'smtp.hostinger.com' %>"></label>
+    <label>Port<input name="port" id="f_port" dir="ltr" value="<%= mail.port || 465 %>"></label>
+    <label>التشفير
+      <select name="enc" id="f_enc"><% var curEnc = ENCS.indexOf(mail.enc) >= 0 ? mail.enc : (mail.secure === false ? 'starttls' : 'ssl'); %>
+        <option value="ssl"<%= curEnc === 'ssl' ? ' selected' : '' %>>SSL / TLS (المنفذ 465)</option>
+        <option value="starttls"<%= curEnc === 'starttls' ? ' selected' : '' %>>STARTTLS (المنفذ 587)</option>
+        <% if (ENCS.indexOf('none') >= 0) { %><option value="none"<%= curEnc === 'none' ? ' selected' : '' %>>بدون تشفير (اختبار فقط)</option><% } %></select></label>
     <span></span>
   </div>
   <details class="adv">
-    <summary>إعدادات السيرفر (متغيرهاش غير لو عارف)</summary>
+    <summary>إعدادات متقدمة (متغيرهاش غير لو عارف)</summary>
     <div class="grid2">
-      <label>SMTP Host<input name="host" dir="ltr" value="<%= mail.host || 'smtp.hostinger.com' %>"></label>
-      <label>Port<input name="port" dir="ltr" value="<%= mail.port || 465 %>"></label>
-      <label class="check"><input type="checkbox" name="secure"<%= mail.secure !== false ? ' checked' : '' %>> SSL (مع بورت 465)</label>
+      <label>اسم الدخول (لو مختلف عن الإيميل)<input name="login" dir="ltr" value="<%= mail.login || '' %>"></label>
+      <label>عنوان المرسل (From) لو مختلف<input name="from" dir="ltr" value="<%= mail.from || '' %>"><small>في هوستنجر لازم يكون نفس إيميل الدخول أو على نفس الدومين.</small></label>
     </div>
-    <small class="muted">إعدادات Hostinger: smtp.hostinger.com وبورت 465 مع SSL.</small>
+  </details>
+
+  <h2 class="h3" style="margin-top:22px"><%- icon('shield') %> سيرفر احتياطي (اختياري)</h2>
+  <details class="adv"<%= (mail.backup && mail.backup.host) ? ' open' : '' %>>
+    <summary>لو السيرفر الأساسي فشل، الموقع يجرّب ده تلقائياً (يزوّد ضمان الوصول)</summary>
+    <% var bk = mail.backup || {}; %>
+    <div class="grid2">
+      <label>SMTP Host<input name="bk_host" dir="ltr" value="<%= bk.host || '' %>" placeholder="smtp.gmail.com"></label>
+      <label>Port<input name="bk_port" dir="ltr" value="<%= bk.port || 465 %>"></label>
+      <label>التشفير<select name="bk_enc"><option value="ssl"<%= (bk.enc || 'ssl') === 'ssl' ? ' selected' : '' %>>SSL / TLS (465)</option><option value="starttls"<%= bk.enc === 'starttls' ? ' selected' : '' %>>STARTTLS (587)</option></select></label>
+      <label>إيميل الدخول<input name="bk_user" dir="ltr" value="<%= bk.user || '' %>"></label>
+      <label>كلمة المرور<input type="password" name="bk_pass" dir="ltr" autocomplete="new-password" placeholder="<%= bk.pass ? '•••••••• (محفوظة)' : '' %>"></label>
+      <label>عنوان المرسل (From)<input name="bk_from" dir="ltr" value="<%= bk.from || '' %>"></label>
+    </div>
+    <small class="muted">نصيحة: استخدم إيميل مختلف تماماً عن الأساسي (مثلاً حساب Gmail مع App Password)، عشان لو الاستضافة وقعت يفضل شغّال.</small>
   </details>
   <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button></div>
 </form>
-<form class="card inline-form" method="post" action="/admin/mail/test">
-  <p>بعد الحفظ، ابعت رسالة تجربة واتأكد إنها وصلت (بص في الـ Spam كمان).</p>
-  <button class="btn ghost" type="submit"<%= mailReady ? '' : ' disabled' %>><%- icon('send') %> إرسال رسالة تجربة</button>
+
+<form class="card form" method="post" action="/admin/mail/test">
+  <h2 class="h3"><%- icon('send') %> تجربة الإرسال</h2>
+  <p class="muted" style="margin:0 0 8px">بعد الحفظ، ابعت رسالة تجربة واتأكد إنها وصلت (بص في الـ Spam كمان). لو فشلت هيظهرلك السبب بالعربي.</p>
+  <div class="grid2"><label>ابعت التجربة على (اختياري)<input name="to" dir="ltr" placeholder="<%= cfg.to || 'info@rocklineg.com' %>"><small>لو فاضي، بتتبعت على «الرسايل توصل على».</small></label></div>
+  <div class="form-foot"><button class="btn ghost" type="submit"<%= mailReady ? '' : ' disabled' %>><%- icon('send') %> إرسال رسالة تجربة</button></div>
 </form>
+
+<div class="card nudge">
+  <h2 class="h3"><%- icon('info') %> لو فيه مشكلة</h2>
+  <ul>
+    <li><b>«Authentication failed / 535»:</b> اسم المستخدم لازم يكون الإيميل كامل، وكلمة المرور بتاعة صندوق البريد (جرّب تدخل بيها على Webmail الأول).</li>
+    <li><b>هوستنجر:</b> Hostinger Email = <code dir="ltr">smtp.hostinger.com</code> بورت 465 SSL. Titan Email = <code dir="ltr">smtp.titan.email</code>.</li>
+    <li>كلمة المرور بتتكتب هنا بيدك، ومفيش أي حد (ولا النظام) بيعرفها غيرك.</li>
+    <li>الرسايل اللي ما وصلتش بتفضل في «الرسائل» وبتتبعت لوحدها أول ما الإعدادات تتصلّح، وتقدر تعيد إرسالها يدوي.</li>
+  </ul>
+</div>
+<script>
+document.querySelectorAll('[data-preset]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    document.getElementById('f_host').value = b.getAttribute('data-host');
+    document.getElementById('f_port').value = b.getAttribute('data-port');
+    var e = document.getElementById('f_enc'); e.value = b.getAttribute('data-enc');
+  });
+});
+</script>
 <%- include('foot') %>

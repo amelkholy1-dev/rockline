@@ -5,6 +5,7 @@
 <% if (pendingDev) { %><div class="flash warn"><%- icon('shield') %> فيه <b><%= pendingDev %></b> جهاز مستني موافقتك. <a href="/admin/security">راجعهم</a></div><% } %>
 <% if (defaultPass) { %><div class="flash err"><%- icon('lock') %> لسه بتستخدم كلمة المرور الافتراضية. <a href="/admin/account">غيّرها دلوقتي</a> قبل ما ترفع الموقع.</div><% } %>
 <% if (noEmail) { %><div class="flash warn"><%- icon('mail') %> حسابك ملوش إيميل، فلو نسيت كلمة المرور مش هتعرف ترجعها. <a href="/admin/account">ضيف إيميلك</a></div><% } %>
+<% if (mailFailList.length && (can('mail') || can('inbox'))) { %><div class="flash err"><%- icon('mail') %> <span><b><%= mailFailList.length %></b> رسالة من الموقع <b>ما وصلتش بالإيميل</b> (لكنها محفوظة في «الرسائل» وبنحاول نبعتها تلقائياً). <a href="/admin/mail">راجع إعدادات الإيميل</a><% if (mailFailList[0].mailError) { %> — السبب: <%= mailFailList[0].mailError.slice(0, 140) %><% } %></span></div><% } %>
 <% if (!mailReady && can('mail')) { %><div class="flash warn"><%- icon('mail') %> الإرسال بالإيميل لسه مش متظبط، فالزوار هيقدروا يبعتوا على واتساب بس. <a href="/admin/mail">اظبط الإيميل</a></div><% } %>
 <% if (me.owner && typeof underCon !== 'undefined') { %>
 <div class="flash <%= underCon ? 'warn' : 'ok' %>" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
