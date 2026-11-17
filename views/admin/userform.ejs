@@ -5,10 +5,12 @@
   <input type="hidden" name="id" value="<%= u.id || '' %>">
   <div class="grid2">
     <label>الاسم<input name="name" value="<%= u.name || '' %>" placeholder="مثال: محمود المعراج"></label>
-    <label>الإيميل <em>*</em><input type="email" name="email" dir="ltr" value="<%= u.email || '' %>" required placeholder="name@rocklineg.com"></label>
+    <label>الإيميل <small class="muted">(اختياري لو هتكتب كلمة مرور)</small><input type="email" name="email" dir="ltr" value="<%= u.email || '' %>" placeholder="name@rocklineg.com"></label>
     <label>اسم المستخدم <em>*</em><input name="user" dir="ltr" value="<%= u.user || '' %>" required placeholder="mahmoud"></label>
-    <label>كلمة المرور<input type="password" name="pass" dir="ltr" autocomplete="new-password" minlength="6" placeholder="<%= item ? 'سيبها فاضية لو مش عايز تغيّرها' : 'اختياري' %>">
-      <small><%= item ? '8 حروف على الأقل.' : (mailReady ? 'لو سبتها فاضية، هيوصله إيميل يختار منه كلمة المرور بنفسه.' : 'الإيميل مش متظبط، فاكتب كلمة مرور وقولهاله.') %></small></label>
+    <label>كلمة المرور
+      <span class="pwrow"><input type="password" id="pwf" name="pass" dir="ltr" autocomplete="new-password" minlength="6" placeholder="<%= item ? 'سيبها فاضية لو مش عايز تغيّرها' : 'اكتبها أو اضغط توليد' %>">
+        <button type="button" class="btn xs ghost" id="pwGen">توليد</button><button type="button" class="btn xs ghost" id="pwShow">إظهار</button></span>
+      <small><%= item ? '6 خانات على الأقل: حرف كبير وصغير ورقم ورمز.' : 'تقدر تكتب كلمة مرور بنفسك وتديهاله (من غير ما تحتاج إيميل). لو سبتها فاضية لازم تكتب إيميل وهيوصله لينك يختار منه كلمة المرور.' %></small></label>
   </div>
   <% if (u.owner) { %>
     <p class="flash warn" style="margin-top:16px">ده حساب المدير الأساسي، وليه كل الصلاحيات دايماً.</p>
@@ -37,4 +39,18 @@
   </div>
   <div class="form-foot"><button class="btn navy" type="submit"><%- icon('check') %> حفظ</button><a class="btn ghost" href="/admin/users">إلغاء</a></div>
 </form>
+<script>
+(function () {
+  var pw = document.getElementById('pwf'); if (!pw) return;
+  document.getElementById('pwShow').addEventListener('click', function () { pw.type = pw.type === 'password' ? 'text' : 'password'; this.textContent = pw.type === 'password' ? 'إظهار' : 'إخفاء'; });
+  document.getElementById('pwGen').addEventListener('click', function () {
+    var sets = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghijkmnopqrstuvwxyz', '23456789', '#!@%&*'], all = sets.join('');
+    var rnd = function (n) { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };
+    var out = sets.map(function (s) { return s[rnd(s.length)]; });
+    while (out.length < 14) out.push(all[rnd(all.length)]);
+    for (var i = out.length - 1; i > 0; i--) { var j = rnd(i + 1), t = out[i]; out[i] = out[j]; out[j] = t; }
+    pw.value = out.join(''); pw.type = 'text'; document.getElementById('pwShow').textContent = 'إخفاء'; pw.select();
+  });
+})();
+</script>
 <%- include('foot') %>

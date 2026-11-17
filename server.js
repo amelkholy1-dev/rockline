@@ -384,6 +384,51 @@ function tooMany(ip, limit, windowMs) {
   return list.length > limit;
 }
 
+// ---------- إرسال الإيميل مع إعادة المحاولة التلقائية ----------
+const MAIL_BACKOFF = [1, 5, 15, 60, 180, 360, 720, 1440]; // دقايق بين المحاولات
+const MAIL_MAX_TRIES = 12, MAIL_MAX_AGE_DAYS = 14;
+const persistInbox = () => store.set('inbox', store.get('inbox'));
+const validEmail = e => (mailer.emailOk(e) ? e : undefined);
+async function mailRecord(rec) {
+  const def = FORMS[rec.kind] || FORMS.contact;
+  const rows = def.fields.map(f => [dict.ar[f.l], (rec.fields || {})[f.k]]);
+  rows.push(['لغة الزائر', rec.lang === 'ar' ? 'عربي' : 'English']);
+  let attachments = [];
+  if (rec.cv) { try { attachments = [{ filename: rec.cvName || rec.cv, content: fs.readFileSync(path.join(CV_DIR, path.basename(rec.cv))) }]; } catch (e) { /* الملف مش موجود */ } }
+  const f = rec.fields || {};
+  return mailer.send(rows, { subject: def.subject + ' - ' + (f.company || f.name || ''), title: def.subject, replyTo: validEmail(f.email), extraTo: users.notifyEmails(), attachments });
+}
+// محاولة إرسال رسالة واحدة وتسجيل النتيجة عليها (من غير ما تضيع الرسالة)
+async function tryMail(rec) {
+  rec.mailTries = (rec.mailTries || 0) + 1; rec.mailLast = now();
+  try { const r = await mailRecord(rec); rec.mailed = true; rec.mailError = ''; rec.mailNext = ''; rec.mailVia = r && r.via; return true; }
+  catch (e) {
+    rec.mailed = false; rec.mailError = String((e && (e.hint || e.message)) || e).slice(0, 400);
+    rec.mailNext = rec.mailTries >= MAIL_MAX_TRIES ? '' : new Date(Date.now() + MAIL_BACKOFF[Math.min(rec.mailTries - 1, MAIL_BACKOFF.length - 1)] * 60000).toISOString();
+    console.error('mail error:', rec.mailError.slice(0, 160));
+    return false;
+  }
+}
+const mailPending = () => (store.get('inbox').messages || []).filter(m => m.channel === 'email' && !m.mailed && Date.now() - new Date(m.at) < MAIL_MAX_AGE_DAYS * 864e5);
+let _flushing = false;
+// بيبعت الرسايل اللي فشلت: بالجدول التلقائي، أو force لما تتظبط الإعدادات أو تدوس «أعد الإرسال»
+async function flushMailQueue(force) {
+  if (_flushing || !mailer.ready()) return 0;
+  _flushing = true; let sent = 0;
+  try {
+    const due = mailPending().filter(m => force || ((m.mailTries || 0) < MAIL_MAX_TRIES && (!m.mailNext || new Date(m.mailNext) <= new Date()))).slice(0, force ? 30 : 5);
+    for (const m of due) {
+      if (force) { m.mailNext = ''; if ((m.mailTries || 0) >= MAIL_MAX_TRIES) m.mailTries = MAIL_MAX_TRIES - 1; }
+      if (await tryMail(m)) sent++;
+    }
+    if (due.length) persistInbox();
+  } catch (e) { console.error('mail queue:', e && e.message); }
+  finally { _flushing = false; }
+  return sent;
+}
+setInterval(() => { flushMailQueue(false).catch(() => {}); }, 60000).unref();
+setTimeout(() => { flushMailQueue(false).catch(() => {}); }, 15000).unref(); // بعد ما السيرفر يقوم: اللي فشل قبل كده يتبعت
+
 function saveMessage(rec) {
   const inbox = store.get('inbox');
   inbox.messages.unshift(rec);
@@ -599,42 +644,26 @@ pub.post('/send', (req, res) => {
     const { fields, missing } = readForm(kind, b);
     if (missing.length) return reply(false, t.required);
     const channel = b.channel === 'whatsapp' ? 'whatsapp' : 'email';
-    const emailOn = channels().email && mailer.ready();
     analytics.event('form_' + kind + '_' + channel, req);
     const rec = { id: uid(), kind, channel, lang, at: now(), read: false, fields, mailed: false, consent: b.consent === 'on' };
 
-    let attachments = [];
     if (req.file && FORMS[kind].file && !upErr) {
       const safe = uid() + path.extname(req.file.originalname).toLowerCase();
       fs.writeFileSync(path.join(CV_DIR, safe), req.file.buffer);
       rec.cv = safe;
       rec.cvName = clean(req.file.originalname, 120);
-      attachments = [{ filename: rec.cvName || safe, content: req.file.buffer }];
     }
 
-    if (channel === 'email' && emailOn) {
-      const labels = dict.ar;
-      const rows = FORMS[kind].fields.map(f => [labels[f.l], fields[f.k]]);
-      rows.push(['لغة الزائر', lang === 'ar' ? 'عربي' : 'English']);
-      try {
-        await mailer.send(rows, {
-          subject: FORMS[kind].subject + ' - ' + (fields.company || fields.name || ''),
-          title: FORMS[kind].subject,
-          replyTo: /^[^\s<>;,"'()\\]+@[^\s<>;,"'()\\]+\.[^\s<>;,"'()\\]+$/.test(fields.email || '') ? fields.email : undefined, /* إيميل بسيط بس: أي رموز عنونة غريبة بتتتجاهل */
-          extraTo: users.notifyEmails(),
-          attachments
-        });
-        rec.mailed = true;
-      } catch (e) {
-        rec.mailError = String(e && e.message || e).slice(0, 300);
-        console.error('mail error:', rec.mailError);
-      }
+    if (channel === 'email' && channels().email) {
+      // الرسالة بتتحفظ الأول في «الرسائل» (مش بتضيع أبداً)، وبعدين بتتبعت بالإيميل. لو فشلت بتتكرر تلقائياً لحد ما توصل.
+      rec.mailTries = 0;
       saveMessage(rec);
-      // حتى لو الإيميل فشل، الرسالة اتحفظت في لوحة التحكم
-      return rec.mailed ? reply(true, t.sent_ok) : reply(false, t.sent_fail, 502);
+      if (mailer.ready()) await tryMail(rec); else rec.mailError = 'الإيميل لسه مش متظبط في لوحة التحكم';
+      persistInbox();
+      return reply(true, t.sent_ok); // الزائر طلبه اتسجّل في كل الأحوال
     }
     if (channel === 'email') {
-      // الإيميل مقفول من لوحة التحكم أو مش متظبط: نحفظ الرسالة في لوحة التحكم
+      // طريقة الإيميل مقفولة من لوحة التحكم: نحفظ الرسالة في لوحة التحكم بس
       rec.channel = 'form';
       saveMessage(rec);
       return reply(true, t.sent_ok);
@@ -665,6 +694,7 @@ function adminView(req, extra) {
     site, icon, brand, flash: f, section: '', me,
     can: perm => users.has(me, perm),
     appVersion: pkgVersion,
+    mailFail: users.has(me, 'mail') || users.has(me, 'inbox') ? mailPending().length : 0,
     lvl: perm => users.level(me, perm),
     canAdd: perm => ['add', 'full'].includes(users.level(me, perm)),
     canFull: perm => users.level(me, perm) === 'full',
@@ -869,10 +899,10 @@ app.post('/admin/owner-forgot', (req, res) => {
   const page = (status, o) => res.status(status).render('admin/owner-reset', ownerView(Object.assign({ mode: 'otp' }, o)));
   if (ownerFgFails.until > Date.now()) return page(429, { error: 'محاولات غلط كتير — استنى شوية وجرّب تاني' });
   const owner = users.list().find(x => x.owner && users.twoFaOn(x));
-  if (!owner) return page(404, { error: 'مفيش مدير أساسي مفعّل عنده تطبيق المصادقة' });
+  if (!owner) return page(404, { error: 'الطريقة دي غير متاحة حالياً' });
   if (clean(b.user, 60) && clean(b.user, 60).toLowerCase() !== String(owner.user).toLowerCase()) { if (++ownerFgFails.n >= 5) { ownerFgFails.n = 0; ownerFgFails.until = Date.now() + 15 * 60000; } security.audit('owner-forgot', 'reset_code_fail', '', req.ip); return page(403, { error: 'البيانات غلط' }); }
   const how = users.verify2fa(owner, b.code);
-  if (!how) { if (++ownerFgFails.n >= 5) { ownerFgFails.n = 0; ownerFgFails.until = Date.now() + 15 * 60000; } security.audit('owner-forgot', 'reset_code_fail', 'كود نسيان غلط', req.ip); return page(403, { error: 'الكود غلط أو منتهي' }); }
+  if (!how) { if (++ownerFgFails.n >= 5) { ownerFgFails.n = 0; ownerFgFails.until = Date.now() + 15 * 60000; } security.audit('owner-forgot', 'reset_code_fail', 'كود نسيان غلط', req.ip); return page(403, { error: 'البيانات غلط أو منتهية' }); }
   if (b.pass !== b.pass2) return page(400, { error: 'كلمتين المرور مش متطابقتين' });
   try { users.setPassword(owner.id, b.pass); } catch (e) { return page(400, { error: e.message }); }
   security.clearTrusts(owner.id); ownerFgFails.n = 0;
@@ -885,7 +915,7 @@ app.post('/admin/owner-reset', (req, res) => {
   const c = security.checkResetCode(b.code);
   if (!c.ok) { security.audit('owner-reset', 'reset_code_fail', '', req.ip); return page(c.status, { error: c.msg }); }
   const owner = users.list().find(x => x.owner);
-  if (!owner) return page(404, { error: 'مفيش مدير أساسي لسه — ادخل بـ ADMIN_USER/ADMIN_PASS الأول' });
+  if (!owner) return page(404, { error: 'الطريقة دي غير متاحة حالياً' });
   if (b.pass !== b.pass2) return page(400, { error: 'كلمتين المرور مش متطابقتين' });
   try { users.setPassword(owner.id, b.pass); } catch (e) { return page(400, { error: e.message }); }
   users.reset2fa(owner.id); users.unlock(owner.id);
@@ -926,6 +956,7 @@ admin.get('/', (req, res) => {
     missingStats: (store.get('site').stats || []).filter(s => !s.value).map(s => tr(s.label, 'ar')),
     quotesCount: (store.get('site').quotes || []).length,
     noEmail: !req.me.email,
+    mailFailList: mailPending(),
     newContent: Boolean(shippedSite() && shippedSite().contentVersion && shippedSite().contentVersion !== (store.get('site').contentVersion || '')),
     samples: {
       site: store.get('site').sample === true,
@@ -972,6 +1003,20 @@ admin.post('/inbox/:id/delete', (req, res) => {
   store.set('inbox', inbox);
   flash(req, 'تم حذف الرسالة');
   res.redirect(req.get('referer') || '/admin/inbox');
+});
+admin.post('/inbox/resend-all', async (req, res) => {
+  if (!mailer.ready()) { flash(req, 'الإيميل لسه مش متظبط. اظبط الإعدادات الأول.', 'err'); return res.redirect('/admin/mail'); }
+  const n = mailPending().length; const sent = await flushMailQueue(true);
+  flash(req, n ? 'اتبعت ' + sent + ' من ' + n + ' رسالة' + (sent < n ? '. الباقي لسه بيفشل، راجع سبب الفشل في الرسالة.' : '.') : 'مفيش رسايل متأخرة.', sent < n ? 'err' : 'ok');
+  res.redirect(String(req.body && req.body.back) === 'mail' ? '/admin/mail' : '/admin/inbox');
+});
+admin.post('/inbox/:id/resend', async (req, res) => {
+  const m = store.get('inbox').messages.find(x => x.id === req.params.id);
+  if (!m || m.channel !== 'email') return res.redirect('/admin/inbox');
+  if (!mailer.ready()) { flash(req, 'الإيميل لسه مش متظبط. اظبط الإعدادات الأول.', 'err'); return res.redirect('/admin/mail'); }
+  m.mailTries = Math.min(m.mailTries || 0, MAIL_MAX_TRIES - 1); const ok = await tryMail(m); persistInbox();
+  flash(req, ok ? 'الرسالة اتبعتت بالإيميل.' : 'الإرسال فشل: ' + m.mailError, ok ? 'ok' : 'err');
+  res.redirect('/admin/inbox#m-' + m.id);
 });
 admin.get('/inbox/:id/cv', (req, res) => {
   const m = store.get('inbox').messages.find(x => x.id === req.params.id);
@@ -1388,7 +1433,7 @@ admin.post('/sections/:id/delete', (req, res) => {
 });
 
 // ----- mail settings + طرق إرسال الفورمات -----
-admin.get('/mail', (req, res) => res.render('admin/mail', adminView(req, { section: 'mail', mail: store.get('mail'), envPass: Boolean(process.env.MAIL_PASS), chans: channels() })));
+admin.get('/mail', (req, res) => res.render('admin/mail', adminView(req, { section: 'mail', mail: store.get('mail'), envPass: Boolean(process.env.MAIL_PASS), envUser: Boolean(process.env.MAIL_USER), chans: channels(), mstate: mailer.state(), failed: mailPending().length, PRESETS: mailer.PRESETS, ENCS: mailer.ENCS(), cfg: Object.assign({}, mailer.config(), { pass: '' }) })));
 admin.post('/mail/channels', (req, res) => {
   const site = store.get('site'); const b = req.body || {};
   site.channels = { whatsapp: b.ch_whatsapp === 'on', email: b.ch_email === 'on' }; store.set('site', site);
@@ -1396,25 +1441,42 @@ admin.post('/mail/channels', (req, res) => {
   res.redirect('/admin/mail');
 });
 admin.post('/mail', (req, res) => {
-  const b = req.body || {};
-  const m = store.get('mail');
-  m.host = clean(b.host, 200);
-  m.port = parseInt(b.port, 10) || 465;
-  m.secure = b.secure === 'on';
-  m.user = clean(b.user, 200);
+  const b = req.body || {}; const m = store.get('mail'); const back = () => res.redirect('/admin/mail');
+  const err = msg => { flash(req, msg, 'err'); return back(); };
+  const encs = mailer.ENCS();
+  const host = clean(b.host, 200).toLowerCase(); const hp = mailer.hostProblem(host); if (hp) return err('SMTP Host: ' + hp);
+  const port = parseInt(b.port, 10); if (!(port > 0 && port < 65536)) return err('رقم الـ Port غلط');
+  const user = clean(b.user, 200); if (user && !mailer.emailOk(user)) return err('الإيميل اللي هيبعت منه الموقع مكتوب غلط');
+  const login = clean(b.login, 200), from = clean(b.from, 200);
+  if (from && !mailer.emailOk(from)) return err('عنوان المرسل (From) مكتوب غلط');
+  const to = mailer.listOf(b.to); if (to.some(x => !mailer.emailOk(x))) return err('أحد الإيميلات في «الرسايل توصل على» مكتوب غلط');
+  const bcc = mailer.listOf(b.bcc); if (bcc.some(x => !mailer.emailOk(x))) return err('أحد إيميلات النسخة الاحتياطية مكتوب غلط');
+  const replyTo = clean(b.replyTo, 200); if (replyTo && !mailer.emailOk(replyTo)) return err('إيميل الرد (Reply-To) مكتوب غلط');
+  m.host = host; m.port = port; m.enc = encs.includes(b.enc) ? b.enc : 'ssl'; m.secure = m.enc === 'ssl';
+  m.user = user; m.login = login; m.from = from; m.to = to.join(', '); m.bcc = bcc.join(', '); m.replyTo = replyTo; m.fromName = clean(b.fromName, 100);
   if (clean(b.pass, 300)) m.pass = clean(b.pass, 300);
-  m.to = clean(b.to, 500);
-  m.fromName = clean(b.fromName, 100);
+  // سيرفر احتياطي (اختياري)
+  const bk = m.backup || {}; const bhost = clean(b.bk_host, 200).toLowerCase();
+  if (bhost) {
+    const bp = mailer.hostProblem(bhost); if (bp) return err('السيرفر الاحتياطي: ' + bp);
+    const bport = parseInt(b.bk_port, 10); if (!(bport > 0 && bport < 65536)) return err('رقم الـ Port الاحتياطي غلط');
+    const bfrom = clean(b.bk_from, 200); if (bfrom && !mailer.emailOk(bfrom)) return err('عنوان المرسل الاحتياطي مكتوب غلط');
+    m.backup = { host: bhost, port: bport, enc: encs.includes(b.bk_enc) ? b.bk_enc : 'ssl', user: clean(b.bk_user, 200), from: bfrom, pass: clean(b.bk_pass, 300) || bk.pass || '' };
+  } else delete m.backup;
   store.set('mail', m);
-  flash(req, 'تم حفظ إعدادات الإيميل. جرّب "إرسال رسالة تجربة" تحت.');
-  res.redirect('/admin/mail');
+  flushMailQueue(true).catch(() => {}); // أي رسايل اتأخرت تتبعت دلوقتي
+  flash(req, 'تم حفظ إعدادات الإيميل. جرّب «إرسال رسالة تجربة» تحت' + (mailPending().length ? '، والرسايل المتأخرة (' + mailPending().length + ') هتتبعت تلقائياً.' : '.'));
+  back();
 });
 admin.post('/mail/test', async (req, res) => {
+  const dest = clean((req.body || {}).to, 200);
+  if (dest && !mailer.emailOk(dest)) { flash(req, 'الإيميل اللي هتجرّب عليه مكتوب غلط', 'err'); return res.redirect('/admin/mail'); }
   try {
-    await mailer.send([['الحالة', 'إعدادات الإيميل شغالة، ورسايل الموقع هتوصل هنا.']], { subject: 'رسالة تجربة من موقع روك لاين', title: 'رسالة تجربة' });
-    flash(req, 'اتبعتت رسالة التجربة. شوف صندوق الوارد في ' + mailer.config().to);
+    const r = await mailer.send([['الحالة', 'إعدادات الإيميل شغالة، ورسايل الموقع هتوصل هنا.']], { subject: 'رسالة تجربة من موقع روك لاين', title: 'رسالة تجربة', to: dest || undefined });
+    const pending = mailPending().length; const sent = pending ? await flushMailQueue(true) : 0;
+    flash(req, 'اتبعتت رسالة التجربة' + (r.via === 'backup' ? ' (من السيرفر الاحتياطي، الأساسي فيه مشكلة)' : '') + ' على ' + (dest || mailer.config().to) + '. بص في الـ Spam كمان.' + (sent ? ' واتبعت ' + sent + ' رسالة كانت متأخرة.' : ''));
   } catch (e) {
-    flash(req, 'الإرسال فشل: ' + String(e && e.message || e).slice(0, 200), 'err');
+    flash(req, 'الإرسال فشل: ' + String(e && (e.hint || e.message) || e).slice(0, 500), 'err');
   }
   res.redirect('/admin/mail');
 });
@@ -1661,8 +1723,10 @@ admin.post('/users/save', async (req, res) => {
   const back = old ? '/admin/users/' + old.id + '/edit' : '/admin/users/new';
   if (old && old.owner && !req.me.owner) { flash(req, 'حساب المدير الأساسي بيتعدل من صاحبه بس', 'err'); return res.redirect('/admin/users'); }
   const email = clean(b.email, 200);
-  if (!clean(b.user, 60) || !email) { flash(req, 'اكتب اسم المستخدم والإيميل', 'err'); return res.redirect(back); }
-  if (!/^\S+@\S+\.\S+$/.test(email)) { flash(req, 'الإيميل مش مكتوب صح', 'err'); return res.redirect(back); }
+  // الإيميل اختياري لو هتكتب كلمة مرور بنفسك (مفيش اعتماد على إن الإيميل شغّال)
+  if (!clean(b.user, 60)) { flash(req, 'اكتب اسم المستخدم', 'err'); return res.redirect(back); }
+  if (!email && !b.pass && !(old && old.hash)) { flash(req, 'اكتب كلمة مرور للمستخدم، أو إيميل عشان نبعتله دعوة', 'err'); return res.redirect(back); }
+  if (email && !/^\S+@\S+\.\S+$/.test(email)) { flash(req, 'الإيميل مش مكتوب صح', 'err'); return res.redirect(back); }
   if (old && !isFull(req, 'users')) return denyLevel(req, res, 'add');
   // الصلاحيات: لكل قسم مستوى (بدون / اطلاع فقط / إضافة فقط / تعديل كامل). لو الفورم القديم (checkbox) = تعديل كامل
   const rank = { view: 1, add: 2, full: 3 };
@@ -1681,7 +1745,8 @@ admin.post('/users/save', async (req, res) => {
   } catch (e) { flash(req, e.message, 'err'); return res.redirect(back); }
   if (u.id === req.me.id) req.session.ver = u.tokenVer || 0;
   let msg = 'تم حفظ المستخدم';
-  if (!old && !b.pass) {
+  if (!old && b.pass) msg = 'تم إضافة المستخدم. بيدخل باسم المستخدم «' + u.user + '» وكلمة المرور اللي كتبتها. أول دخول من جهاز جديد محتاج موافقتك من «الأمان والأجهزة».';
+  if (!old && !b.pass && email) {
     if (mailer.ready()) {
       const token = users.createReset(u.id, 48 * 60);
       try {

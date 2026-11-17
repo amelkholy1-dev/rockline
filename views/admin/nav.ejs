@@ -39,7 +39,7 @@
         ['hosting', '/admin/hosting', 'clock', 'الاستضافة والتجديد', 'owner'],
         ['account', '/admin/account', 'key', 'حسابي', '']
       ].filter(function(n){ return !n[4] || (n[4] === 'owner' ? (me && me.owner) : can(n[4])); }).forEach(function(n){ %>
-        <a href="<%= n[1] %>" class="<%= section === n[0] ? 'on' : '' %>"><%- icon(n[2]) %><span><%= n[3] %></span><% if (n[0] === 'inbox' && unread) { %><i class="badge"><%= unread %></i><% } %><% if (n[0] === 'security' && pendingDev) { %><i class="badge"><%= pendingDev %></i><% } %><% if (n[0] === 'mail' && !mailReady) { %><i class="badge warn">!</i><% } %></a>
+        <a href="<%= n[1] %>" class="<%= section === n[0] ? 'on' : '' %>"><%- icon(n[2]) %><span><%= n[3] %></span><% if (n[0] === 'inbox' && unread) { %><i class="badge"><%= unread %></i><% } %><% if (n[0] === 'security' && pendingDev) { %><i class="badge"><%= pendingDev %></i><% } %><% if (n[0] === 'mail' && (!mailReady || mailFail)) { %><i class="badge warn"><%= mailFail || '!' %></i><% } %></a>
       <% }); %>
     </nav>
     <div class="side-foot">

@@ -17,13 +17,13 @@
     <% if (sent) { %>
       <div class="flash">لو الإيميل ده مسجل لموظف في لوحة التحكم، هيوصله لينك تغيير كلمة المرور خلال دقايق. بص في الـ Spam كمان. اللينك شغال ساعة واحدة.</div>
     <% } else if (!mailReady) { %>
-      <div class="flash warn">كلّم مدير النظام يعمللك كلمة مرور جديدة من <b>الإعدادات ← المستخدمين ← إعادة تعيين كلمة المرور</b>، ويديهالك وتغيّرها أول ما تدخل.</div>
+      <div class="flash warn">تواصل مع مدير النظام لإعادة تعيين كلمة المرور.</div>
     <% } else { %>
       <p>اكتب الإيميل المسجل بيه في لوحة التحكم، وهنبعتلك لينك تختار منه كلمة مرور جديدة.</p>
       <label>الإيميل<input type="email" name="email" dir="ltr" autocomplete="email" required autofocus></label>
       <button class="btn navy wide" type="submit">ابعت اللينك</button>
     <% } %>
-    <a href="/admin/owner-reset">أنا المدير الأساسي — استرجاع حسابي</a>
+    <a href="/admin/owner-reset">استرجاع حساب المدير</a>
     <a href="/admin/login">الرجوع لتسجيل الدخول</a>
   </form>
 </body>
